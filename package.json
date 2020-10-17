@@ -1,0 +1,25 @@
+{
+  "name": "piffero",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gfiorentino/piffero.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gfiorentino/piffero/issues"
+  },
+  "homepage": "https://github.com/gfiorentino/piffero#readme",
+  "devDependencies": {
+    "eslint": "^7.11.0",
+    "npm-check": "^5.9.2",
+    "typescript": "^4.0.3"
+  }
+}
