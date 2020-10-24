@@ -1,12 +1,12 @@
 import * as clarinet from './libs/clarinet';
-import {Stream, ReadableStream} from 'stream';
+import {Stream, Readable} from 'stream';
 //no piffero is done 
 
 export class Piffero {
     
     findPath(stream: Stream, jsonPath ): Stream { 
         const cStream  = clarinet.createStream();
-        const output: ReadableStream = new ReadableStream();
+        const output: Readable = new Readable();
         output.push('');
         cStream.on("error", function (e) {
             // unhandled errors will throw, since this is a proper node

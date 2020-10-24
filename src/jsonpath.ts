@@ -19,27 +19,27 @@ export interface ParsedPath  {
     recursiveDescendant: boolean; // ?? (dito nel culo) not supported yet
 }
 
-export class PifferoJsonPathError extends Error{}
-const PATH_ERROR_MESSAGE = 'Invalid json path ' 
+const PATH_ERROR_MESSAGE = 'Invalid json path' 
 
-export class JsonPath{
+export class JSONPath{
     
     static parse(jsonPath: string): ParsedPath {
-        if (!jsonPath.startsWith('$.')){
+        if (!jsonPath.startsWith ('$.')){
             throw new PifferoJsonPathError(`${PATH_ERROR_MESSAGE}: jsonPath`);
         }
         
-        jsonPath.split('.');
-        return null;
+        const paths = jsonPath.split('.');
+        console.log(jsonPath);
+        console.log(paths)
+        return JSONPath.buildParsedPath(paths);
     }
     
 
     static buildParsedPath(paths: string[]): ParsedPath  {
-        if(paths.length = 0) {
+        if(paths.length === 0) {
             return null;
         }
-        
-        let value  = paths[0];
+        let value = paths[0];
         let range = null;
         if (value.endsWith(']')) {
             value.substr(0, value.length-1)         
@@ -50,9 +50,9 @@ export class JsonPath{
             range = {start: Number(splitted[1])}
         }
     
-        const node: ParsedPath = {
+       return {
             value: paths[0],
-            next: JsonPath.buildParsedPath(paths.slice(1)),
+            next: JSONPath.buildParsedPath(paths.slice(1)),
             range: range,
             recursiveDescendant: false,
         }
@@ -60,3 +60,4 @@ export class JsonPath{
     
 }
 
+export class PifferoJsonPathError extends Error{}
