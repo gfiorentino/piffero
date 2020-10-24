@@ -29,12 +29,10 @@ export class JSONPath{
         }
         
         const paths = jsonPath.split('.');
-        console.log(jsonPath);
-        console.log(paths)
         return JSONPath.buildParsedPath(paths);
     }
     
-
+    // need refactoring for perfomance 
     static buildParsedPath(paths: string[]): ParsedPath  {
         if(paths.length === 0) {
             return null;
@@ -42,8 +40,9 @@ export class JSONPath{
         let value = paths[0];
         let range = null;
         if (value.endsWith(']')) {
-            value.substr(0, value.length-1)         
+           value = value.substr(0, value.length-1)         
             const splitted = value.split('[');
+            value = splitted[0];
             if(splitted.length < 2){
                 throw new PifferoJsonPathError(`${PATH_ERROR_MESSAGE}: jsonPath`);
             }
@@ -51,7 +50,7 @@ export class JSONPath{
         }
     
        return {
-            value: paths[0],
+            value,
             next: JSONPath.buildParsedPath(paths.slice(1)),
             range: range,
             recursiveDescendant: false,
