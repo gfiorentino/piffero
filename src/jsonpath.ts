@@ -27,13 +27,13 @@ export class JSONPath{
         if (!jsonPath.startsWith ('$.')){
             throw new PifferoJsonPathError(`${PATH_ERROR_MESSAGE}: jsonPath`);
         }
-        
+   
         const paths = jsonPath.split('.');
         return JSONPath.buildParsedPath(paths);
     }
     
     // need refactoring for perfomance 
-    static buildParsedPath(paths: string[]): ParsedPath  {
+    private static buildParsedPath(paths: string[]): ParsedPath  {
         if(paths.length === 0) {
             return null;
         }
@@ -56,7 +56,6 @@ export class JSONPath{
             recursiveDescendant: false,
         }
     }
-    
 }
 
 export class PifferoJsonPathError extends Error{}
