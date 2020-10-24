@@ -1,6 +1,7 @@
 import * as clarinet from './libs/clarinet';
 import { JSONPath, ParsedPath } from './jsonpath';
 import { Readable, Stream } from 'stream';
+import { PATH_DOESNT_MATCH } from './pifferoerror';
 
 interface PifferoStatus {
  //abbiamo verificato la condizione
@@ -44,7 +45,9 @@ export class Piffero {
             const currentPath = pifferoStatus.path;
             
             if(node === currentPath.value) {
-                if(currentPath.next === null || currentPath === undefined){
+                if(currentPath.range){
+                    throw new PifferoError(PATH_DOESNT_MATCH);
+                } else if(currentPath.next === null || currentPath === undefined){
                   pifferoStatus.recording = true; 
                   pifferoStatus.verified = true;  
                 }  
