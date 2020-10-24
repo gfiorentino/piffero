@@ -1,10 +1,14 @@
 import * as clarinet from './libs/clarinet';
-import {Stream, Readable} from 'stream';
 import { JSONPath, ParsedPath } from './jsonpath';
+import { Readable, Stream } from 'stream';
 
 interface PifferoStatus {
+ //abbiamo verificato la condizione
   verified: boolean;
+ // sto "registrando"
   recording: boolean;
+  isInArray: boolean;
+  currentIndex: number;
   path: ParsedPath;
 } 
 
@@ -15,9 +19,11 @@ export class Piffero {
         const output: Readable = new Readable();
 
         const parsedPath = JSONPath.parse(jsonPath);
-        const pifferoStatus = {
+        const pifferoStatus: PifferoStatus = {
             verified: false,
             recording: false,
+            isInArray : false,
+            currentIndex: -1, 
             path: parsedPath.next, // per ora di "$" ce ne battiamo il cazzo  
         }
         
@@ -30,30 +36,56 @@ export class Piffero {
           })
 
         cStream.on("openobject", function (node) {
-            // same object as above
-            if(node) {
-                node.path();
+            if( pifferoStatus.recording && pifferoStatus.verified){
+                output.push(`{"${node}":`);
+                return;
+            }
+            const currentPath = pifferoStatus.path;
+            
+            if(node === currentPath.value) {
+                if(currentPath.next === null || currentPath === undefined){
+                  pifferoStatus.recording = true; 
+                  pifferoStatus.verified = true;  
+                }  
             }
         })
 
         cStream.on("openarray", function (node) {
+            if(pifferoStatus.recording && pifferoStatus.verified){
+                output.push(`"${node}":[`);
+            }
             // same object as above
         })
 
-        cStream.on("closeobject", function (node) {             
+        cStream.on("closeobject", function () {
+            if(pifferoStatus.recording && pifferoStatus.verified){
+                output.push(`}`);
+            }             
         })
 
         cStream.on("closearray", function (node) {
-
+            if(pifferoStatus.recording && pifferoStatus.verified){
+                output.push(`]`);
+            }
         })
   
         cStream.on("key", function(node) {
-
+            if(pifferoStatus.recording && pifferoStatus.verified){
+                output.push(`"${node}":`);
+            }
         })
 
         cStream.on("value", function(node) {
-
+            if(pifferoStatus.recording && pifferoStatus.verified){
+                if(node instanceof String)
+                output.push(`"${node}",`);
+                else {
+                    output.push(`"${node}",`);
+                }
+            }
         })
+
+        stream.pipe(cStream);
         return output
     }
 
