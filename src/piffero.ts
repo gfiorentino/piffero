@@ -7,6 +7,7 @@ interface PifferoStatus {
   verified: boolean;
  // sto "registrando"
   recording: boolean;
+ //sono in un array e cerco 
   isInArray: boolean;
   currentIndex: number;
   path: ParsedPath;

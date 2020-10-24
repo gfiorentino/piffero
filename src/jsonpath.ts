@@ -1,3 +1,5 @@
+
+import { PifferoJsonPathError, PATH_ERROR_MESSAGE } from "./pifferoerror";
 /* 
 $	The root object/element
 @	The current object/element
@@ -9,7 +11,7 @@ $	The root object/element
 [start:end:step]	Array slice operator borrowed from ES4 / Python
 ?()	Applies a filter (script) expression via static evaluation
 ()	Script expression via static evaluation
- */
+*/
 
 export interface ParsedPath  {
     value: string,
@@ -19,8 +21,6 @@ export interface ParsedPath  {
     recursiveDescendant: boolean; // ?? (dito nel culo) not supported yet
 }
 
-const PATH_ERROR_MESSAGE = 'Invalid json path' 
-
 export class JSONPath{
     
     static parse(jsonPath: string): ParsedPath {
@@ -29,11 +29,11 @@ export class JSONPath{
         }
    
         const paths = jsonPath.split('.');
-        return JSONPath.buildParsedPath(paths);
+        return JSONPath.buildParsedPath(jsonPath, paths);
     }
     
     // need refactoring for perfomance 
-    private static buildParsedPath(paths: string[]): ParsedPath  {
+    private static buildParsedPath(jsonPath: string, paths: string[]): ParsedPath  {
         if(paths.length === 0) {
             return null;
         }
@@ -44,18 +44,17 @@ export class JSONPath{
             const splitted = value.split('[');
             value = splitted[0];
             if(splitted.length < 2){
-                throw new PifferoJsonPathError(`${PATH_ERROR_MESSAGE}: jsonPath`);
+                throw new PifferoJsonPathError(`${PATH_ERROR_MESSAGE}: ${jsonPath}`);
             }
             range = {start: Number(splitted[1])}
         }
     
        return {
             value,
-            next: JSONPath.buildParsedPath(paths.slice(1)),
+            next: JSONPath.buildParsedPath(jsonPath, paths.slice(1)),
             range: range,
             recursiveDescendant: false,
         }
     }
 }
 
-export class PifferoJsonPathError extends Error{}
