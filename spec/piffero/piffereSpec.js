@@ -16,25 +16,18 @@ describe("piffero john-doe", function() {
     }); 
     
     it("array jsonpath", async function() {
-
       const result = Piffero.findPath(stream, '$.phoneNumbers')
       const string = await streamToString(result);
       console.log(string);
-      JSON.parse(string)
-      // console.log(result);
-     // toString(result);
-      //demonstrates use of custom matche
+      JSON.parse(string);
     });
 
     it("element in an array jsonpath", async function() {
 
-      const result = Piffero.findPath(stream, '$.phoneNumbers[1]')
+      const result = Piffero.findPath(stream, '$.phoneNumbers[0]')
       const string = await streamToString(result);
       console.log(string);
-      JSON.parse(string)
-      // console.log(result);
-     // toString(result);
-      //demonstrates use of custom matche
+      JSON.parse(string);
     });
     
     
@@ -43,7 +36,6 @@ describe("piffero john-doe", function() {
  async function streamToString (stream) {
   const chunks = []
   return new Promise((resolve, reject) => {
-    console.log(chunks);
     stream.on('data', chunk => chunks.push(chunk))
     stream.on('error', reject)
     stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')))

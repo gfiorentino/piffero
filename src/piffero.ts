@@ -25,6 +25,21 @@ class PifferoStatus {
   get needComma(): boolean {
     return this.last === "closearray" || this.last === "closeobject" || this.last === "value";
   }
+
+  hasNext(): boolean {
+    return this.path.next !== null && this.path.next !== undefined;
+  }
+
+  next(): ParsedPath {
+    this.verified = false;
+    //sono in un array e cerco
+    this.isInArray = false;
+    // conta a che livello sono sceso per aggiornare gli indici
+    this.depthCounter = 0;
+    this.currentIndex = -1;
+    this.path = this.path.next
+    return this.path;
+  } ;
 }
 
 export class Piffero {
@@ -59,23 +74,33 @@ export class Piffero {
 
         if (pifferoStatus.currentIndex === currentPath.range.start) {
           if (currentPath.next) {
-            pifferoStatus.path = currentPath.next;
-            currentPath = currentPath.next;
+            pifferoStatus.next();
+            currentPath = pifferoStatus.path;
           }
         }
       }
 
       if (node === currentPath.value) {
-        // se dovevo essere in un array vuol dire che il path non matcha
+        // se dovevo essere in un array 
         if (currentPath.range) {
-          throw new PifferoError(PATH_DOESNT_MATCH);
+          pifferoStatus.isInArray = true;
         } else if (!currentPath.next) {
           pifferoStatus.recording = true;
           pifferoStatus.verified = true;
         } else {
-          pifferoStatus.path = pifferoStatus.path.next;
+          pifferoStatus.next();
         }
       }
+       if(pifferoStatus.isInArray && pifferoStatus.currentIndex === currentPath.range.start) {
+    
+        if(pifferoStatus.hasNext()){
+          pifferoStatus.next();}
+        else {
+          pifferoStatus.recording = true;
+          pifferoStatus.verified = true;
+          output.push(`{"${node}":`);
+        }
+       }
     });
 
     cStream.on("openarray", function () {
@@ -86,36 +111,17 @@ export class Piffero {
         output.push(`[`);
         pifferoStatus.depthCounter++
       }
-     // const currentPath = pifferoStatus.path;
-     /*
-      if (node === currentPath.value) {
-        // se dovevo non sono in un array vuol dire che il path non matcha
-        if (!currentPath.range) {
-          throw new PifferoError(PATH_DOESNT_MATCH);
-        } else if (!currentPath.next) {
-          pifferoStatus.verified = true;
-        }
-
-        if (currentPath.range.start === 0) {
-          if (currentPath.next) {
-            pifferoStatus.path = pifferoStatus.path.next;
-          } else {
-            pifferoStatus.recording = true;
-          }
-        } else {
-          // sono in un array
-          pifferoStatus.isInArray = true;
-          // pifferoStatus.currentIndex = 0;
-        }
-      } */
-      // same object as above
       pifferoStatus.last = "openarray";
     });
+
 
     cStream.on("closeobject", function () {
       if (pifferoStatus.recording && pifferoStatus.verified) {
         output.push(`}`);
         pifferoStatus.depthCounter--;
+      }
+      if (pifferoStatus.depthCounter === 0) {
+        pifferoStatus.recording = false;
       }
       pifferoStatus.last = "closeobject";
     });
@@ -127,7 +133,7 @@ export class Piffero {
       }
       pifferoStatus.last = "closearray";
     });
-
+                             
     cStream.on("key", function (node) {
       let currentPath = pifferoStatus.path;
 
@@ -137,19 +143,22 @@ export class Piffero {
         }
         output.push(`"${node}":`);
       }
-
       if (node === currentPath.value) {
+         // se dovevo essere in un array 
+        if (currentPath.range) {
+          pifferoStatus.isInArray = true;
         // se dovevo essere in un array vuol dire che il path non matcha
-      if (!currentPath.next) {
+        }else if (!currentPath.next ) {
           pifferoStatus.recording = true;
           pifferoStatus.verified = true;
           output.push(`{"${node}":`);
         } else {
-          pifferoStatus.path = pifferoStatus.path.next;
+           pifferoStatus.next();
         }
       }
       pifferoStatus.last = "key";
     });
+
 
     cStream.on("value", function (node) {
       if (pifferoStatus.recording && pifferoStatus.verified) {
@@ -161,7 +170,7 @@ export class Piffero {
         //vuol dire che posso chiudere 
         if (pifferoStatus.depthCounter === 0) {
           output.push(`}`);
-         // TODO chiudere tutti gli stream 
+          // TODO chiudere tutti gli stream 
           pifferoStatus.recording = false;
         }
       }

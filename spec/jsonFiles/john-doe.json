@@ -2,11 +2,11 @@
     "firstName": "John",
     "lastName" : "doe",
     "age"      : 26,
-    "address"  : {
+    "address"  : [{
       "streetAddress": "naist street",
       "city"         : "Nara",
       "postalCode"   : "630-0192"
-    },
+    }],
     "phoneNumbers": [
       {
         "type"  : "iPhone",
