@@ -1,7 +1,7 @@
 const clarinet = require("./libs/clarinet");
 
 import { JSONPath, ParsedPath } from "./jsonpath";
-import { Duplex, Readable, Stream } from "stream";
+import { Duplex, Readable, Stream, Writable } from "stream";
 import { PATH_DOESNT_MATCH, PifferoError } from "./pifferoerror";
 
 class PifferoStatus {
@@ -12,8 +12,8 @@ class PifferoStatus {
   //sono in un array e cerco
   isInArray: boolean = false;
   // conta a che livello sono sceso per aggiornare gli indici
-  depthCounter?: number = 0;
-  currentIndex?: number = -1;
+  depthCounter: number = 0;
+  currentIndex: number = -1;
   path: ParsedPath = undefined;
 
   constructor(path: ParsedPath) {
@@ -22,8 +22,9 @@ class PifferoStatus {
 }
 
 export class Piffero {
-  static findPath(stream: Stream, jsonPath: string): Stream {
-    const cStream = clarinet.createStream(null);
+  static findPath(stream: Readable, jsonPath: string): Stream {
+    
+    const cStream = new clarinet.createStream(null);
    
     const output: Duplex = new Stream.Transform(); // Readable = new Readable();
 
@@ -67,12 +68,12 @@ export class Piffero {
       }
     });
 
-    cStream.on("openarray", function (node) {
+    cStream.on("openarray", function () {
       if (pifferoStatus.recording && pifferoStatus.verified) {
-        output.push(`"${node}":[`);
+        output.push(`[`);
       }
-      const currentPath = pifferoStatus.path;
-
+     // const currentPath = pifferoStatus.path;
+ /*
       if (node === currentPath.value) {
         // se dovevo non sono in un array vuol dire che il path non matcha
         if (!currentPath.range) {
@@ -92,14 +93,13 @@ export class Piffero {
           pifferoStatus.isInArray = true;
           // pifferoStatus.currentIndex = 0;
         }
-      }
+      } */
       // same object as above
     });
 
     cStream.on("closeobject", function () {
       if (pifferoStatus.recording && pifferoStatus.verified) {
         output.push(`},`);
-      } else {
         pifferoStatus.depthCounter--;
       }
     });
@@ -107,13 +107,14 @@ export class Piffero {
     cStream.on("closearray", function (node) {
       if (pifferoStatus.recording && pifferoStatus.verified) {
         output.push(`],`);
+        pifferoStatus.depthCounter--;
       }
     });
 
     cStream.on("key", function (node) {
      
       let currentPath = pifferoStatus.path;
-      
+
       if (pifferoStatus.recording && pifferoStatus.verified) {
         output.push(`"${node}":`);
       }
@@ -125,6 +126,7 @@ export class Piffero {
         } else if (!currentPath.next) {
           pifferoStatus.recording = true;
           pifferoStatus.verified = true;
+          output.push(`{"${node}":`);
         } else {
           pifferoStatus.path = pifferoStatus.path.next;
         }
@@ -133,9 +135,16 @@ export class Piffero {
 
     cStream.on("value", function (node) {
       if (pifferoStatus.recording && pifferoStatus.verified) {
-        if (node instanceof String) output.push(`"${node}",`);
-        else {
+        if (typeof node === 'string' || node instanceof String) {
           output.push(`"${node}",`);
+        } else {
+          output.push(`${node},`);
+        } 
+        //vuol dire che posso chiudere 
+        if (pifferoStatus.depthCounter === 0) {
+          output.push(`}`);
+         // TODO chiudere tutti gli stream 
+          pifferoStatus.recording = false;
         }
       }
     });
@@ -144,14 +153,14 @@ export class Piffero {
       // equivale a chiudere lo stream
       // TODO: (forse) readable.unshift(chunk[, encoding]) per supportare encoding
       output.push(null);
-    //  return output;
+    });
+
+    cStream.on("close", function () {
     });
 
     stream.pipe(cStream);
     return output;
   }
 
-  findOne() {}
-
-  findMany() {}
+  private  findMany() {}
 }
