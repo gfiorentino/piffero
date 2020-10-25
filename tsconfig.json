@@ -4,6 +4,7 @@
       "target": "ES6",
       "declaration": true,
       "outDir": "./dist",
+      "allowJs": true,
       "moduleResolution": "node",
     },
     "include": [
