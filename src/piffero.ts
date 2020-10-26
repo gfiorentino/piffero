@@ -71,7 +71,6 @@ export class Piffero {
         // quanto siamo in profondità oggetti dentro oggetti
         pifferoStatus.depthCounter++;
         pifferoStatus.currentIndex++;
-
         if (pifferoStatus.currentIndex === currentPath.range.start) {
           if (currentPath.next) {
             pifferoStatus.next();
@@ -119,16 +118,21 @@ export class Piffero {
       if (pifferoStatus.recording && pifferoStatus.verified) {
         output.push(`}`);
         pifferoStatus.depthCounter--;
+      } else if(pifferoStatus.isInArray) {
+        pifferoStatus.depthCounter--;
       }
       if (pifferoStatus.depthCounter === 0) {
         pifferoStatus.recording = false;
       }
+      
       pifferoStatus.last = "closeobject";
     });
 
     cStream.on("closearray", function (node) {
       if (pifferoStatus.recording && pifferoStatus.verified) {
         output.push(`]`);
+        pifferoStatus.depthCounter--;
+      } else if(pifferoStatus.isInArray) {
         pifferoStatus.depthCounter--;
       }
       pifferoStatus.last = "closearray";
@@ -153,7 +157,7 @@ export class Piffero {
           pifferoStatus.verified = true;
           output.push(`{"${node}":`);
         } else {
-           pifferoStatus.next();
+          pifferoStatus.next();
         }
       }
       pifferoStatus.last = "key";
