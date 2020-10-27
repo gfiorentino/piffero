@@ -11,7 +11,7 @@ class PifferoStatus {
   //sono in un array e cerco
   isInArray: boolean = false;
   // conta a che livello sono sceso per aggiornare gli indici
-  depthCounter: number = 0;
+  private  _depthCounter: number = 0;
   currentIndex: number = -1;
 
   last:
@@ -41,6 +41,15 @@ class PifferoStatus {
       this.last === "closeobject" ||
       this.last === "value"
     );
+  }
+
+  set depthCounter(counter: number) {
+    if(counter >= 0) {
+      this._depthCounter = counter;
+    }
+  }
+  get depthCounter(){
+    return this._depthCounter;
   }
 
   hasNext(): boolean {
