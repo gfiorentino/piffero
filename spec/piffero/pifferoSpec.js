@@ -29,7 +29,6 @@ describe("piffero john-doe", function() {
       JSON.parse(string);
     });
     
-    
     it("element in an array jsonpath", async function() {
       const result = Piffero.findPath(stream, '$.phoneNumbers[1].number')
       const string = await streamToString(result);

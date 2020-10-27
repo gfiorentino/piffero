@@ -24,8 +24,8 @@ export interface ParsedPath  {
 export class JSONPath{
     
     static parse(jsonPath: string): ParsedPath {
-        if (!jsonPath.startsWith ('$.')){
-            throw new PifferoJsonPathError(`${PATH_ERROR_MESSAGE}: jsonPath`);
+        if (!jsonPath.startsWith ('$')){
+            throw new PifferoJsonPathError(`${PATH_ERROR_MESSAGE}: ${jsonPath}`);
         }
    
         const paths = jsonPath.split('.');
