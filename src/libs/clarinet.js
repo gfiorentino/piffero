@@ -10,7 +10,7 @@
   clarinet.CParser           = CParser;
   clarinet.CStream           = CStream;
   clarinet.createStream      = createStream;
-  clarinet.MAX_BUFFER_LENGTH = 64 * 1024;
+  clarinet.MAX_BUFFER_LENGTH = 10 * 1024 * 1024;
   clarinet.DEBUG             = (env.CDEBUG==='debug');
   clarinet.INFO              = (env.CDEBUG==='debug' || env.CDEBUG==='info');
   clarinet.EVENTS            =
@@ -236,7 +236,7 @@
     { constructor: { value: CStream } });
 
   CStream.prototype.write = function (data) {
-    data = new Buffer(data);
+    data = Buffer.from(data);
     for (var i = 0; i < data.length; i++) {
       var n = data[i];
 
