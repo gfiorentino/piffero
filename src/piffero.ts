@@ -2,71 +2,9 @@ const clarinet = require("./libs/clarinet");
 
 import { JSONPath, ParsedPath } from "./jsonpath";
 import { Duplex, Readable, Stream } from "stream";
+import { PifferoStatus } from "./pifferostatus";
 
-class PifferoStatus {
-  //abbiamo verificato la condizione
-  verified: boolean = false;
-  // sto "registrando"
-  recording: boolean = false;
-  //sono in un array e cerco
-  isInArray: boolean = false;
-  // conta a che livello sono sceso per aggiornare gli indici
-  private  _depthCounter: number = 0;
-  currentIndex: number = -1;
 
-  last:
-    | "openobject"
-    | "closeobject"
-    | "openarray"
-    | "closearray"
-    | "value"
-    | "key";
-  path: ParsedPath = undefined;
-
-  constructor(path: ParsedPath) {
-    this.path = path;
-    if (this.path.range) {
-      this.isInArray = true;
-    } else if (this.hasNext()) {
-      this.next();
-    } else {
-      this.verified = true;
-      this.recording = true;
-    }
-  }
-
-  get needComma(): boolean {
-    return (
-      this.last === "closearray" ||
-      this.last === "closeobject" ||
-      this.last === "value"
-    );
-  }
-
-  set depthCounter(counter: number) {
-    if(counter >= 0) {
-      this._depthCounter = counter;
-    }
-  }
-  get depthCounter(){
-    return this._depthCounter;
-  }
-
-  hasNext(): boolean {
-    return this.path.next !== null && this.path.next !== undefined;
-  }
-
-  next(): ParsedPath {
-    this.verified = false;
-    //sono in un array e cerco
-    this.isInArray = false;
-    // conta a che livello sono sceso per aggiornare gli indici
-    this.depthCounter = 0;
-    this.currentIndex = -1;
-    this.path = this.path.next;
-    return this.path;
-  }
-}
 
 export class Piffero {
   static findPath(stream: Readable, jsonPath: string): Stream {
@@ -84,56 +22,57 @@ export class Piffero {
 
     cStream.on("openobject", function (node) {
       let currentPath = pifferoStatus.path;
+      // se sto registrando
       if (pifferoStatus.recording && pifferoStatus.verified) {
         if (pifferoStatus.needComma) {
           output.push(",");
         }
         output.push(`{"${node}":`);
-        pifferoStatus.depthCounter++;
       }
-   
-      // se sono in un array al primo livello di profondita
-      else if (pifferoStatus.isInArray && pifferoStatus.depthCounter === 0) {
 
-        // quanto siamo in profondità oggetti dentro oggetti
-        pifferoStatus.depthCounter++;
-        pifferoStatus.currentIndex++;
-        if (pifferoStatus.currentIndex === currentPath.range.start) {
-          if (currentPath.next) {
-            pifferoStatus.next();
-            currentPath = pifferoStatus.path;
+      // se sono in un array al primo livello di profondita
+      else {
+        if (pifferoStatus.isInArray && pifferoStatus.depthCounter === 0) {
+          // quanto siamo in profondità oggetti dentro oggetti
+          pifferoStatus.currentIndex++;
+          if (pifferoStatus.currentIndex === currentPath.range.start) {
+            if (currentPath.next) {
+              pifferoStatus.next();
+              currentPath = pifferoStatus.path;
+            }
+            // sono in un array l'indice combaca e non ci sono next inizio a registrare
+            else {
+              pifferoStatus.recording = true;
+              pifferoStatus.verified = true;
+            }
           }
-          // sono in un array l'indice combaca e non ci sono next inizio a registrare
-          else {
+        }
+        if (node === currentPath.value) {
+          // se dovevo essere in un array
+          if (currentPath.range) {
+            pifferoStatus.isInArray = true;
+          } else if (!pifferoStatus.hasNext()) {
             pifferoStatus.recording = true;
             pifferoStatus.verified = true;
+            output.push(`{"${node}":`);
+          } else {
+            pifferoStatus.next();
+          }
+        }
+        if (
+          pifferoStatus.isInArray &&
+          pifferoStatus.currentIndex === currentPath.range.start
+        ) {
+          if (pifferoStatus.hasNext()) {
+            pifferoStatus.next();
+          } else {
+            pifferoStatus.recording = true;
+            pifferoStatus.verified = true;
+            output.push(`{"${node}":`);
           }
         }
       }
-
-      if (node === currentPath.value) {
-        // se dovevo essere in un array
-        if (currentPath.range) {
-          pifferoStatus.isInArray = true;
-        } else if (pifferoStatus.hasNext()) {
-          pifferoStatus.recording = true;
-          pifferoStatus.verified = true;
-        } else {
-          pifferoStatus.next();
-        }
-      }
-      if (
-        pifferoStatus.isInArray &&
-        pifferoStatus.currentIndex === currentPath.range.start
-      ) {
-        if (pifferoStatus.hasNext()) {
-          pifferoStatus.next();
-        } else {
-          pifferoStatus.recording = true;
-          pifferoStatus.verified = true;
-          output.push(`{"${node}":`);
-        }
-      }
+      pifferoStatus.incrementDepthConnter()
       pifferoStatus.last = "openobject";
     });
 
@@ -143,32 +82,32 @@ export class Piffero {
           output.push(",");
         }
         output.push(`[`);
-        pifferoStatus.depthCounter++;
       }
+      pifferoStatus.incrementDepthConnter()
       pifferoStatus.last = "openarray";
     });
 
     cStream.on("closeobject", function () {
       if (pifferoStatus.recording && pifferoStatus.verified) {
-        output.push(`}`);
-        pifferoStatus.depthCounter--;
-      } else if (pifferoStatus.isInArray) {
-        pifferoStatus.depthCounter--;
+        if (pifferoStatus.depthCounter === 0) {
+          pifferoStatus.recording = false;
+        } else {
+          output.push(`}`);
+        }
       }
-      if (pifferoStatus.depthCounter === 0) {
-        pifferoStatus.recording = false;
-      }
-
+      pifferoStatus.decrementDepthConnter();
       pifferoStatus.last = "closeobject";
     });
 
     cStream.on("closearray", function (node) {
       if (pifferoStatus.recording && pifferoStatus.verified) {
-        output.push(`]`);
-        pifferoStatus.depthCounter--;
-      } else if (pifferoStatus.isInArray) {
-        pifferoStatus.depthCounter--;
-      }
+        if (pifferoStatus.depthCounter === 0) {
+          pifferoStatus.recording = false;
+        } else {
+          output.push(`]`);
+        }
+      } 
+      pifferoStatus.decrementDepthConnter();
       pifferoStatus.last = "closearray";
     });
 
@@ -228,6 +167,9 @@ export class Piffero {
     stream.pipe(cStream);
     return output;
   }
+
+
+
 
   private findMany() {}
 }
