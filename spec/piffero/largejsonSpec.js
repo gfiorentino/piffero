@@ -9,8 +9,7 @@ describe("piffero large", function() {
 
     it("simple jsonpath", async function() {
         const result = Piffero.findPath(stream, '$')
-        const string = await streamToString(result);
-  
+        const string = await streamToString(result);  
         JSON.parse(string)
       
     });
@@ -19,7 +18,6 @@ describe("piffero large", function() {
         const result = Piffero.findPath(stream, '$[1]')
         const string = await streamToString(result);
         console.log(string);
-        
       }); 
     
 });

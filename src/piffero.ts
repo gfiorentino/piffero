@@ -4,8 +4,6 @@ import { JSONPath, ParsedPath } from "./jsonpath";
 import { Duplex, Readable, Stream } from "stream";
 import { PifferoStatus } from "./pifferostatus";
 
-
-
 export class Piffero {
   static findPath(stream: Readable, jsonPath: string): Stream {
     const cStream = new clarinet.createStream(null);
@@ -35,6 +33,7 @@ export class Piffero {
         if (pifferoStatus.isInArray && pifferoStatus.depthCounter === 0) {
           // quanto siamo in profondità oggetti dentro oggetti
           pifferoStatus.currentIndex++;
+ 
           if (pifferoStatus.currentIndex === currentPath.range.start) {
             if (currentPath.next) {
               pifferoStatus.next();
@@ -55,6 +54,7 @@ export class Piffero {
             pifferoStatus.recording = true;
             pifferoStatus.verified = true;
             output.push(`{"${node}":`);
+           
           } else {
             pifferoStatus.next();
           }
@@ -72,7 +72,8 @@ export class Piffero {
           }
         }
       }
-      pifferoStatus.incrementDepthConnter()
+      pifferoStatus.incrementDepthConnter('openobject');
+ 
       pifferoStatus.last = "openobject";
     });
 
@@ -83,7 +84,7 @@ export class Piffero {
         }
         output.push(`[`);
       }
-      pifferoStatus.incrementDepthConnter()
+      pifferoStatus.incrementDepthConnter('openarray');
       pifferoStatus.last = "openarray";
     });
 
@@ -96,6 +97,7 @@ export class Piffero {
         }
       }
       pifferoStatus.decrementDepthConnter();
+      
       pifferoStatus.last = "closeobject";
     });
 
@@ -103,10 +105,14 @@ export class Piffero {
       if (pifferoStatus.recording && pifferoStatus.verified) {
         if (pifferoStatus.depthCounter === 0) {
           pifferoStatus.recording = false;
+          console.log(pifferoStatus);
+          if(!pifferoStatus.path.range){
+            output.push(`]`);
+          }
         } else {
           output.push(`]`);
         }
-      } 
+      }
       pifferoStatus.decrementDepthConnter();
       pifferoStatus.last = "closearray";
     });
@@ -128,6 +134,7 @@ export class Piffero {
         } else if (!currentPath.next) {
           pifferoStatus.recording = true;
           pifferoStatus.verified = true;
+          pifferoStatus.needBracketes = true;
           output.push(`{"${node}":`);
         } else {
           pifferoStatus.next();
@@ -148,7 +155,6 @@ export class Piffero {
         }
         //vuol dire che posso chiudere
         if (pifferoStatus.depthCounter === 0) {
-          output.push(`}`);
           // TODO chiudere tutti gli stream
           pifferoStatus.recording = false;
         }
@@ -159,6 +165,9 @@ export class Piffero {
     cStream.on("end", function () {
       // equivale a chiudere lo stream
       // TODO: (forse) readable.unshift(chunk[, encoding]) per supportare encoding
+      if (pifferoStatus.needBracketes === true ) {
+        output.push('}');
+      }
       output.push(null);
     });
 
@@ -167,9 +176,6 @@ export class Piffero {
     stream.pipe(cStream);
     return output;
   }
-
-
-
 
   private findMany() {}
 }
