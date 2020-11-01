@@ -10,6 +10,8 @@ export class PifferoStatus {
   // conta a che livello sono sceso per aggiornare gli indici
   private _depthCounter: number = 0;
 
+  private firstTime = true;
+
   public needBracketes: boolean = false;
   currentIndex: number = -1;
 
@@ -51,11 +53,12 @@ export class PifferoStatus {
     return this._depthCounter;
   }
 
-  incrementDepthConnter(current: string = '') {
-    if ( (this.recording || this.isInArray) 
-      && (this.last !== 'key') ) {
+  incrementDepthConnter() {
+    if ( this.recording || ( this.isInArray 
+      && ( (this.last !== 'key' && this.last) || this._depthCounter > 0 ))) {
       this._depthCounter++;
     }
+    this.firstTime = false;
   }
 
   decrementDepthConnter() {
@@ -76,6 +79,7 @@ export class PifferoStatus {
     this.depthCounter = 0;
     this.currentIndex = -1;
     this.path = this.path.next;
+    this.firstTime = true;
     return this.path;
   }
 }
