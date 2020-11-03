@@ -37,7 +37,7 @@ export class Piffero {
               currentPath = pifferoStatus.path;
             }
             // sono in un array l'indice combaca e non ci sono next inizio a registrare
-            else {
+            else if(!pifferoStatus.end){
               pifferoStatus.recording = true;
               pifferoStatus.verified = true;
             }
@@ -47,12 +47,12 @@ export class Piffero {
           // se dovevo essere in un array
           if (currentPath.range) {
             pifferoStatus.isInArray = true;
-          } else if (!pifferoStatus.hasNext()) {
+          } else if (!pifferoStatus.hasNext() &&! pifferoStatus.end) {
             pifferoStatus.recording = true;
             pifferoStatus.verified = true;
             output.push(`{"${node}":`);
            
-          } else {
+          } else if(pifferoStatus.hasNext()) {
             pifferoStatus.next();
           }
         }
@@ -62,7 +62,7 @@ export class Piffero {
         ) {
           if (pifferoStatus.hasNext()) {
             pifferoStatus.next();
-          } else {
+          } else if(!pifferoStatus.end) {
             pifferoStatus.recording = true;
             pifferoStatus.verified = true;
             output.push(`{"${node}":`);
@@ -89,6 +89,7 @@ export class Piffero {
       if (pifferoStatus.recording && pifferoStatus.verified) {
         if (pifferoStatus.depthCounter === 0) {
           pifferoStatus.recording = false;
+          pifferoStatus.end = true;
         } else {
           output.push(`}`);
         }
@@ -101,7 +102,8 @@ export class Piffero {
     cStream.on("closearray", function (node) {
       if (pifferoStatus.recording && pifferoStatus.verified) {  
         if (pifferoStatus.depthCounter === 0) {
-          pifferoStatus.recording = false;        
+          pifferoStatus.recording = false;  
+          pifferoStatus.end = true;      
           if(!pifferoStatus.path.range){
             output.push(`]`);
           }
@@ -127,12 +129,12 @@ export class Piffero {
         if (currentPath.range) {
           pifferoStatus.isInArray = true;
           // se dovevo essere in un array vuol dire che il path non matcha
-        } else if (!currentPath.next) {
+        } else if (!currentPath.next && !pifferoStatus.end) {
           pifferoStatus.recording = true;
           pifferoStatus.verified = true;
           pifferoStatus.needBracketes = true;
           output.push(`{"${node}":`);
-        } else {
+        } else if(pifferoStatus.hasNext()) {
           pifferoStatus.next();
         }
       }
@@ -153,6 +155,7 @@ export class Piffero {
         if (pifferoStatus.depthCounter === 0) {
           // TODO chiudere tutti gli stream
           pifferoStatus.recording = false;
+          pifferoStatus.end = true;
         }
       }
       pifferoStatus.last = "value";

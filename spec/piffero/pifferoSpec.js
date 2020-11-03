@@ -34,7 +34,7 @@ describe("piffero john-doe", function() {
       const string = await streamToString(result);
       expect(string).toBe('{"number":"0123-4567-8910"}');
       JSON.parse(string);
-    }); 
+    });  
 });
 
  async function streamToString (stream) {

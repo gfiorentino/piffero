@@ -7,6 +7,8 @@ export class PifferoStatus {
   recording: boolean = false;
   //sono in un array e cerco
   isInArray: boolean = false;
+
+  end: boolean = false;
   // conta a che livello sono sceso per aggiornare gli indici
   private _depthCounter: number = 0;
 
@@ -64,6 +66,9 @@ export class PifferoStatus {
   decrementDepthConnter() {
     if ((this.recording || this.isInArray) &&  this._depthCounter > 0) {
       this._depthCounter--;
+    } if(this._depthCounter === 0 && this.recording) {
+      this.recording = false;
+      this.end = true;
     }
   }
 

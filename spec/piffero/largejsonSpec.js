@@ -7,20 +7,27 @@ describe("piffero large", function() {
       stream = fs.createReadStream('spec/jsonFiles/large.json');
     });
 
-    it("simple jsonpath", async function() {
+     it("simple jsonpath", async function() {
         const result = Piffero.findPath(stream, '$')
         const string = await streamToString(result);  
-     //  console.log(string);
-         JSON.parse(string)
-      
-    }); 
+         console.log(string);
+      // JSON.parse(string);
+    });
     
     it("simple jsonpath array", async function() {
-        const result = Piffero.findPath(stream, '$[1]')
-        const string = await streamToString(result);
-        console.log(' ________________' ,string);
-    });  
+      const result = Piffero.findPath(stream, '$[1]')
+      const string = await streamToString(result);
+      // console.log(string);
+     // JSON.parse(string);
+  });  
     
+
+  it("simple jsonpath array", async function() {
+    const result = Piffero.findPath(stream, '$[2].tags')
+    const string = await streamToString(result);
+     //console.log(string);
+    //JSON.parse(string);
+  });  
 });
 
  async function streamToString (stream) {
