@@ -10,7 +10,7 @@ describe("piffero large", function() {
      it("simple jsonpath", async function() {
         const result = Piffero.findPath(stream, '$')
         const string = await streamToString(result);  
-         console.log(string);
+       //  console.log(string);
       // JSON.parse(string);
     });
     

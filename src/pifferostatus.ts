@@ -7,13 +7,16 @@ export class PifferoStatus {
   recording: boolean = false;
   //sono in un array e cerco
   isInArray: boolean = false;
-
   end: boolean = false;
   // conta a che livello sono sceso per aggiornare gli indici
   private _depthCounter: number = 0;
-
+ 
   private firstTime = true;
 
+  private temp: string;
+
+  private keyFouded: boolean =  false;
+  
   public needBracketes: boolean = false;
   currentIndex: number = -1;
 
@@ -33,7 +36,9 @@ export class PifferoStatus {
     } else if (this.hasNext()) {
       this.next();
     } else {
-      this.verified = true;
+      if(!path.condition) {
+        this.verified = true;
+      }
       this.recording = true;
     }
   }

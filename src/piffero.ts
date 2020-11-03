@@ -39,7 +39,9 @@ export class Piffero {
             // sono in un array l'indice combaca e non ci sono next inizio a registrare
             else if(!pifferoStatus.end){
               pifferoStatus.recording = true;
-              pifferoStatus.verified = true;
+              if(!currentPath.condition) {
+                pifferoStatus.verified = true;
+             }
             }
           }
         }
@@ -49,7 +51,9 @@ export class Piffero {
             pifferoStatus.isInArray = true;
           } else if (!pifferoStatus.hasNext() &&! pifferoStatus.end) {
             pifferoStatus.recording = true;
-            pifferoStatus.verified = true;
+            if(!currentPath.condition) {
+              pifferoStatus.verified = true;
+            }
             output.push(`{"${node}":`);
            
           } else if(pifferoStatus.hasNext()) {
@@ -64,7 +68,9 @@ export class Piffero {
             pifferoStatus.next();
           } else if(!pifferoStatus.end) {
             pifferoStatus.recording = true;
-            pifferoStatus.verified = true;
+            if(!currentPath.condition) {
+              pifferoStatus.verified = true;
+           }
             output.push(`{"${node}":`);
           }
         }
