@@ -30,7 +30,7 @@ describe("piffero large", function() {
   });  
 
   it("simple jsonpath array primitive", async function() {
-    const result = Piffero.findPath(stream, '$[2].tags[1]')
+    const result = Piffero.findPath(stream, '$[2].tags[2]')
     const string = await streamToString(result);
      console.log(string);
     //JSON.parse(string);
