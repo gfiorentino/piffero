@@ -148,6 +148,16 @@ export class Piffero {
     });
 
     cStream.on("value", function (node) {
+      if(pifferoStatus.last === "openarray" ){
+        pifferoStatus.isPrimitiveTypeArray = true;
+      } 
+      if (pifferoStatus.isInArray && !pifferoStatus.hasNext() && pifferoStatus.isPrimitiveTypeArray) {
+        pifferoStatus.currentIndex++;
+        if(pifferoStatus.currentIndex === pifferoStatus.path.range.start) {
+          output.push(`"${node}"`);
+          pifferoStatus.end = true;
+        }
+      } 
       if (pifferoStatus.recording && pifferoStatus.verified) {
         if (pifferoStatus.needComma) {
           output.push(",");

@@ -7,6 +7,8 @@ export class PifferoStatus {
   recording: boolean = false;
   //sono in un array e cerco
   isInArray: boolean = false;
+  // forse non serve arraay di primitivi
+  isPrimitiveTypeArray = false;
   end: boolean = false;
   // conta a che livello sono sceso per aggiornare gli indici
   private _depthCounter: number = 0;
@@ -90,6 +92,7 @@ export class PifferoStatus {
     this.currentIndex = -1;
     this.path = this.path.next;
     this.firstTime = true;
+    this.isPrimitiveTypeArray = false;
     return this.path;
   }
 }
