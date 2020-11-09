@@ -1,9 +1,11 @@
 {
   "name": "piffero",
-  "version": "1.0.0-beta.7",
+  "version": "1.0.0-beta.8",
   "description": "",
-  "main": "index.js",
-  "scripts": {
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["/dist"],
+    "scripts": {
     "test": "tsc && jasmine JASMINE_CONFIG_PATH=jasmine.json",
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
@@ -19,7 +21,7 @@
     "url": "git+https://github.com/gfiorentino/piffero.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Giovanni Fiorentino",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/gfiorentino/piffero/issues"
