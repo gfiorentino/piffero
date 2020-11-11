@@ -12,7 +12,7 @@ describe("JsonPath", function() {
       expect(next2.value).toBe('second'); 
     });
 
-    it("simple jsonpath wiith index", function() {
+   it("simple jsonpath wiith index", function() {
       const result = JSONPath.parse('$.first[1].second[2]')
         //demonstrates use of custom matcher
         expect(result.value).toBe('$');
@@ -53,5 +53,6 @@ describe("JsonPath", function() {
         expect(next2.condition).toEqual({key:"attribute", value:"asd"});
     })
     
-  });
+  
+ });
   

@@ -12,12 +12,21 @@ export class Piffero {
     const parsedPath = JSONPath.parse(jsonPath);
     const pifferoStatus: PifferoStatus = new PifferoStatus(parsedPath);
 
+
+    const checkStreams = () => {
+      if(pifferoStatus.end) {
+        cStream.destroy();
+        stream.unpipe();
+        stream.destroy();
+      }
+    } 
     cStream.on("error", (e) => {
       // unhandled errors will throw, since this is a proper node
       console.error("error!", e);
     });
 
     cStream.on("openobject", (node) => {
+      checkStreams();
       let currentPath = pifferoStatus.path;
       // se sto registrando
       if (pifferoStatus.recording && pifferoStatus.verified) {
@@ -81,6 +90,7 @@ export class Piffero {
     });
 
     cStream.on("openarray", () => {
+      checkStreams();
       if (pifferoStatus.recording && pifferoStatus.verified) {
         if (pifferoStatus.needComma) {
           output.push(",");
@@ -92,6 +102,7 @@ export class Piffero {
     });
 
     cStream.on("closeobject", () => {
+      checkStreams();
       if (pifferoStatus.recording && pifferoStatus.verified) {
         if (pifferoStatus.depthCounter === 0) {
           pifferoStatus.recording = false;
@@ -122,6 +133,7 @@ export class Piffero {
     });
 
     cStream.on("key", (node) => {
+      checkStreams();
       let currentPath = pifferoStatus.path;
 
       if (pifferoStatus.recording && pifferoStatus.verified) {
@@ -177,21 +189,28 @@ export class Piffero {
       pifferoStatus.last = "value";
     });
 
-    const endoOutput = () => {
+    const endOutput = () => {
       // equivale a chiudere lo stream
       // TODO: (forse) readable.unshift(chunk[, encoding]) per supportare encoding
+      
       if (pifferoStatus.needBracketes === true ) {
         output.push('}');
       }
       output.push(null);
-    }    
     
-    cStream.on("end", () => {
-      endoOutput();
+    }  
+    
+    cStream.on("end", () =>{
+      if(!pifferoStatus.close) {
+        endOutput();
+      }
     });
 
     cStream.on("close",  () => {
-      endoOutput();
+      if(!pifferoStatus.close) {
+        endOutput();
+        pifferoStatus.close = true;
+      }
     });
 
     stream.pipe(cStream);

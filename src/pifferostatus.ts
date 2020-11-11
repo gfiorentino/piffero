@@ -10,6 +10,7 @@ export class PifferoStatus {
   // forse non serve arraay di primitivi
   isPrimitiveTypeArray = false;
   end: boolean = false;
+  close: boolean = false;
   // conta a che livello sono sceso per aggiornare gli indici
   private _depthCounter: number = 0;
  
