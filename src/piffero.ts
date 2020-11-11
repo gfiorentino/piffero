@@ -1,4 +1,4 @@
-const clarinet = require("./libs/clarinet");
+import * as clarinet from "./libs/clarinet";
 
 import { JSONPath, ParsedPath } from "./jsonpath";
 import { Duplex, Readable, Stream } from "stream";
@@ -6,18 +6,18 @@ import { PifferoStatus } from "./pifferostatus";
 
 export class Piffero {
   static findPath(stream: Readable, jsonPath: string): Stream {
-    const cStream = new clarinet.createStream(null);
+    const cStream = (clarinet as any).createStream();
 
     const output: Duplex = new Stream.Transform(); // Readable = new Readable();
     const parsedPath = JSONPath.parse(jsonPath);
     const pifferoStatus: PifferoStatus = new PifferoStatus(parsedPath);
 
-    cStream.on("error", function (e) {
+    cStream.on("error", (e) => {
       // unhandled errors will throw, since this is a proper node
       console.error("error!", e);
     });
 
-    cStream.on("openobject", function (node) {
+    cStream.on("openobject", (node) => {
       let currentPath = pifferoStatus.path;
       // se sto registrando
       if (pifferoStatus.recording && pifferoStatus.verified) {
@@ -80,7 +80,7 @@ export class Piffero {
       pifferoStatus.last = "openobject";
     });
 
-    cStream.on("openarray", function () {
+    cStream.on("openarray", () => {
       if (pifferoStatus.recording && pifferoStatus.verified) {
         if (pifferoStatus.needComma) {
           output.push(",");
@@ -91,7 +91,7 @@ export class Piffero {
       pifferoStatus.last = "openarray";
     });
 
-    cStream.on("closeobject", function () {
+    cStream.on("closeobject", () => {
       if (pifferoStatus.recording && pifferoStatus.verified) {
         if (pifferoStatus.depthCounter === 0) {
           pifferoStatus.recording = false;
@@ -105,7 +105,7 @@ export class Piffero {
       pifferoStatus.last = "closeobject";
     });
 
-    cStream.on("closearray", function (node) {
+    cStream.on("closearray", (node) => {
       if (pifferoStatus.recording && pifferoStatus.verified) {  
         if (pifferoStatus.depthCounter === 0) {
           pifferoStatus.recording = false;  
@@ -121,7 +121,7 @@ export class Piffero {
       pifferoStatus.last = "closearray";
     });
 
-    cStream.on("key", function (node) {
+    cStream.on("key", (node) => {
       let currentPath = pifferoStatus.path;
 
       if (pifferoStatus.recording && pifferoStatus.verified) {
@@ -147,7 +147,7 @@ export class Piffero {
       pifferoStatus.last = "key";
     });
 
-    cStream.on("value", function (node) {
+    cStream.on("value",  (node) => {
       if(pifferoStatus.last === "openarray" ){
         pifferoStatus.isPrimitiveTypeArray = true;
       } 
@@ -177,18 +177,25 @@ export class Piffero {
       pifferoStatus.last = "value";
     });
 
-    cStream.on("end", function () {
+    const endoOutput = () => {
       // equivale a chiudere lo stream
       // TODO: (forse) readable.unshift(chunk[, encoding]) per supportare encoding
       if (pifferoStatus.needBracketes === true ) {
         output.push('}');
       }
       output.push(null);
+    }    
+    
+    cStream.on("end", () => {
+      endoOutput();
     });
 
-    cStream.on("close", function () {});
+    cStream.on("close",  () => {
+      endoOutput();
+    });
 
     stream.pipe(cStream);
+
     return output;
   }
 
