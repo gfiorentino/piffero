@@ -30,6 +30,7 @@ export class PifferoStatus {
     | "closearray"
     | "value"
     | "key";
+
   path: ParsedPath = undefined;
 
   constructor(path: ParsedPath) {

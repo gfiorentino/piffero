@@ -143,13 +143,17 @@ export  class Piffero  {
       if(pifferoStatus.end) {
         return
       }
+      if (pifferoStatus.depthCounter === 1 && pifferoStatus.recording) {
+        pifferoStatus.recording = false;
+        pifferoStatus.end = true;
+      }
       if (pifferoStatus.recording && pifferoStatus.verified) {
         if (pifferoStatus.needComma) {
           output.push(",");
         }
         output.push(`"${node}":`);
       }  
-    if (pifferoStatus.depthCounter === 1 && pifferoStatus.path.value === node) {
+      if (pifferoStatus.depthCounter === 1 && pifferoStatus.path.value === node) {
         if (!pifferoStatus.isInArray)  {
           pifferoStatus.recording = true;
           pifferoStatus.verified = true;
@@ -162,12 +166,15 @@ export  class Piffero  {
 
 //--- VALUE -----------------------------------------------------------
     cStream.on("value",  (node) => {
+      if (node === "eu" && pifferoStatus.recording) {
+       // console.log(pifferoStatus);
+      }
       if(pifferoStatus.last === "openarray" && pifferoStatus.depthCounter === 2){
         pifferoStatus.isPrimitiveTypeArray = true;
       } 
       if (pifferoStatus.isInArray && pifferoStatus.isMatching && pifferoStatus.isPrimitiveTypeArray && pifferoStatus.depthCounter === 2) {
         pifferoStatus.currentIndex++;
-        if(pifferoStatus.currentIndex === pifferoStatus.path.range.start ) {
+        if( pifferoStatus.currentIndex === pifferoStatus.path.range.start ) {
           output.push(JSON.stringify(node));
           pifferoStatus.recording = false;
           pifferoStatus.end = true;
