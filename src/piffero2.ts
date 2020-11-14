@@ -116,7 +116,6 @@ export  class Piffero  {
     });
 
 // --- CLOSE ARRAY  -------------------------------------------------------  
-
     cStream.on("closearray", () => {
       checkStreams();
       if(pifferoStatus.end) {
@@ -215,5 +214,5 @@ export  class Piffero  {
       return output; 
     }
   }
-
+  
 }
