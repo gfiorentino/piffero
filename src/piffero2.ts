@@ -166,9 +166,6 @@ export  class Piffero  {
 
 //--- VALUE -----------------------------------------------------------
     cStream.on("value",  (node) => {
-      if (node === "eu" && pifferoStatus.recording) {
-       // console.log(pifferoStatus);
-      }
       if(pifferoStatus.last === "openarray" && pifferoStatus.depthCounter === 2){
         pifferoStatus.isPrimitiveTypeArray = true;
       } 
