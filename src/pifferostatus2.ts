@@ -9,7 +9,9 @@ export class PifferoStatus {
   isInArray: boolean = false;
   // forse non serve arraay di primitivi
   isPrimitiveTypeArray = false;
-
+  // la root è un array
+  isRootArray = false;
+  
   isMatching = false;
 
   end: boolean = false;
@@ -44,6 +46,11 @@ export class PifferoStatus {
     this.path = path;
     if (this.path.range) {
       this.isInArray = true;
+
+      if(this.path.value === '$'){
+        this._depthCounter = 1;
+         this.isMatching = true;
+      }
     } else if (this.path.value === '$'){
       if(this.hasNext()) {
       this.next();
@@ -53,9 +60,6 @@ export class PifferoStatus {
       }
       this.recording = true;
     }
-   }
-   if(this.isInArray && this.recording ) {
-     // this._depthCounter++;
    }
   }
 

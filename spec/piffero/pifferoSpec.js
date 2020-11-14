@@ -7,7 +7,7 @@ describe("piffero john-doe", function() {
       stream = fs.createReadStream('spec/jsonFiles/john-doe.json');
     });
 
- /*   it("simple jsonpath", async function() {
+    it("simple jsonpath", async function() {
       const result = Piffero.findPath(stream, '$.firstName')
       const string = await streamToString(result);
       expect(string).toBe('"John"');
@@ -30,21 +30,21 @@ describe("piffero john-doe", function() {
       expect(string).toBe('[{"type":"iPhone","number":"0123-4567-8888"},{"type":"home","number":"0123-4567-8910"}]');
       JSON.parse(string);
     }); 
-*/
+
    it("element in an array jsonpath", async function() {
       const result = Piffero.findPath(stream, '$.phoneNumbers[1]')
       const string = await streamToString(result);
       expect(string).toBe('{"type":"home","number":"0123-4567-8910"}');
       JSON.parse(string);
     });
- /*  
+  
     it("attribute element in an array jsonpath", async function() {
       const result = Piffero.findPath(stream, '$.phoneNumbers[1].number')
       const string = await streamToString(result);
       expect(string).toBe('"0123-4567-8910"');
       JSON.parse(string);
     });
-    */ 
+    
 });
 
  async function streamToString (stream) {
