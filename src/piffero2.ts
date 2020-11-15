@@ -99,10 +99,10 @@ export  class Piffero  {
 // --- CLOSE OBJECT  -------------------------------------------------------  
     cStream.on("closeobject", () => {
       checkStreams();
-      if(pifferoStatus.end) {
-        return
+      if(pifferoStatus.end ) {
+        return;
       }
-      if (pifferoStatus.recording && pifferoStatus.verified) {
+      if (pifferoStatus.recording  && pifferoStatus.verified) {
         if (pifferoStatus.depthCounter === 1) {
           pifferoStatus.recording = false;
           pifferoStatus.end = true;
