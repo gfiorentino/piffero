@@ -5,6 +5,7 @@ export class PifferoStatus {
   verified: boolean = false;
   // sto "registrando"
   recording: boolean = false;
+
   //sono in un array e cerco
   isInArray: boolean = false;
   // forse non serve arraay di primitivi
@@ -13,6 +14,8 @@ export class PifferoStatus {
   isRootArray = false;
   
   isMatching = false;
+
+  temp = '';
 
   end: boolean = false;
   close: boolean = false;
@@ -28,6 +31,8 @@ export class PifferoStatus {
     | "closearray"
     | "value"
     | "key";
+    
+  lastkey: string;
 
 
   set last(last){

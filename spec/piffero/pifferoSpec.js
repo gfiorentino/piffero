@@ -47,7 +47,7 @@ describe("piffero john-doe", function() {
     
 });
 
- async function streamToString (stream) {
+async function streamToString (stream) {
   const chunks = []
   return new Promise((resolve, reject) => {
     stream.on('data', chunk => chunks.push(chunk))

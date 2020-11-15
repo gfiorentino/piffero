@@ -57,7 +57,6 @@ export  class Piffero  {
           output.push(`{"${node}":`);
         }
       } if (pifferoStatus.path.value === node && pifferoStatus.depthCounter === 0) {
-        
         if(!pifferoStatus.isInArray)  {
           pifferoStatus.recording = true;
           pifferoStatus.verified = true;
@@ -66,14 +65,18 @@ export  class Piffero  {
         }
       } else if (pifferoStatus.isMatching && pifferoStatus.depthCounter === 2) {
         pifferoStatus.currentIndex++;
-        if (pifferoStatus.currentIndex === pifferoStatus.path.range.start){
+        // se lavoriamo con un indice
+        if (pifferoStatus.path.range && pifferoStatus.currentIndex === pifferoStatus.path.range.start){
           output.push(`{"${node}":`);
           pifferoStatus.recording = true;
           pifferoStatus.verified = true;      
           pifferoStatus.decrementDepthConnter();
+        } else if (pifferoStatus.path.condition && pifferoStatus.path.condition.key === node) {
+
         }
       } 
       pifferoStatus.incrementDepthConnter();
+      pifferoStatus.lastkey = node ;
       pifferoStatus.last = "openobject";
     });
 
