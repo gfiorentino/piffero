@@ -1,25 +1,21 @@
 import * as fs from 'fs';
+import * as express from 'express';
 import { Piffero } from '../src/piffero2';
 
-const findLine = (stack: string): string => {
-    const lines = stack.split("\\n");
-    const pifferoLine = lines.find(line => line.indexOf('piffero2.ts:') !== -1);
-    if( pifferoLine ){
-        const parts = /(.*)piffero2\.ts:(\d+):(\d+)(.*)/.exec(pifferoLine)
-       return parts[3]; // linea di codice che ha scritto il chunk
-    }
-    return '?';
-}
+const app: express.Application = express();
 
-const stream: fs.ReadStream = fs.createReadStream('./spec/jsonFiles/john-doe.json');
+app.get('/:path',  (req, res) => {
 
-const result = Piffero.findPath(stream, '$.phoneNumbers[1]');
+    const path = req.params.path;
 
-const consoleTable: Array<{chunk: string, line: string}> = [];
-result.on('data', (chunk) => {
-    consoleTable.push({chunk: '' + chunk, line: findLine(new Error().stack)});
+    const stream: fs.ReadStream = fs.createReadStream('./spec/jsonFiles/john-doe.json');
+    
+    const result = Piffero.findPath(stream, path);
+
+    res.setHeader('Content-Type', 'application/json');
+    result.pipe(res);
 });
 
-result.on('end', () => {
-    console.table(consoleTable, ['chunk', 'line']);
+app.listen(3000, () => {
+    console.log('Open your browser at: http://localhost:3000/$.phoneNumbers[1]');
 });
