@@ -9,6 +9,12 @@
             "args": ["--config=./jasmine.json", "${file}"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Express attach",
+            "type": "node",
+            "request": "attach",
+            "port": 5858
         }
     ]
 }
