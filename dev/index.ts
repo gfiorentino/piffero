@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { Piffero } from '../src/piffero';
+import { Piffero } from '../src/piffero2';
 
 const findLine = (stack: string): string => {
     const lines = stack.split("\\n");
