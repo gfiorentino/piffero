@@ -1,11 +1,11 @@
 import * as fs from 'fs';
-import { Piffero } from '../src/piffero';
+import { Piffero } from '../src/piffero2';
 
 const findLine = (stack: string): string => {
     const lines = stack.split("\\n");
-    const pifferoLine = lines.find(line => line.indexOf('piffero.ts:') !== -1);
+    const pifferoLine = lines.find(line => line.indexOf('piffero2.ts:') !== -1);
     if( pifferoLine ){
-        const parts = /(.*)piffero\.ts:(\d+):(\d+)(.*)/.exec(pifferoLine)
+        const parts = /(.*)piffero2\.ts:(\d+):(\d+)(.*)/.exec(pifferoLine)
        return parts[3]; // linea di codice che ha scritto il chunk
     }
     return '?';
