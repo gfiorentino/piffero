@@ -75,7 +75,7 @@ export class JSONPath {
       let conditions = condition.split('==');
       let value = conditions[1].substr(0, conditions[1].length - 1);
       if( value.startsWith('`') || value.startsWith('"') || value.startsWith("'") ){
-        value = value.substr(1, value.length - 2);
+        value = '"' + value.substr(1, value.length - 2)+'"';
       }
       return {key: conditions[0], value: value};
     }
