@@ -121,7 +121,7 @@ export class Piffero {
         output.push("[");
       }
      // ------ condition case -------
-     else if (pifferoStatus.isMatching && pifferoStatus.depthCounter > 2 ) {
+     else if (pifferoStatus.isMatching && pifferoStatus.depthCounter > 2) {
       if (pifferoStatus.temp.length > 0) {
         if (pifferoStatus.needComma) {
           pifferoStatus.temp = pifferoStatus.temp + ',';
@@ -156,7 +156,7 @@ export class Piffero {
           if (pifferoStatus.needComma) {
             pifferoStatus.temp = pifferoStatus.temp + ',';
           }
-          pifferoStatus.temp = pifferoStatus.temp + ("[");
+          pifferoStatus.temp = pifferoStatus.temp + ("}");
         }
       }
       // -------------
@@ -267,14 +267,16 @@ export class Piffero {
           pifferoStatus.end = true;
         }
         ///-----condition value -----
-      } else if(verifyCondition(node)){
-        pifferoStatus.recording = false;
-        pifferoStatus.end = true;
+      } else if(verifyCondition(JSON.stringify(node))){
+        pifferoStatus.recording = true;
+        pifferoStatus.verified = true;
+        pifferoStatus.decrementDepthConnter();
         output.push(pifferoStatus.temp);
         if (pifferoStatus.needComma) {
           output.push(",");
         }
         output.push(JSON.stringify(node));
+        pifferoStatus.temp='';
       } else if (pifferoStatus.isMatching && pifferoStatus.depthCounter > 2) {
         if (pifferoStatus.temp.length > 0) {
           if (pifferoStatus.needComma) {
