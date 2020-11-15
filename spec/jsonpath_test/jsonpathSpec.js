@@ -41,6 +41,7 @@ describe("JsonPath", function() {
 
 
     it("simple jsonpath wiith index", function() {
+      
       const result = JSONPath.parse('$.first[?(@.att===2)].second[?(@.attribute==="asd")]')
         //demonstrates use of custom matcher
         expect(result.value).toBe('$');

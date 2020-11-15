@@ -30,8 +30,10 @@ export class Piffero {
     const verifyCondition = (value):boolean => {
       const condition = pifferoStatus.path.condition ;
       return condition 
+      && pifferoStatus.depthCounter === 3
+      && pifferoStatus.isMatching 
       && condition.key === pifferoStatus.lastkey 
-      && (pifferoStatus.last === 'key' || pifferoStatus.last === "openobject") 
+      && ( pifferoStatus.last === 'key' || pifferoStatus.last === 'openobject' ) 
       && condition.value === value;
     }
     const checkStreams = () => {
@@ -88,9 +90,7 @@ export class Piffero {
           pifferoStatus.verified = true;
           pifferoStatus.decrementDepthConnter();
           // --------------- condition per json path query -------
-        } else if (
-          (pifferoStatus.path.condition, pifferoStatus.depthCounter > 2)
-        ) {
+        } else if (pifferoStatus.path.condition) {
           pifferoStatus.temp = `{"${node}":`;
         }
       } else if (pifferoStatus.isMatching && pifferoStatus.depthCounter > 2) {
@@ -120,8 +120,8 @@ export class Piffero {
         }
         output.push("[");
       }
-     // ------condition case -------
-     else if (pifferoStatus.isMatching && pifferoStatus.depthCounter > 3) {
+     // ------ condition case -------
+     else if (pifferoStatus.isMatching && pifferoStatus.depthCounter > 2 ) {
       if (pifferoStatus.temp.length > 0) {
         if (pifferoStatus.needComma) {
           pifferoStatus.temp = pifferoStatus.temp + ',';
@@ -151,7 +151,7 @@ export class Piffero {
         }
       }
       //------ condition case ---------- 
-      else if (pifferoStatus.isMatching && pifferoStatus.depthCounter > 1) {
+      else if (pifferoStatus.isMatching && pifferoStatus.depthCounter > 2) {
         if (pifferoStatus.temp.length > 0) {
           if (pifferoStatus.needComma) {
             pifferoStatus.temp = pifferoStatus.temp + ',';
@@ -181,13 +181,13 @@ export class Piffero {
         } else {
           output.push(`]`);
         }
-      }   //------ condition case ---------- 
-      else if (pifferoStatus.isMatching && pifferoStatus.depthCounter > 1) {
+      }   //------ condition case close array---------- 
+      else if (pifferoStatus.isMatching && pifferoStatus.depthCounter > 3) {
         if (pifferoStatus.temp.length > 0) {
           if (pifferoStatus.needComma) {
             pifferoStatus.temp = pifferoStatus.temp + ',';
           }
-          pifferoStatus.temp = pifferoStatus.temp + ("[");
+          pifferoStatus.temp = pifferoStatus.temp + ("]");
         }
       }
       pifferoStatus.decrementDepthConnter();
@@ -220,19 +220,20 @@ export class Piffero {
         } else {
           pifferoStatus.isMatching = true;
         }
-      }//------ condition case ---------- 
-      else if (pifferoStatus.isMatching && pifferoStatus.depthCounter > 1) {
+      }//------ condition case key---------- 
+      else if (pifferoStatus.isMatching && pifferoStatus.depthCounter > 2) {
         if (pifferoStatus.temp.length > 0) {
           if (pifferoStatus.needComma) {
             pifferoStatus.temp = pifferoStatus.temp + ',';
           }
-          pifferoStatus.temp = pifferoStatus.temp + ("[");
+          pifferoStatus.temp = pifferoStatus.temp + `"${node}":`;
         }
       }
 
       pifferoStatus.lastkey = node;
       pifferoStatus.last = "key";
     });
+    // ------ END KEY  --------------------------------------------------------
 
     //--- VALUE -----------------------------------------------------------
     cStream.on("value", (node) => {
@@ -265,9 +266,27 @@ export class Piffero {
           pifferoStatus.recording = false;
           pifferoStatus.end = true;
         }
+        ///-----condition value -----
+      } else if(verifyCondition(node)){
+        pifferoStatus.recording = false;
+        pifferoStatus.end = true;
+        output.push(pifferoStatus.temp);
+        if (pifferoStatus.needComma) {
+          output.push(",");
+        }
+        output.push(JSON.stringify(node));
+      } else if (pifferoStatus.isMatching && pifferoStatus.depthCounter > 2) {
+        if (pifferoStatus.temp.length > 0) {
+          if (pifferoStatus.needComma) {
+            pifferoStatus.temp = pifferoStatus.temp + ',';
+          }
+          pifferoStatus.temp = pifferoStatus.temp + (JSON.stringify(node));
+        }
       }
       pifferoStatus.last = "value";
     });
+
+    //---END VALUE -----------------------------------------------------------
 
     const endOutput = () => {
       output.push(null);

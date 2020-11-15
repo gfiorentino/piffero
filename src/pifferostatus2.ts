@@ -31,7 +31,7 @@ export class PifferoStatus {
     | "closearray"
     | "value"
     | "key";
-    
+
   lastkey: string;
 
 
@@ -49,9 +49,8 @@ export class PifferoStatus {
 
   constructor(path: ParsedPath) {
     this.path = path;
-    if (this.path.range) {
+    if (this.path.range || path.condition) {
       this.isInArray = true;
-
       if(this.path.value === '$'){
         this._depthCounter = 1;
          this.isMatching = true;
