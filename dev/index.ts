@@ -4,6 +4,10 @@ import { Piffero } from '../src/piffero2';
 
 const app: express.Application = express();
 
+app.get('/favicon.ico',  (req, res) => {
+    res.sendStatus(404);
+});
+
 app.get('/:path',  (req, res) => {
 
     const path = req.params.path;
