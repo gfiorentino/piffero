@@ -13,14 +13,14 @@ export class Piffero {
 class MasterHandler {
   isLast = false;
   handlerIndex = 0;
-  stepHandlers: SingleStepHandler[];
+  stepHandlers: SingleStepHandler[] = [];
   currentHandler: SingleStepHandler;
 
 
   parse(stream: Readable, jsonPath: string): Stream {
   
     const checkStreams = () => {
-      if (this.currentHandler.pifferoStatus.end && this.isLast) {
+      if (this.currentHandler.status.end && this.isLast) {
         cStream.destroy();
         stream.unpipe();
         stream.destroy();
@@ -36,219 +36,245 @@ class MasterHandler {
     const singleStepHandler = new SingleStepHandler(parsedPath, output);
     this.stepHandlers.push(singleStepHandler);
     while (parsedPath.next) {
-       status = new PifferoStatus(parsedPath.next);
-      const singleStepHandler = new SingleStepHandler(parsedPath.next, output);
+      parsedPath = parsedPath.next;
+      status = new PifferoStatus(parsedPath);
+      const singleStepHandler = new SingleStepHandler(parsedPath, output);
       this.stepHandlers.push(singleStepHandler);
     }
     //---------------
 
     this.currentHandler = this.stepHandlers[this.handlerIndex];
     const cStream = (clarinet as any).createStream();
+    
 
     const shiftParser = () => {
-      if (this.stepHandlers[this.handlerIndex].recording && !this.isLast) {
+      if (this.currentHandler.status.recording && !this.isLast) {
+        
+        const last = this.currentHandler.status.last;
+        const lastkey = this.currentHandler.status.lastkey;
+        let depthCounter = 0;
+        if(this.currentHandler.status.last === "openobject"){
+          depthCounter = 1;
+        }
         this.handlerIndex++;
+        this.currentHandler = this.stepHandlers[this.handlerIndex];
         this.isLast = this.handlerIndex == this.stepHandlers.length - 1;
+        this.currentHandler.status.last = last;
+        this.currentHandler.status.lastkey = lastkey;
+        this.currentHandler.status.depthCounter = depthCounter;
       }
     };
+
+    shiftParser();
 
     // --- OPEN OBJECT -----------------------------------------------------------
     cStream.on("openobject", (node) => {
       this.currentHandler.openObject(node);
       shiftParser();
+      checkStreams();
     });
 
     // ------ OPEN ARRAY -----------------------------------------------------------
     cStream.on("openarray", () => {
       this.currentHandler.openArray();
       shiftParser();
+      checkStreams();
     });
 
     // --- CLOSE OBJECT  -------------------------------------------------------
     cStream.on("closeobject", () => {
       this.currentHandler.closeObject();
       shiftParser();
+      checkStreams();
     });
 
     // --- CLOSE ARRAY  -------------------------------------------------------
-    cStream.on("closearray", () => {});
+    cStream.on("closearray", () => {
+      this.currentHandler.closeArray();
+      shiftParser();
+      checkStreams();
+    });
 
     // ------ KEY  --------------------------------------------------------
     cStream.on("key", (node) => {
       this.currentHandler.key(node);
       shiftParser();
+      checkStreams();
     });
     // ------ END KEY  --------------------------------------------------------
 
     //--- VALUE -----------------------------------------------------------
     cStream.on("value", (node) => {
-      this.currentHandler.key(node);
+      this.currentHandler.value(node);
       shiftParser();
+      checkStreams();
     });
 
     //---END VALUE -----------------------------------------------------------
     const endOutput = () => {
+      this.currentHandler.status.close = true;
       output.push(null);
     };
 
     cStream.on("end", () => {
-      if (!this.currentHandler.pifferoStatus.close) {
+      if (!this.currentHandler.status.close) {
         endOutput();
       }
     });
 
     cStream.on("close", () => {
-      if (!this.currentHandler.pifferoStatus.close) {
+      if (!this.currentHandler.status.close) {
         endOutput();
       }
     });
-
+    stream.pipe(cStream);
     return output;
   }
 }
 
 class SingleStepHandler {
-  pifferoStatus: PifferoStatus;
-  recording = false;
+  status: PifferoStatus;
   isLast = false;
   output: Duplex;
   constructor(path: ParsedPath, output: Duplex) {
-    this.pifferoStatus = new PifferoStatus(path);
+    this.status = new PifferoStatus(path);
     this.output = output;
     this.isLast  = path.next == undefined || path.next == null;
   }
   openObject(node: any) {
-    if (this.pifferoStatus.end) {
+    if (this.status.end) {
       return;
     }
-    if (this.pifferoStatus.recording && this.pifferoStatus.verified) {
+    if (this.status.recording && this.status.verified && this.isLast) {
       if (
-        this.pifferoStatus.depthCounter === 0 ||
-        (this.pifferoStatus.isMatching && this.pifferoStatus.depthCounter === 1)
+        this.status.depthCounter === 0 ||
+        (this.status.isMatching && this.status.depthCounter === 1)
       ) {
-        this.pifferoStatus.recording = false;
-        this.pifferoStatus.verified = false;
-        this.pifferoStatus.end = true;
+        this.status.recording = false;
+        this.status.verified = false;
+        this.status.end = true;
       } else {
-        if (this.pifferoStatus.needComma) {
+        if (this.status.needComma) {
           this.output.push(",");
         }
         this.output.push(`{"${node}":`);
       }
     }
     if (
-      this.pifferoStatus.path.value === node &&
-      this.pifferoStatus.depthCounter === 0
+      this.status.path.value === node &&
+      this.status.depthCounter === 0
     ) {
-      if (!this.pifferoStatus.isInArray) {
-        this.pifferoStatus.recording = true;
-        this.pifferoStatus.verified = true;
+      if (!this.status.isInArray) {
+        this.status.recording = true;
+        this.status.verified = true;
       } else {
-        this.pifferoStatus.isMatching = true;
+        this.status.isMatching = true;
       }
     } else if (
-      this.pifferoStatus.isMatching &&
-      this.pifferoStatus.depthCounter === 2
+      this.status.isMatching &&
+      this.status.depthCounter === 2
     ) {
-      this.pifferoStatus.currentIndex++;
+      this.status.currentIndex++;
       // se lavoriamo con un indice
 
       if (
-        this.pifferoStatus.path.range &&
-        this.pifferoStatus.currentIndex === this.pifferoStatus.path.range.start
+        this.status.path.range &&
+        this.status.currentIndex === this.status.path.range.start
       ) {
-        this.output.push(`{"${node}":`);
-        this.pifferoStatus.recording = true;
-        this.pifferoStatus.verified = true;
-        this.pifferoStatus.decrementDepthConnter();
+        if (this.isLast){
+          this.output.push(`{"${node}":`);
+        }
+        this.status.recording = true;
+        this.status.verified = true;
+        this.status.decrementDepthConnter();
         // --------------- condition per json path query -------
-      } else if (this.pifferoStatus.path.condition) {
-        this.pifferoStatus.temp = `{"${node}":`;
+      } else if (this.status.path.condition) {
+        this.status.temp = `{"${node}":`;
       }
     } else if (
-      this.pifferoStatus.isMatching &&
-      this.pifferoStatus.depthCounter > 2
+      this.status.isMatching &&
+      this.status.depthCounter > 2
     ) {
-      if (this.pifferoStatus.temp.length > 0) {
-        if (this.pifferoStatus.needComma) {
-          this.pifferoStatus.temp = this.pifferoStatus.temp + ",";
+      if (this.status.temp.length > 0) {
+        if (this.status.needComma) {
+          this.status.temp = this.status.temp + ",";
         }
-        this.pifferoStatus.temp = this.pifferoStatus.temp + `{"${node}":`;
+        this.status.temp = this.status.temp + `{"${node}":`;
       }
     }
     // ----------
-    this.pifferoStatus.incrementDepthConnter();
-    this.pifferoStatus.lastkey = node;
-    this.pifferoStatus.last = "openobject";
+    this.status.incrementDepthConnter();
+    this.status.lastkey = node;
+    this.status.last = "openobject";
   }
 
   closeObject() {
-    if (this.pifferoStatus.end) {
+    if (this.status.end) {
       return;
     }
-    if (this.pifferoStatus.recording && this.pifferoStatus.verified) {
-      if (this.pifferoStatus.depthCounter === 1) {
-        this.pifferoStatus.recording = false;
-        this.pifferoStatus.end = true;
+    if (this.status.recording && this.status.verified && this.isLast) {
+      if (this.status.depthCounter === 1) {
+        this.status.recording = false;
+        this.status.end = true;
       } else {
         this.output.push(`}`);
       }
     }
     //------ condition case ----------
     else if (
-      this.pifferoStatus.isMatching &&
-      this.pifferoStatus.depthCounter > 2
+      this.status.isMatching &&
+      this.status.depthCounter > 2
     ) {
-      if (this.pifferoStatus.temp.length > 0) {
-        if (this.pifferoStatus.needComma) {
-          this.pifferoStatus.temp = this.pifferoStatus.temp + ",";
+      if (this.status.temp.length > 0) {
+        if (this.status.needComma) {
+          this.status.temp = this.status.temp + ",";
         }
-        this.pifferoStatus.temp = this.pifferoStatus.temp + "}";
+        this.status.temp = this.status.temp + "}";
       }
     }
     // -------------
-    this.pifferoStatus.decrementDepthConnter();
-    this.pifferoStatus.last = "closeobject";
+    this.status.decrementDepthConnter();
+    this.status.last = "closeobject";
   }
 
   openArray() {
-    if (this.pifferoStatus.end) {
+    if (this.status.end) {
       return;
     }
-    if (this.pifferoStatus.recording && this.pifferoStatus.verified) {
-      if (this.pifferoStatus.needComma) {
+    if (this.status.recording && this.status.verified && this.isLast) {
+      if (this.status.needComma) {
         this.output.push(",");
       }
       this.output.push("[");
     }
     // ------ condition case -------
     else if (
-      this.pifferoStatus.isMatching &&
-      this.pifferoStatus.depthCounter > 2
+      this.status.isMatching &&
+      this.status.depthCounter > 2
     ) {
-      if (this.pifferoStatus.temp.length > 0) {
-        if (this.pifferoStatus.needComma) {
-          this.pifferoStatus.temp = this.pifferoStatus.temp + ",";
+      if (this.status.temp.length > 0) {
+        if (this.status.needComma) {
+          this.status.temp = this.status.temp + ",";
         }
-        this.pifferoStatus.temp = this.pifferoStatus.temp + "[";
+        this.status.temp = this.status.temp + "[";
       }
-    } else if (this.pifferoStatus.depthCounter === 3) {
-      this.pifferoStatus.temp = "";
+    } else if (this.status.depthCounter === 3) {
+      this.status.temp = "";
     }
     // ---------------
-    this.pifferoStatus.incrementDepthConnter();
-    this.pifferoStatus.last = "openarray";
+    this.status.incrementDepthConnter();
+    this.status.last = "openarray";
   }
 
   closeArray() {
-    if (this.pifferoStatus.end) {
+    if (this.status.end) {
       return;
     }
-    if (this.pifferoStatus.recording && this.pifferoStatus.verified) {
-      if (this.pifferoStatus.depthCounter === 1) {
-        this.pifferoStatus.recording = false;
-        this.pifferoStatus.end = true;
-        if (!this.pifferoStatus.path.range) {
+    if (this.status.recording && this.status.verified && this.isLast) {
+      if (this.status.depthCounter === 1) {
+        this.status.recording = false;
+        this.status.end = true;
+        if (!this.status.path.range) {
           this.output.push(`]`);
         }
       } else {
@@ -256,117 +282,117 @@ class SingleStepHandler {
       }
     } //------ condition case close array----------
     else if (
-      this.pifferoStatus.isMatching &&
-      this.pifferoStatus.depthCounter > 3
+      this.status.isMatching &&
+      this.status.depthCounter > 3
     ) {
-      if (this.pifferoStatus.temp.length > 0) {
-        if (this.pifferoStatus.needComma) {
-          this.pifferoStatus.temp = this.pifferoStatus.temp + ",";
+      if (this.status.temp.length > 0) {
+        if (this.status.needComma) {
+          this.status.temp = this.status.temp + ",";
         }
-        this.pifferoStatus.temp = this.pifferoStatus.temp + "]";
+        this.status.temp = this.status.temp + "]";
       }
     }
-    this.pifferoStatus.decrementDepthConnter();
-    this.pifferoStatus.last = "closearray";
+    this.status.decrementDepthConnter();
+    this.status.last = "closearray";
   }
 
   key(node: any) {
-    if (this.pifferoStatus.end) {
+    if (this.status.end) {
       return;
     }
-    if (this.pifferoStatus.depthCounter === 1 && this.pifferoStatus.recording) {
-      this.pifferoStatus.recording = false;
-      this.pifferoStatus.end = true;
+    if (this.status.depthCounter === 1 && this.status.recording && this.isLast) {
+      this.status.recording = false;
+      this.status.end = true;
     }
-    if (this.pifferoStatus.recording && this.pifferoStatus.verified) {
-      if (this.pifferoStatus.needComma) {
+    if (this.status.recording && this.status.verified && this.isLast) {
+      if (this.status.needComma) {
         this.output.push(",");
       }
       this.output.push(`"${node}":`);
     }
     if (
-      this.pifferoStatus.depthCounter === 1 &&
-      this.pifferoStatus.path.value === node
+      this.status.depthCounter === 1 &&
+      this.status.path.value === node
     ) {
-      if (!this.pifferoStatus.isInArray) {
-        this.pifferoStatus.recording = true;
-        this.pifferoStatus.verified = true;
+      if (!this.status.isInArray) {
+        this.status.recording = true;
+        this.status.verified = true;
       } else {
-        this.pifferoStatus.isMatching = true;
+        this.status.isMatching = true;
       }
     }//------ condition case key---------- 
-    else if (this.pifferoStatus.isMatching && this.pifferoStatus.depthCounter > 2) {
-      if (this.pifferoStatus.temp.length > 0) {
-        if (this.pifferoStatus.needComma) {
-          this.pifferoStatus.temp = this.pifferoStatus.temp + ',';
+    else if (this.status.isMatching && this.status.depthCounter > 2) {
+      if (this.status.temp.length > 0) {
+        if (this.status.needComma) {
+          this.status.temp = this.status.temp + ',';
         }
-        this.pifferoStatus.temp = this.pifferoStatus.temp + `"${node}":`;
+        this.status.temp = this.status.temp + `"${node}":`;
       }
     }
 
-    this.pifferoStatus.lastkey = node;
-    this.pifferoStatus.last = "key";
+    this.status.lastkey = node;
+    this.status.last = "key";
 
   }
   value(node: any) {
     if (
-      this.pifferoStatus.last === "openarray" &&
-      this.pifferoStatus.depthCounter === 2
+      this.status.last === "openarray" &&
+      this.status.depthCounter === 2
     ) {
-      this.pifferoStatus.isPrimitiveTypeArray = true;
+      this.status.isPrimitiveTypeArray = true;
     }
     if (
-      this.pifferoStatus.isInArray &&
-      this.pifferoStatus.isMatching &&
-      this.pifferoStatus.isPrimitiveTypeArray &&
-      this.pifferoStatus.depthCounter === 2
+      this.status.isInArray &&
+      this.status.isMatching &&
+      this.status.isPrimitiveTypeArray &&
+      this.status.depthCounter === 2
     ) {
-      this.pifferoStatus.currentIndex++;
-      if (this.pifferoStatus.currentIndex === this.pifferoStatus.path.range.start) {
+      this.status.currentIndex++;
+      if (this.status.currentIndex === this.status.path.range.start) {
         this.output.push(JSON.stringify(node));
-        this.pifferoStatus.recording = false;
-        this.pifferoStatus.end = true;
+        this.status.recording = false;
+        this.status.end = true;
       }
     }
-    if (this.pifferoStatus.recording && this.pifferoStatus.verified) {
-      if (this.pifferoStatus.needComma) {
+    if (this.status.recording && this.status.verified && this.isLast) {
+      if (this.status.needComma) {
         this.output.push(",");
       }
       this.output.push(JSON.stringify(node));
 
-      if (this.pifferoStatus.depthCounter === 1) {
-        this.pifferoStatus.recording = false;
-        this.pifferoStatus.end = true;
+      if (this.status.depthCounter === 1) {
+        this.status.recording = false;
+        this.status.end = true;
       }
       ///-----condition value -----
     } else if(this.verifyCondition(JSON.stringify(node))){
-      this.pifferoStatus.recording = true;
-      this.pifferoStatus.verified = true;
-      this.pifferoStatus.decrementDepthConnter();
-      this.output.push(this.pifferoStatus.temp);
-      if (this.pifferoStatus.needComma) {
+      this.status.recording = true;
+      this.status.verified = true;
+      this.status.decrementDepthConnter();
+      this.output.push(this.status.temp);
+      if (this.status.needComma) {
         this.output.push(",");
       }
       this.output.push(JSON.stringify(node));
-      this.pifferoStatus.temp='';
-    } else if ( this.pifferoStatus.isMatching &&  this.pifferoStatus.depthCounter > 2) {
-      if ( this.pifferoStatus.temp.length > 0) {
-        if ( this.pifferoStatus.needComma) {
-          this.pifferoStatus.temp =  this.pifferoStatus.temp + ',';
+      this.status.temp='';
+    } else if ( this.status.isMatching &&  this.status.depthCounter > 2) {
+      if ( this.status.temp.length > 0) {
+        if ( this.status.needComma) {
+          this.status.temp =  this.status.temp + ',';
         }
-        this.pifferoStatus.temp =  this.pifferoStatus.temp + (JSON.stringify(node));
+        this.status.temp =  this.status.temp + (JSON.stringify(node));
       }
     }
-    this.pifferoStatus.last = "value";
+    this.status.last = "value";
   }
 
   verifyCondition  (value):boolean {
-    const condition = this.pifferoStatus.path.condition ;
+    const condition = this.status.path.condition ;
     return condition 
-    && this.pifferoStatus.depthCounter === 3
-    && this.pifferoStatus.isMatching 
-    && condition.key === this.pifferoStatus.lastkey 
-    && ( this.pifferoStatus.last === 'key' || this.pifferoStatus.last === 'openobject' ) 
+    && this.status.depthCounter === 3
+    && this.status.isMatching 
+    && condition.key === this.status.lastkey 
+    && ( this.status.last === 'key' || this.status.last === 'openobject' ) 
     && condition.value === value;
   }
 }

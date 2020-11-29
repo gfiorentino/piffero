@@ -56,15 +56,11 @@ export class PifferoStatus {
          this.isMatching = true;
       }
     } else if (this.path.value === '$'){
-      if(this.hasNext()) {
-      this.next();
-    } else {
       if(!path.condition) {
         this.verified = true;
       }
       this.recording = true;
     }
-   }
   }
 
   get needComma(): boolean {

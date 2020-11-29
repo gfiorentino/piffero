@@ -1,6 +1,6 @@
 
 describe("piffero john-doe", function() {
-    const Piffero = require('../../dist/src/piffero2').Piffero;
+    const Piffero = require('../../dist/src/piffero').Piffero;
     const fs  =  require('fs');
     let stream
     beforeEach( function() {   
@@ -37,7 +37,7 @@ describe("piffero john-doe", function() {
       expect(string).toBe('{"type":"home","number":"0123-4567-8910"}');
       JSON.parse(string);
     });
-  
+ 
     it("attribute element in an array jsonpath", async function() {
       const result = Piffero.findPath(stream, '$.phoneNumbers[1].number')
       const string = await streamToString(result);
@@ -45,7 +45,7 @@ describe("piffero john-doe", function() {
       JSON.parse(string);
     });
     
-});
+}); 
 
 async function streamToString (stream) {
   const chunks = []

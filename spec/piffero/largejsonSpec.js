@@ -1,6 +1,6 @@
 
 describe("piffero large", function() {
-  const Piffero = require('../../dist/src/piffero2').Piffero;
+  const Piffero = require('../../dist/src/piffero').Piffero;
   const results = require('./results'); 
   const fs  =  require('fs');
   let stream
