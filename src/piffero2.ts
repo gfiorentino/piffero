@@ -3,7 +3,7 @@ import * as clarinet from "./libs/clarinet";
 import { JSONPath, ParsedPath } from "./jsonpath";
 import { Duplex, Readable, Stream } from "stream";
 import { PifferoStatus } from "./pifferostatus2";
-import { threadId } from "worker_threads";
+
 
 export class Piffero {
   static findPath(stream: Readable, jsonPath: string): Stream {
