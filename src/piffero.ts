@@ -11,7 +11,6 @@ export class Piffero {
 }
 
 class MasterHandler {
-  isLast = false;
   handlerIndex = 0;
   stepHandlers: SingleStepHandler[] = [];
   currentHandler: SingleStepHandler;
@@ -20,7 +19,7 @@ class MasterHandler {
   parse(stream: Readable, jsonPath: string): Stream {
   
     const checkStreams = () => {
-      if (this.currentHandler.status.end && this.isLast) {
+      if (this.currentHandler.status.end && this.currentHandler.isLast) {
         cStream.destroy();
         stream.unpipe();
         stream.destroy();
@@ -48,7 +47,7 @@ class MasterHandler {
     
 
     const shiftParser = () => {
-      if (this.currentHandler.status.recording && !this.isLast) {
+      if (this.currentHandler.status.recording && !this.currentHandler.isLast) {
         
         const last = this.currentHandler.status.last;
         const lastkey = this.currentHandler.status.lastkey;
@@ -58,7 +57,6 @@ class MasterHandler {
         }
         this.handlerIndex++;
         this.currentHandler = this.stepHandlers[this.handlerIndex];
-        this.isLast = this.handlerIndex == this.stepHandlers.length - 1;
         this.currentHandler.status.last = last;
         this.currentHandler.status.lastkey = lastkey;
         this.currentHandler.status.depthCounter = depthCounter;
