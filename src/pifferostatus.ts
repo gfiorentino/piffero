@@ -33,9 +33,11 @@ export class PifferoStatus {
 
   path: ParsedPath = undefined;
 
+  lastkey: string;
+
   constructor(path: ParsedPath) {
     this.path = path;
-    if (this.path.range) {
+    if (this.path.range || path.condition) {
       this.isInArray = true;
     } else if (this.hasNext()) {
       this.next();

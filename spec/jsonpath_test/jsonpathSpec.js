@@ -36,21 +36,22 @@ describe("JsonPath", function() {
         expect(next.range.start).toBe(1);
  
         expect(next2.value).toBe('second'); 
-        expect(next2.condition).toEqual({key:"attribute", value:"asd"});
+        expect(next2.condition).toEqual({key:"attribute", value:'"asd"'});
     })
 
 
     it("simple jsonpath wiith index", function() {
-      const result = JSONPath.parse('$.first[?(@.att===2)].second[?(@.attribute==="asd")]')
+      
+      const result = JSONPath.parse('$.first[?(@.att===21)].second[?(@.attribute==="asd")]')
         //demonstrates use of custom matcher
         expect(result.value).toBe('$');
         let next = result.next;
         let next2 = next.next;
         expect(next.value).toBe('first');
-        expect(next.condition).toEqual({key:"att", value:"2"});
+        expect(next.condition).toEqual({key:"att", value:'21'});
  
         expect(next2.value).toBe('second'); 
-        expect(next2.condition).toEqual({key:"attribute", value:"asd"});
+        expect(next2.condition).toEqual({key:"attribute", value:'"asd"'});
     })
     
   

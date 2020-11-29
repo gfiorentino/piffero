@@ -5,6 +5,7 @@ export class PifferoStatus {
   verified: boolean = false;
   // sto "registrando"
   recording: boolean = false;
+
   //sono in un array e cerco
   isInArray: boolean = false;
   // forse non serve arraay di primitivi
@@ -13,6 +14,8 @@ export class PifferoStatus {
   isRootArray = false;
   
   isMatching = false;
+
+  temp = '';
 
   end: boolean = false;
   close: boolean = false;
@@ -29,6 +32,8 @@ export class PifferoStatus {
     | "value"
     | "key";
 
+  lastkey: string;
+
 
   set last(last){
     this._last = last;
@@ -44,9 +49,8 @@ export class PifferoStatus {
 
   constructor(path: ParsedPath) {
     this.path = path;
-    if (this.path.range) {
+    if (this.path.range || path.condition) {
       this.isInArray = true;
-
       if(this.path.value === '$'){
         this._depthCounter = 1;
          this.isMatching = true;
