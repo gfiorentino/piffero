@@ -12,7 +12,7 @@ export class MasterHandler {
   
   
     parse(stream: Readable, jsonPath: string): Stream {
-    
+  
       const checkStreams = () => {
         if (this.currentHandler.status.end && this.currentHandler.isLast) {
           cStream.destroy();
@@ -22,7 +22,7 @@ export class MasterHandler {
       };
   
       let parsedPath = JSONPath.parse(jsonPath);
-  
+      
       const output: Duplex = new Stream.Transform();
   
       // ------da ottimizzare

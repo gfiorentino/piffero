@@ -60,7 +60,7 @@ export class JSONPath {
     }
 
     return {
-      value,
+      value: `"${value}"`,
       next: JSONPath.buildParsedPath(jsonPath, paths.slice(1)),
       condition: condition,
       range: range,

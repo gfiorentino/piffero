@@ -39,11 +39,9 @@ export class PifferoStatus {
     this._last = last;
   }
 
-
   get last(){
     return this._last
   } 
-
 
   path: ParsedPath = undefined;
 
@@ -51,11 +49,11 @@ export class PifferoStatus {
     this.path = path;
     if (this.path.range || path.condition) {
       this.isInArray = true;
-      if(this.path.value === '$'){
+      if(this.path.value === '"$"'){
         this._depthCounter = 1;
          this.isMatching = true;
       }
-    } else if (this.path.value === '$'){
+    } else if (this.path.value === '"$"'){
       if(!path.condition) {
         this.verified = true;
       }

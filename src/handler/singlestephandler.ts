@@ -32,7 +32,7 @@ export class SingleStepHandler {
         }
       }
       if (
-        `"${this.status.path.value}"` === node &&
+        this.status.path.value === node &&
         this.status.depthCounter === 0
       ) {
         if (!this.status.isInArray) {
@@ -183,7 +183,7 @@ export class SingleStepHandler {
       }
       if (
         this.status.depthCounter === 1 &&
-        `"${this.status.path.value}"` === node
+        this.status.path.value === node
       ) {
         if (!this.status.isInArray) {
           this.status.recording = true;
