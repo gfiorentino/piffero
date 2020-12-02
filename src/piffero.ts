@@ -1,7 +1,7 @@
 import * as clarinet from "./libs/clarinet";
 import { JSONPath, ParsedPath } from "./jsonpath";
 import { Duplex, Readable, Stream } from "stream";
-import { PifferoStatus } from "./pifferostatus2";
+import { PifferoStatus } from "./pifferostatus";
 
 export class Piffero {
   static findPath(stream: Readable, jsonPath: string): Stream {
