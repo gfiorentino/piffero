@@ -358,15 +358,15 @@
 
   function closeValue(parser, event) {
     parser.textNode = textopts(parser.opt, parser.textNode);
-    if (parser.textNode !== undefined) {
-      emit(parser, event ? event : "onvalue", parser.textNode);
+    if (parser.textNode !== undefined ) {
+      emit(parser, event ? event : "onvalue", `"${parser.textNode}"`);
     }
     parser.textNode = undefined;
   }
 
   function closeNumber(parser) {
     if (parser.numberNode)
-      emit(parser, "onvalue", parseFloat(parser.numberNode));
+      emit(parser, "onvalue", "" + parser.numberNode);
     parser.numberNode = "";
   }
 
@@ -640,7 +640,7 @@
 
         case S.TRUE3:
           if (c === Char.e) {
-            emit(parser, "onvalue", true);
+            emit(parser, "onvalue", "true");
             parser.state = parser.stack.pop() || S.VALUE;
           } else error(parser, "Invalid true started with tru" + c);
           continue;
@@ -662,7 +662,7 @@
 
         case S.FALSE4:
           if (c === Char.e) {
-            emit(parser, "onvalue", false);
+            emit(parser, "onvalue", "false");
             parser.state = parser.stack.pop() || S.VALUE;
           } else error(parser, "Invalid false started with fals" + c);
           continue;
@@ -679,7 +679,7 @@
 
         case S.NULL3:
           if (c === Char.l) {
-            emit(parser, "onvalue", null);
+            emit(parser, "onvalue", "null");
             parser.state = parser.stack.pop() || S.VALUE;
           } else error(parser, "Invalid null started with nul" + c);
           continue;

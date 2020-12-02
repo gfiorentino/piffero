@@ -139,6 +139,7 @@ class SingleStepHandler {
     this.output = output;
     this.isLast  = path.next == undefined || path.next == null;
   }
+
   openObject(node: any) {
     if (this.status.end) {
       return;
@@ -155,11 +156,11 @@ class SingleStepHandler {
         if (this.status.needComma) {
           this.output.push(",");
         }
-        this.output.push(`{"${node}":`);
+        this.output.push(`{${node}:`);
       }
     }
     if (
-      this.status.path.value === node &&
+      `"${this.status.path.value}"` === node &&
       this.status.depthCounter === 0
     ) {
       if (!this.status.isInArray) {
@@ -180,14 +181,14 @@ class SingleStepHandler {
         this.status.currentIndex === this.status.path.range.start
       ) {
         if (this.isLast){
-          this.output.push(`{"${node}":`);
+          this.output.push(`{${node}:`);
         }
         this.status.recording = true;
         this.status.verified = true;
         this.status.decrementDepthConnter();
         // --------------- condition per json path query -------
       } else if (this.status.path.condition) {
-        this.status.temp = `{"${node}":`;
+        this.status.temp = `{${node}:`;
       }
     } else if (
       this.status.isMatching &&
@@ -197,7 +198,7 @@ class SingleStepHandler {
         if (this.status.needComma) {
           this.status.temp = this.status.temp + ",";
         }
-        this.status.temp = this.status.temp + `{"${node}":`;
+        this.status.temp = this.status.temp + `{${node}:`;
       }
     }
     // ----------
@@ -306,11 +307,11 @@ class SingleStepHandler {
       if (this.status.needComma) {
         this.output.push(",");
       }
-      this.output.push(`"${node}":`);
+      this.output.push(`${node}:`);
     }
     if (
       this.status.depthCounter === 1 &&
-      this.status.path.value === node
+      `"${this.status.path.value}"` === node
     ) {
       if (!this.status.isInArray) {
         this.status.recording = true;
@@ -324,7 +325,7 @@ class SingleStepHandler {
         if (this.status.needComma) {
           this.status.temp = this.status.temp + ',';
         }
-        this.status.temp = this.status.temp + `"${node}":`;
+        this.status.temp = this.status.temp + `${node}:`;
       }
     }
 
@@ -347,7 +348,7 @@ class SingleStepHandler {
     ) {
       this.status.currentIndex++;
       if (this.status.currentIndex === this.status.path.range.start) {
-        this.output.push(JSON.stringify(node));
+        this.output.push(node);
         this.status.recording = false;
         this.status.end = true;
       }
@@ -356,14 +357,14 @@ class SingleStepHandler {
       if (this.status.needComma) {
         this.output.push(",");
       }
-      this.output.push(JSON.stringify(node));
+      this.output.push(node);
 
       if (this.status.depthCounter === 1) {
         this.status.recording = false;
         this.status.end = true;
       }
       ///-----condition value -----
-    } else if(this.verifyCondition(JSON.stringify(node))){
+    } else if(this.verifyCondition(node)){
       this.status.recording = true;
       this.status.verified = true;
       this.status.decrementDepthConnter();
