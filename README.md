@@ -33,7 +33,7 @@ JSONPath         | Description                              |Implemented
 
 ## Javascirpt
 
-Piffero is easy to use you only need to call the method findByPat(:inputStream, :jsonpat);
+Piffero is easy to use you only need to call the method findByPat(:inputStream, :jsonpath);
 ```js
 const piffero = require('piffero');
 const fs = require('fs');
