@@ -18,17 +18,17 @@ The version 1.0.0 only support the full qualified JSONpath
 The sintax that will be implemented in the next future and the examples from [Stefan Goessner's post](http://goessner.net/articles/JsonPath/) 
 
 JSONPath         | Description                              |Implemented
------------------|------------------------------------------|--------
-`$`               | The root object/element                 | - [x]
-`@`                | The current object/element             | - [ ]
-`.`                | Child member operator                  | - [x]
-`..`	         | Recursive descendant operator; JSONPath borrows this syntax from E4X | - [ ]
-`*`	         | Wildcard matching all objects/elements regardless their names | - [ ]
-`[]`	         | Subscript operator | - [X]
-`[,]`	         | Union operator for alternate names or array indices as a set| - [ ]
-`[start:end:step]` | Array slice operator borrowed from ES4 / Python| - [ ]
-`?()`              | Applies a filter (script) expression via static evaluation| - [ ]
-`()`	         | Script expression via static evaluation | - []
+-----------------|------------------------------------------|-----------------|
+`$`               | The root object/element                 |<ul><li> - [x] </li><li>
+`@`                | The current object/element             |<ul><li> - [ ]</li><li>
+`.`                | Child member operator                  |<ul><li> - [x] </li><li>
+`..`	         | Recursive descendant operator; JSONPath borrows this syntax from E4X |<ul><li>- [ ] </li><li>
+`*`	         | Wildcard matching all objects/elements regardless their names |<ul><li>- [ ] </li><li>
+`[]`	         | Subscript operator |<ul><li>- [X] </li><li>
+`[,]`	         | Union operator for alternate names or array indices as a set| <ul><li>- [ ]</li><li>
+`[start:end:step]` | Array slice operator borrowed from ES4 / Python| <ul><li>- [ ]</li><li>
+`?()`              | Applies a filter (script) expression via static evaluation| <ul><li>- [ ]</li><li>
+`()`	         | Script expression via static evaluation | <ul><li>- [ ] </li><li>
 
 ## Javascirpt
 ```js
