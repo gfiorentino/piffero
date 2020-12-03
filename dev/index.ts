@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as express from 'express';
-import { Piffero } from '../src/piffero2';
+import { Piffero } from '../src/piffero';
 
 const app: express.Application = express();
 
