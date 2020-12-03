@@ -23,7 +23,17 @@
     "type": "git",
     "url": "git+https://github.com/gfiorentino/piffero.git"
   },
-  "keywords": [],
+  "keywords": [
+    "json",
+    "sax",
+    "jsonpath",
+    "parser",
+    "stream",
+    "progressive",
+    "event",
+    "emitter",
+    "async"
+  ],
   "author": "Giovanni Fiorentino",
   "license": "MIT",
   "bugs": {
