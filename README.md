@@ -13,7 +13,8 @@ Piffero can load big files larger than memory used, end return the required cont
 # Get Started
 
 The version 1.0.0 only support the full qualified JSONpath
- example : $.father.son.array[:index].attributeb
+
+example : $.father.son.array[:index].attribute
 
 The sintax that will be implemented in the next future and the examples from [Stefan Goessner's post](http://goessner.net/articles/JsonPath/) 
 
@@ -31,12 +32,14 @@ JSONPath         | Description                              |Implemented
 `()`	         | Script expression via static evaluation | <ul><li>- [ ] </li></ul>
 
 ## Javascirpt
+
+Piffero is easy to use you only need to call the method findByPat(:inputStream, :jsonpat);
 ```js
 const piffero = require('piffero');
 const fs = require('fs');
 
 const stream = fs.createReadStream('employees.json');
-const result = piffero.Piffero.findPath(stream, "$.employees[1]");
+const result = piffero.Piffero.findByPath(stream, "$.employees[1]");
 
 
   streamToString = async (stream) =>{
