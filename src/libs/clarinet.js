@@ -358,15 +358,14 @@
 
   function closeValue(parser, event) {
     parser.textNode = textopts(parser.opt, parser.textNode);
-    if (parser.textNode !== undefined ) {
+    if (parser.textNode !== undefined) {
       emit(parser, event ? event : "onvalue", `"${parser.textNode}"`);
     }
     parser.textNode = undefined;
   }
 
   function closeNumber(parser) {
-    if (parser.numberNode)
-      emit(parser, "onvalue", "" + parser.numberNode);
+    if (parser.numberNode) emit(parser, "onvalue", "" + parser.numberNode);
     parser.numberNode = "";
   }
 

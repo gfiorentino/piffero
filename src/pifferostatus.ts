@@ -12,10 +12,10 @@ export class PifferoStatus {
   isPrimitiveTypeArray = false;
   // la root è un array
   isRootArray = false;
-  
+
   isMatching = false;
 
-  temp = '';
+  temp = "";
 
   end: boolean = false;
   close: boolean = false;
@@ -34,14 +34,13 @@ export class PifferoStatus {
 
   lastkey: string;
 
-
-  set last(last){
+  set last(last) {
     this._last = last;
   }
 
-  get last(){
-    return this._last
-  } 
+  get last() {
+    return this._last;
+  }
 
   path: ParsedPath = undefined;
 
@@ -49,12 +48,12 @@ export class PifferoStatus {
     this.path = path;
     if (this.path.range || path.condition) {
       this.isInArray = true;
-      if(this.path.value === '"$"'){
+      if (this.path.value === '"$"') {
         this._depthCounter = 1;
-         this.isMatching = true;
+        this.isMatching = true;
       }
-    } else if (this.path.value === '"$"'){
-      if(!path.condition) {
+    } else if (this.path.value === '"$"') {
+      if (!path.condition) {
         this.verified = true;
       }
       this.recording = true;
@@ -79,12 +78,12 @@ export class PifferoStatus {
   }
 
   incrementDepthConnter() {
-      this._depthCounter++;
+    this._depthCounter++;
   }
 
   decrementDepthConnter() {
-     this._depthCounter--;
-     if(this._depthCounter === 0 && this.recording) {
+    this._depthCounter--;
+    if (this._depthCounter === 0 && this.recording) {
       this.recording = false;
       this.end = true;
     }

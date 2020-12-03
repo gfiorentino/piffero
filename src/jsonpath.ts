@@ -17,9 +17,9 @@ export interface ParsedPath {
   value: string;
   range?: { start?: number; end?: number; step?: number };
   condition?: {
-    key: string, 
-    value: string
-  } // ?? not supported yet
+    key: string;
+    value: string;
+  }; // ?? not supported yet
   next: ParsedPath;
   recursiveDescendant: boolean; // ?? (dito nel culo) not supported yet
 }
@@ -30,7 +30,7 @@ export class JSONPath {
       throw new PifferoJsonPathError(`${PATH_ERROR_MESSAGE}: ${jsonPath}`);
     }
     // accrocco;
-    jsonPath = jsonPath.split('@.').join('!');
+    jsonPath = jsonPath.split("@.").join("!");
     const paths = jsonPath.split(".");
     return JSONPath.buildParsedPath(jsonPath, paths);
   }
@@ -45,7 +45,7 @@ export class JSONPath {
     }
     let value = paths[0];
     let range = null;
-    let condition =  null;
+    let condition = null;
     if (value.endsWith("]")) {
       value = value.substr(0, value.length - 1);
       const splitted = value.split("[");
@@ -54,7 +54,7 @@ export class JSONPath {
         throw new PifferoJsonPathError(`${PATH_ERROR_MESSAGE}: ${jsonPath}`);
       }
       condition = JSONPath.checkCondition(splitted[1]);
-      if(!condition){
+      if (!condition) {
         range = { start: Number(splitted[1]) };
       }
     }
@@ -69,15 +69,19 @@ export class JSONPath {
   }
 
   private static checkCondition(condition: string) {
-    if(condition.trim().startsWith('?(!')){
-      condition = condition.replace('?(!','');
-      condition = condition.replace('===','==')
-      let conditions = condition.split('==');
+    if (condition.trim().startsWith("?(!")) {
+      condition = condition.replace("?(!", "");
+      condition = condition.replace("===", "==");
+      let conditions = condition.split("==");
       let value = conditions[1].substr(0, conditions[1].length - 1);
-      if( value.startsWith('`') || value.startsWith('"') || value.startsWith("'") ){
-        value = '"' + value.substr(1, value.length - 2)+'"';
+      if (
+        value.startsWith("`") ||
+        value.startsWith('"') ||
+        value.startsWith("'")
+      ) {
+        value = '"' + value.substr(1, value.length - 2) + '"';
       }
-      return {key: conditions[0], value: value};
+      return { key: conditions[0], value: value };
     }
     return null;
   }
