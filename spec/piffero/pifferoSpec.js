@@ -27,14 +27,14 @@ describe("piffero john-doe", function() {
     it("array jsonpath", async function() {
       const result = Piffero.findPath(stream, '$.phoneNumbers')
       const string = await streamToString(result);
-      expect(string).toBe('[{"type":"iPhone","number":"0123-4567-8888"},{"type":"home","number":"0123-4567-8910"}]');
+      expect(string).toBe('[{"type":"iPhone","number":"0123-4567-8888","test":false},{"type":"home","number":"0123-4567-8910","test":true}]');
       JSON.parse(string);
     }); 
 
    it("element in an array jsonpath", async function() {
       const result = Piffero.findPath(stream, '$.phoneNumbers[1]')
       const string = await streamToString(result);
-      expect(string).toBe('{"type":"home","number":"0123-4567-8910"}');
+      expect(string).toBe('{"type":"home","number":"0123-4567-8910","test":true}');
       JSON.parse(string);
     });
  
@@ -44,7 +44,6 @@ describe("piffero john-doe", function() {
       expect(string).toBe('"0123-4567-8910"');
       JSON.parse(string);
     });
-    
 }); 
 
 async function streamToString (stream) {

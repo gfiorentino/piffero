@@ -3,7 +3,7 @@ The ultimate JSON SAX parser
 
 Piffero is an open SAX parser who work directely on the streams to get part of big JSON file.
 
-Piffero can load Big file larger than memory used
+Piffero can load Big file larger than memory used.
 
  ``` 
     ______________________________ . 
@@ -11,7 +11,3 @@ Piffero can load Big file larger than memory used
                                    '
  ```
 
-
-
-
-No piffero is done yet 

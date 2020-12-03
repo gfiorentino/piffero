@@ -10,11 +10,13 @@
     "phoneNumbers": [
       {
         "type"  : "iPhone",
-        "number": "0123-4567-8888"
+        "number": "0123-4567-8888",
+        "test": false
       },
       {
         "type"  : "home",
-        "number": "0123-4567-8910"
+        "number": "0123-4567-8910",
+        "test": true
       }
     ]
   }
