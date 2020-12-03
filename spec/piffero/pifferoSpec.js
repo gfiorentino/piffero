@@ -31,10 +31,17 @@ describe("piffero john-doe", function() {
       JSON.parse(string);
     }); 
 
-   it("element in an array jsonpath", async function() {
+    it("element in an array jsonpath", async function() {
       const result = Piffero.findPath(stream, '$.phoneNumbers[1]')
       const string = await streamToString(result);
       expect(string).toBe('{"type":"home","number":"0123-4567-8910","test":true}');
+      JSON.parse(string);
+    });
+
+    it("element in an array jsonpath", async function() {
+      const result = Piffero.findPath(stream, '$.phoneNumbers[0]')
+      const string = await streamToString(result);
+      expect(string).toBe('{"type":"iPhone","number":"0123-4567-8888","test":false}');
       JSON.parse(string);
     });
  
