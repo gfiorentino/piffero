@@ -1,9 +1,9 @@
 # PIFFERO
 The ultimate JSON SAX parser 
 
-Piffero is an open SAX parser who work directely on the streams to get part of big JSON file.
+Piffero is an open source SAX parser who work directely on the streams to get part of big JSON files.
 
-Piffero can load Big file larger than memory used, end return the required content in a stream.
+Piffero can load big files larger than memory used, end return the required content in a stream.
 
  ``` 
     ______________________________ . 
@@ -11,6 +11,25 @@ Piffero can load Big file larger than memory used, end return the required conte
                                    '
  ```
 # Get Started
+
+The version 1.0.0 only support the full qualified JSONpath
+ example : $.father.son.array[:index].attributeb
+
+The sintax that will be implemented in the next future and the examples from [Stefan Goessner's post](http://goessner.net/articles/JsonPath/) 
+
+JSONPath         | Description                              |Implemented
+-----------------|------------------------------------------|--------
+`$`               | The root object/element                 |[x]
+`@`                | The current object/element             |[]
+`.`                | Child member operator                  |[x]
+`..`	         | Recursive descendant operator; JSONPath borrows this syntax from E4X |[]
+`*`	         | Wildcard matching all objects/elements regardless their names |[]
+`[]`	         | Subscript operator |[]
+`[,]`	         | Union operator for alternate names or array indices as a set|[]
+`[start:end:step]` | Array slice operator borrowed from ES4 / Python|[]
+`?()`              | Applies a filter (script) expression via static evaluation|[]
+`()`	         | Script expression via static evaluation |[]
+
 ## Javascirpt
 ```js
 const piffero = require('piffero');
@@ -70,7 +89,7 @@ printResult(result);
 ```js
 {"name":"Joe","surname":"Black","phoneNumbers":[]}
 ```
-### object inside an array 
+#### object inside an array 
 ```js
 ....
 const result = piffero.Piffero.findPath(stream, "$.employees[0].phoneNumbers[1]");
@@ -78,6 +97,9 @@ const result = piffero.Piffero.findPath(stream, "$.employees[0].phoneNumbers[1]"
 // the result as a stream
 {"type":"home","number":"0123-4567-8910","test":true}
 ...
-
 ```
- 
+## Other tools
+* Piffero is built on [Clarinet](https://github.com/dscape/clarinet) 
+* You can try [Oboe](https://github.com/jimhigson/oboe.js)  
+
+enjoy piffero!!
