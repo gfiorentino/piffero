@@ -11,8 +11,6 @@
   clarinet.CStream = CStream;
   clarinet.createStream = createStream;
   clarinet.MAX_BUFFER_LENGTH = 10 * 1024 * 1024;
-  clarinet.DEBUG = env.CDEBUG === "debug";
-  clarinet.INFO = env.CDEBUG === "debug" || env.CDEBUG === "info";
   clarinet.EVENTS = [
     "value",
     "string",
@@ -347,7 +345,6 @@
   };
 
   function emit(parser, event, data) {
-    if (clarinet.INFO) console.log("-- emit", event, data);
     if (parser[event]) parser[event](data);
   }
 
@@ -425,7 +422,6 @@
     var i = 0,
       c = chunk.charCodeAt(0),
       p = parser.p;
-    if (clarinet.DEBUG) console.log("write -> [" + chunk + "]");
     while (c) {
       p = c;
       parser.c = c = chunk.charCodeAt(i++);
@@ -437,8 +433,6 @@
       else p = parser.p;
 
       if (!c) break;
-
-      if (clarinet.DEBUG) console.log(i, c, clarinet.STATE[parser.state]);
       parser.position++;
       if (c === Char.lineFeed) {
         parser.line++;
@@ -493,6 +487,7 @@
           continue;
 
         case S.OPEN_ARRAY: // after an array there always a value
+     
         case S.VALUE:
           if (isWhitespace(c)) continue;
           if (parser.state === S.OPEN_ARRAY) {
@@ -546,8 +541,6 @@
             slashed = parser.slashed,
             unicodeI = parser.unicodeI;
           STRING_BIGLOOP: while (true) {
-            if (clarinet.DEBUG)
-              console.log(i, c, clarinet.STATE[parser.state], slashed);
             // zero means "no unicode active". 1-4 mean "parse some more". end after 4.
             while (unicodeI > 0) {
               parser.unicodeS += String.fromCharCode(c);
