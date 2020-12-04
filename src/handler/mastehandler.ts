@@ -10,8 +10,6 @@ export class MasterHandler {
   currentHandler: SingleStepHandler;
 
   parse(stream: Readable, jsonPath: string): Stream {
-
-
     let parsedPath = JSONPath.parse(jsonPath);
 
     const output: Duplex = new Stream.Transform();

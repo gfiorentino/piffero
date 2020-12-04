@@ -4,8 +4,10 @@
   // non node-js needs to set clarinet debug on root
   var env = typeof process === "object" && process.env ? process.env : self;
 
-  clarinet.parser = function (opt) {return new CParser(opt);};
-  
+  clarinet.parser = function (opt) {
+    return new CParser(opt);
+  };
+
   clarinet.CParser = CParser;
   clarinet.CStream = CStream;
 
@@ -209,7 +211,6 @@
     this._parser = new CParser(opt);
     this.readable = true;
 
-
     this.bytes_remaining = 0; // number of bytes remaining in multi byte utf8 char to read after split boundary
     this.bytes_in_sequence = 0; // bytes in multi byte utf8 char to read
     this.temp_buffs = {
@@ -225,7 +226,7 @@
     this._parser.onend = function () {
       me.emit("end");
     };
-    
+
     this._parser.onerror = function (er) {
       me.emit("error", er);
       me._parser.error = null;
@@ -355,7 +356,7 @@
 
   function closeValue(parser, event) {
     if (parser.textNode !== undefined) {
-      emit(parser, event , `"${parser.textNode}"`);
+      emit(parser, event, `"${parser.textNode}"`);
     }
     parser.textNode = undefined;
   }
@@ -384,7 +385,7 @@
     if (parser.state !== S.VALUE || parser.depth !== 0)
       error(parser, "Unexpected end");
 
-    closeValue(parser,"onvalue");
+    closeValue(parser, "onvalue");
     parser.c = "";
     parser.closed = true;
     emit(parser, "onend");
@@ -472,13 +473,13 @@
           } else if (c === Char.comma) {
             if (parser.state === S.CLOSE_OBJECT)
               parser.stack.push(S.CLOSE_OBJECT);
-            closeValue(parser,"onvalue");
+            closeValue(parser, "onvalue");
             parser.state = S.OPEN_KEY;
           } else error(parser, "Bad object");
           continue;
 
         case S.OPEN_ARRAY: // after an array there always a value
-     
+
         case S.VALUE:
           if (isWhitespace(c)) continue;
           if (parser.state === S.OPEN_ARRAY) {
@@ -706,5 +707,4 @@
       checkBufferLength(parser);
     return parser;
   }
-
 })(typeof exports === "undefined" ? (clarinet = {}) : exports);
