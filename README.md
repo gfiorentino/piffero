@@ -3,7 +3,7 @@ The ultimate JSON SAX parser
 
 Piffero is an open source SAX parser who work directely on the streams to get part of big JSON files.
 
-Piffero can load big files larger than memory used, end return the required content in a stream.
+Piffero can load big files larger than memory used and return the required content in a stream.
 
  ``` 
     ______________________________ . 
@@ -31,7 +31,7 @@ JSONPath         | Description                              |Implemented
 `?()`              | Applies a filter (script) expression via static evaluation| <ul><li>- [ ] </li></ul>
 `()`	         | Script expression via static evaluation | <ul><li>- [ ] </li></ul>
 
-## Javascirpt
+## JavaScript
 
 Piffero is easy to use you only need to call the method findByPath(:inputStream, :jsonpath);
 ```js
