@@ -10,13 +10,7 @@ export class MasterHandler {
   currentHandler: SingleStepHandler;
 
   parse(stream: Readable, jsonPath: string): Stream {
-    const checkStreams = () => {
-      if (this.currentHandler.status.end && this.currentHandler.isLast) {
-        cStream.destroy();
-        stream.unpipe();
-        stream.destroy();
-      }
-    };
+
 
     let parsedPath = JSONPath.parse(jsonPath);
 
@@ -36,6 +30,14 @@ export class MasterHandler {
 
     this.currentHandler = this.stepHandlers[this.handlerIndex];
     const cStream = (clarinet as any).createStream();
+
+    const checkStreams = () => {
+      if (this.currentHandler.status.end && this.currentHandler.isLast) {
+        cStream.destroy();
+        stream.unpipe();
+        stream.destroy();
+      }
+    };
 
     const shiftParser = () => {
       if (this.currentHandler.status.recording && !this.currentHandler.isLast) {

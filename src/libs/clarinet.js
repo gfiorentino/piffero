@@ -209,10 +209,9 @@
     if (!(this instanceof CStream)) return new CStream(opt);
 
     this._parser = new CParser(opt);
-    this.writable = true;
     this.readable = true;
 
-    //var Buffer = this.Buffer || function Buffer () {}; // if we don't have Buffers, fake it so we can do `var instanceof Buffer` and not throw an error
+
     this.bytes_remaining = 0; // number of bytes remaining in multi byte utf8 char to read after split boundary
     this.bytes_in_sequence = 0; // bytes in multi byte utf8 char to read
     this.temp_buffs = {
@@ -228,6 +227,7 @@
     this._parser.onend = function () {
       me.emit("end");
     };
+    
     this._parser.onerror = function (er) {
       me.emit("error", er);
       me._parser.error = null;
@@ -352,14 +352,13 @@
   }
 
   function emitNode(parser, event, data) {
-    closeValue(parser);
+    closeValue(parser, "onvalue");
     emit(parser, event, data);
   }
 
   function closeValue(parser, event) {
-    parser.textNode = textopts(parser.opt, parser.textNode);
     if (parser.textNode !== undefined) {
-      emit(parser, event ? event : "onvalue", `"${parser.textNode}"`);
+      emit(parser, event , `"${parser.textNode}"`);
     }
     parser.textNode = undefined;
   }
@@ -379,7 +378,7 @@
   }
 
   function error(parser, er) {
-    closeValue(parser);
+    closeValue(parser, "onvalue");
     er +=
       "\nLine: " +
       parser.line +
@@ -397,7 +396,7 @@
     if (parser.state !== S.VALUE || parser.depth !== 0)
       error(parser, "Unexpected end");
 
-    closeValue(parser);
+    closeValue(parser,"onvalue");
     parser.c = "";
     parser.closed = true;
     emit(parser, "onend");
@@ -488,7 +487,7 @@
           } else if (c === Char.comma) {
             if (parser.state === S.CLOSE_OBJECT)
               parser.stack.push(S.CLOSE_OBJECT);
-            closeValue(parser);
+            closeValue(parser,"onvalue");
             parser.state = S.OPEN_KEY;
           } else error(parser, "Bad object");
           continue;
@@ -723,4 +722,5 @@
       checkBufferLength(parser);
     return parser;
   }
+
 })(typeof exports === "undefined" ? (clarinet = {}) : exports);
