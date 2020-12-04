@@ -4,11 +4,11 @@
   // non node-js needs to set clarinet debug on root
   var env = typeof process === "object" && process.env ? process.env : self;
 
-  clarinet.parser = function (opt) {
-    return new CParser(opt);
-  };
+  clarinet.parser = function (opt) {return new CParser(opt);};
+  
   clarinet.CParser = CParser;
   clarinet.CStream = CStream;
+
   clarinet.createStream = createStream;
   clarinet.MAX_BUFFER_LENGTH = 10 * 1024 * 1024;
   clarinet.EVENTS = [
@@ -363,15 +363,6 @@
   function closeNumber(parser) {
     if (parser.numberNode) emit(parser, "onvalue", "" + parser.numberNode);
     parser.numberNode = "";
-  }
-
-  function textopts(opt, text) {
-    if (text === undefined) {
-      return text;
-    }
-    if (opt.trim) text = text.trim();
-    if (opt.normalize) text = text.replace(/\s+/g, " ");
-    return text;
   }
 
   function error(parser, er) {
