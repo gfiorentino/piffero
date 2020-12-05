@@ -22,7 +22,7 @@ app.get('/:path',  (req, res) => {
     result.pipe(res);
 });
 
-app.get('worker/:path',  (req, res) => {
+app.get('/worker/:path',  (req, res) => {
     getPath(req,res);
 });
 
