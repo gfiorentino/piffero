@@ -26,9 +26,10 @@ export class SingleStepHandler {
         this.status.end = true;
       } else {
         if (this.status.needComma) {
-          this.output.push(",");
+          this.output.push(`,{${node}:`);
+        } else {
+          this.output.push(`{${node}:`);
         }
-        this.output.push(`{${node}:`);
       }
     }
     if (this.status.path.value === node && this.status.depthCounter === 0) {
@@ -59,9 +60,10 @@ export class SingleStepHandler {
     } else if (this.status.isMatching && this.status.depthCounter > 2) {
       if (this.status.temp.length > 0) {
         if (this.status.needComma) {
-          this.status.temp = this.status.temp + ",";
+          this.status.temp = this.status.temp + `,{${node}:`;
+        } else {
+          this.status.temp = this.status.temp + `{${node}:`;
         }
-        this.status.temp = this.status.temp + `{${node}:`;
       }
     }
     // ----------
@@ -102,9 +104,10 @@ export class SingleStepHandler {
     }
     if (this.status.recording && this.status.verified && this.isLast) {
       if (this.status.needComma) {
-        this.output.push(",");
+        this.output.push(",[");
+      } else {
+        this.output.push("[");
       }
-      this.output.push("[");
     }
     // ------ condition case -------
     else if (this.status.isMatching && this.status.depthCounter > 2) {
@@ -163,9 +166,10 @@ export class SingleStepHandler {
     }
     if (this.status.recording && this.status.verified && this.isLast) {
       if (this.status.needComma) {
-        this.output.push(",");
+        this.output.push(`,${node}:`);
+      } else {
+        this.output.push(`${node}:`);
       }
-      this.output.push(`${node}:`);
     }
     if (this.status.depthCounter === 1 && this.status.path.value === node) {
       if (!this.status.isInArray) {
@@ -206,10 +210,10 @@ export class SingleStepHandler {
     }
     if (this.status.recording && this.status.verified && this.isLast) {
       if (this.status.needComma) {
-        this.output.push(",");
+        this.output.push(`,${node}`);
+      } else {
+        this.output.push(node);
       }
-      this.output.push(node);
-
       if (this.status.depthCounter === 1) {
         this.status.recording = false;
         this.status.end = true;
@@ -221,9 +225,10 @@ export class SingleStepHandler {
       this.status.decrementDepthConnter();
       this.output.push(this.status.temp);
       if (this.status.needComma) {
-        this.output.push(",");
+        this.output.push(`,${node}`);
+      } else {
+        this.output.push(node);
       }
-      this.output.push(node);
       this.status.temp = "";
     } else if (this.status.isMatching && this.status.depthCounter > 2) {
       if (this.status.temp.length > 0) {

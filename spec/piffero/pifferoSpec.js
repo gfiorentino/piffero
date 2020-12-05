@@ -1,6 +1,6 @@
 
 describe("piffero john-doe", function() {
-    const Piffero = require('../../dist/src/piffero').Piffero;
+  const Piffero = require('../../dist/src/piffero').Piffero;
     const fs  =  require('fs');
     let stream
     beforeEach( function() {   

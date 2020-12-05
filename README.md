@@ -41,7 +41,7 @@ const fs = require('fs');
 const stream = fs.createReadStream('employees.json');
 const result = piffero.Piffero.findByPath(stream, "$.employees[1]");
 
-
+// ------ this code is only to console the content of the stream -------
   streamToString = async (stream) =>{
     const chunks = []
     return new Promise((resolve, reject) => {
@@ -57,6 +57,7 @@ printResult = async (result) => {
 }
 
 printResult(result);
+//---------------------------------------------------------------------
 ```
 #### empoyees.json
 ```js
@@ -97,7 +98,7 @@ printResult(result);
 const stream = fs.createReadStream('employees.json');
 const result = piffero.Piffero.findPath(stream, "$.employees[0].phoneNumbers[1]");
 .....
-// the result as a stream
+// the content of the stream
 {"type":"home","number":"0123-4567-8910","test":true}
 ...
 ```
