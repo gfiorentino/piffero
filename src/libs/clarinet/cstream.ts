@@ -8,31 +8,6 @@ export const streamWraps = EVENTS.filter(function (ev) {
 });
 
 
-if (!Object.create) {
-  Object.create = function (o) {
-    function f() {
-      this["__proto__"] = o;
-    }
-    f.prototype = o;
-    return new f();
-  };
-}
-
-if (!Object.getPrototypeOf) {
-  Object.getPrototypeOf = function (o) {
-    return o["__proto__"];
-  };
-}
-
-if (!Object.keys) {
-  Object.keys = function (o) {
-    var a = [];
-    for (var i in o) if (o.hasOwnProperty(i)) a.push(i);
-    return a;
-  };
-}
-
-
 export function createStream(opt?) {
   return new CStream(opt);
 }
@@ -50,7 +25,7 @@ export class CStream extends Stream {
   string = "";
 
   constructor(opt) {
-    super();
+    super(opt);
     this._parser = new CParser(opt);
     //    me = this;
     Stream.apply(this);
@@ -147,9 +122,6 @@ export class CStream extends Stream {
     }
   }
 
-  //    CStream.prototype = Object.create(Stream.prototype, {
-  //   constructor: { value: CStream },
-  // });
 
   end(chunk) {
     if (chunk && chunk.length) this._parser.write(chunk.toString());
