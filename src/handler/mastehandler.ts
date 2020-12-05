@@ -1,5 +1,5 @@
 import { SingleStepHandler } from "./singlestephandler";
-import * as clarinet from "../libs/clarinet";
+import { createStream } from "../libs/clarinet2";
 import { JSONPath } from "../jsonpath";
 import { Duplex, Readable, Stream } from "stream";
 import { PifferoStatus } from "../pifferostatus";
@@ -27,7 +27,7 @@ export class MasterHandler {
     //---------------
 
     this.currentHandler = this.stepHandlers[this.handlerIndex];
-    const cStream = (clarinet as any).createStream();
+    const cStream: any = createStream();
 
     const checkStreams = () => {
       if (this.currentHandler.status.end && this.currentHandler.isLast) {

@@ -1,3 +1,4 @@
+import { Stream } from "stream";
 // non node-js needs to set clarinet debug on root
 var env = typeof process === "object" && process.env ? process.env : self;
 
@@ -18,12 +19,12 @@ const EVENTS = [
 var buffers = {
     textNode: undefined,
     numberNode: "",
-  },
-  streamWraps = EVENTS.filter(function (ev) {
+  };
+const streamWraps = EVENTS.filter(function (ev) {
     return ev !== "error" && ev !== "end";
-  });
+});
+
 let S: any = 0;
-let Stream;
 
 const STATE = {
   BEGIN: S++,
@@ -95,6 +96,15 @@ const Char = {
   closeBrace: 0x7d, // }
 };
 
+function isWhitespace(c) {
+  return (
+    c === Char.space ||
+    c === Char.carriageReturn ||
+    c === Char.lineFeed ||
+    c === Char.tab
+  );
+}
+
 if (!Object.create) {
   Object.create = function (o) {
     function f() {
@@ -150,7 +160,9 @@ function clearBuffers(parser) {
 }
 
 function emit(parser, event?, data?) {
-  if (parser[event]) parser[event](data);
+  if (parser.hasOwnProperty(event)) {
+    console.log(parser, event);
+    parser[event](data)};
 }
 
 
@@ -187,14 +199,6 @@ function error(parser, er) {
 }
 
 
-function isWhitespace(c) {
-  return (
-    c === Char.space ||
-    c === Char.carriageReturn ||
-    c === Char.lineFeed ||
-    c === Char.tab
-  );
-}
 
 
 
@@ -556,20 +560,17 @@ export class CParser {
     return this;
   }
   
-  
 }
 
-try {
-  Stream = require("stream").Stream;
-} catch (ex) {
-  Stream = function () {};
-}
 
-function createStream(opt) {
+
+
+
+export function createStream(opt?) {
   return new CStream(opt);
 }
 
-class CStream {
+class CStream extends Stream {
   _parser: CParser;
   readable = true;
   bytes_remaining = 0; // number of bytes remaining in multi byte utf8 char to read after split boundary
@@ -582,16 +583,17 @@ class CStream {
   string = "";
 
   constructor(opt) {
+    super();
     this._parser = new CParser(opt);
     //    me = this;
     Stream.apply(this);
 
     this._parser.onend = function () {
-      this.emit("end");
+      emit("end");
     };
 
     this._parser.onerror = function (er) {
-      this.emit("error", er);
+      emit("error", er);
       this._parser.error = null;
 
       streamWraps.forEach(function (ev) {
@@ -689,16 +691,15 @@ class CStream {
   }
 
   on (ev, handler) {
-    var me = this;
-    if (!me._parser["on" + ev] && streamWraps.indexOf(ev) !== -1) {
-      me._parser["on" + ev] = function () {
+    if (!this._parser["on" + ev] && streamWraps.indexOf(ev) !== -1) {
+      this._parser["on" + ev] = function () {
         var args =
           arguments.length === 1 ? [arguments[0]] : Array.apply(null, arguments);
         args.splice(0, 0, ev);
-        this.emit.apply(me, args);
+        emit.apply(this, args);
       };
     }
-    return Stream.prototype.on.call(me, ev, handler);
+    return Stream.prototype.on.call(this, ev, handler);
   }
 
   destroy() {
