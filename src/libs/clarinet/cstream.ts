@@ -7,7 +7,6 @@ export const streamWraps = EVENTS.filter(function (ev) {
     return ev !== "error" && ev !== "end";
 });
 
-
 export class CStream extends Stream  {
   _parser: CParser;
   readable = true;
@@ -53,7 +52,8 @@ export class CStream extends Stream  {
   }
 
   write(data) {
-    data = Buffer.from(data);
+    // useless maybe
+    // data = Buffer.from(data); 
     for (var i = 0; i < data.length; i++) {
       var n = data[i];
 
@@ -103,9 +103,9 @@ export class CStream extends Stream  {
       }
 
       // is there a range of characters that are immediately parsable?
-      for (var p = i; p < data.length; p++) {
+     /* for (var p = i; p < data.length; p++) {
         if (data[p] >= 128) break;
-      }
+      } */
       this.string = data.slice(i, p).toString();
       this._parser.write(this.string);
       this.emit("data", this.string);

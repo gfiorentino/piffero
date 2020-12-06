@@ -41,6 +41,7 @@ export class CParser {
       emit(this, "onready");
       this.clearBuffers();
     }
+  
 
     clearBuffers() {
       this.textNode = undefined;
@@ -132,7 +133,6 @@ export class CParser {
             continue;
     
           case S.OPEN_ARRAY: // after an array there always a value
-    
           case S.VALUE:
             if (isWhitespace(c)) continue;
             if (this.state === S.OPEN_ARRAY) {
@@ -337,10 +337,19 @@ export class CParser {
             error(this, "Unknown state: " + this.state);
         }
       }
-      // if (this.position >= this.bufferCheckPosition) checkBufferLength(this);
+
       return this;
     }
     end() {
+      if (this.state !== S.VALUE || this.depth !== 0)
+        error(this, "Unexpected end");
+  
+      closeValue(this, "onvalue");
+      this.c = "";
+      this.closed = true;
+      emit(this, "onend");
+      CParser.call(this, this.opt);
+      return this;
     }
   }
 

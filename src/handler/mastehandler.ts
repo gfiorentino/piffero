@@ -61,27 +61,27 @@ export class MasterHandler {
     cStream.on("openobject", (node) => {
       this.currentHandler.openObject(node);
       shiftParser();
-      checkStreams();
+     // checkStreams();
     });
 
     // ------ OPEN ARRAY -----------------------------------------------------------
     cStream.on("openarray", () => {
       this.currentHandler.openArray();
       shiftParser();
-      checkStreams();
+     // checkStreams();
     });
 
     // --- CLOSE OBJECT  -------------------------------------------------------
     cStream.on("closeobject", () => {
       this.currentHandler.closeObject();
-      shiftParser();
+      // shiftParser();
       checkStreams();
     });
 
     // --- CLOSE ARRAY  -------------------------------------------------------
     cStream.on("closearray", () => {
       this.currentHandler.closeArray();
-      shiftParser();
+      // shiftParser();
       checkStreams();
     });
 
@@ -96,7 +96,7 @@ export class MasterHandler {
     //--- VALUE -----------------------------------------------------------
     cStream.on("value", (node) => {
       this.currentHandler.value(node);
-      shiftParser();
+      // shiftParser();
       checkStreams();
     });
 

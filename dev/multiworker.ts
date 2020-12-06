@@ -5,12 +5,18 @@ const workerPool = [];
 let last_index = 0;
 let response_id = 1;
 
-for (let index = 0; index < 3; index++) {
+for (let index = 0; index < 2; index++) {
   const worker = new Worker("./dev/worker.js");
   workerPool.push(worker);
   worker.on("message", (result) => {
     handler(result);
   });
+}
+function handler(msg) {
+  let currentResponse = responseMap.get(msg.id);
+  currentResponse.setHeader("Content-Type", "application/json");
+  currentResponse.send(msg.result);
+  responseMap.delete(msg.id);
 }
 
 function getWorker(): Worker {
@@ -29,9 +35,4 @@ export function getPath(req, res) {
   worker.postMessage({ path, id: id_ });
 }
 
-function handler(msg) {
-  let currentResponse = responseMap.get(msg.id);
-  currentResponse.setHeader("Content-Type", "application/json");
-  currentResponse.send(msg.result);
-  responseMap.delete(msg.id);
-}
+
