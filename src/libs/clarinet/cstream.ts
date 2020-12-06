@@ -4,10 +4,10 @@ import { closeValue, CParser, error, S } from "./Cparser";
 // non node-js needs to set clarinet debug on root
 
 export const streamWraps = EVENTS.filter(function (ev) {
-    return ev !== "error" && ev !== "end";
+  return ev !== "error" && ev !== "end";
 });
 
-export class CStream extends Stream  {
+export class CStream extends Stream {
   _parser: CParser;
   readable = true;
   bytes_remaining = 0; // number of bytes remaining in multi byte utf8 char to read after split boundary
@@ -24,17 +24,17 @@ export class CStream extends Stream  {
     this._parser = new CParser(opt);
 
     this._parser.onend = function () {
-     this.emit("end");
+      this.emit("end");
     };
 
-   this._parser.onerror = function (er) {
+    this._parser.onerror = function (er) {
       this.emit("error", er);
       this._parser.error = null;
 
       streamWraps.forEach(function (ev) {
         Object.defineProperty(this, "on" + ev, {
           get: function () {
-           return this._parser["on" + ev];
+            return this._parser["on" + ev];
           },
           set: function (h) {
             if (!h) {
@@ -47,13 +47,13 @@ export class CStream extends Stream  {
           enumerable: true,
           configurable: false,
         });
-      }); 
-    }; 
+      });
+    };
   }
 
   write(data) {
     // useless maybe
-    // data = Buffer.from(data); 
+    // data = Buffer.from(data);
     for (var i = 0; i < data.length; i++) {
       var n = data[i];
 
@@ -88,7 +88,7 @@ export class CStream extends Stream  {
           for (var k = 0; k <= data.length - 1 - i; k++) {
             this.temp_buffs[this.bytes_in_sequence][k] = data[i + k]; // fill temp data of correct size with bytes available in this chunk
           }
-          
+
           this.bytes_remaining = i + this.bytes_in_sequence - data.length;
 
           // immediately return as we need another chunk to sequence the character
@@ -106,7 +106,7 @@ export class CStream extends Stream  {
       // is there a range of characters that are immediately parsable?
       for (var p = i; p < data.length; p++) {
         if (data[p] >= 128) break;
-      } 
+      }
       this.string = data.slice(i, p).toString();
       this._parser.write(this.string);
       this.emit("data", this.string);
@@ -117,7 +117,6 @@ export class CStream extends Stream  {
     }
   }
 
-
   end(chunk) {
     if (chunk && chunk.length) this._parser.write(chunk.toString());
     //this._parser.end();
@@ -127,7 +126,7 @@ export class CStream extends Stream  {
   endParser(parser) {
     if (parser.state !== S.VALUE || parser.depth !== 0)
       error(parser, "Unexpected end");
-  
+
     closeValue(parser, "onvalue");
     parser.c = "";
     parser.closed = true;
@@ -135,9 +134,8 @@ export class CStream extends Stream  {
     this._parser, parser.opt;
     return parser;
   }
-  
 
-  on (ev, handler) {
+  on(ev, handler) {
     var me = this;
     if (!me._parser["on" + ev] && streamWraps.indexOf(ev) !== -1) {
       me._parser["on" + ev] = function () {
@@ -150,15 +148,10 @@ export class CStream extends Stream  {
       };
     }
     return Stream.prototype.on.call(me, ev, handler);
-  } 
+  }
 
   destroy() {
     this._parser.clearBuffers();
     this.emit("close");
-  };
+  }
 }
-
-
-
-
-

@@ -1,4 +1,4 @@
-import { CStream } from './../libs/clarinet/cstream';
+import { CStream } from "./../libs/clarinet/cstream";
 import { SingleStepHandler } from "./singlestephandler";
 import { JSONPath } from "../jsonpath";
 import { Duplex, Readable, Stream } from "stream";
@@ -10,7 +10,12 @@ export class MasterHandler {
   currentHandler: SingleStepHandler;
   _opt: PifferoOpt;
 
-  parse(stream: Readable, jsonPath: string, opt: PifferoOpt, callback?:(result) =>{}): Stream {
+  parse(
+    stream: Readable,
+    jsonPath: string,
+    opt: PifferoOpt,
+    callback?: (result) => {}
+  ): Stream {
     this._opt = opt;
     let parsedPath = JSONPath.parse(jsonPath);
 
@@ -61,14 +66,14 @@ export class MasterHandler {
     cStream.on("openobject", (node) => {
       this.currentHandler.openObject(node);
       shiftParser();
-     // checkStreams();
+      // checkStreams();
     });
 
     // ------ OPEN ARRAY -----------------------------------------------------------
     cStream.on("openarray", () => {
       this.currentHandler.openArray();
       shiftParser();
-     // checkStreams();
+      // checkStreams();
     });
 
     // --- CLOSE OBJECT  -------------------------------------------------------
@@ -103,7 +108,7 @@ export class MasterHandler {
     //---END VALUE -----------------------------------------------------------
     const endOutput = () => {
       this.currentHandler.status.close = true;
-      if(opt.mode === "stream") {
+      if (opt.mode === "stream") {
         output.push(null);
       } else {
         callback(this.currentHandler.outputString);
@@ -122,8 +127,8 @@ export class MasterHandler {
       }
     });
     stream.pipe(cStream);
-    
-    if(opt.mode === "stream") {
+
+    if (opt.mode === "stream") {
       return output;
     }
   }

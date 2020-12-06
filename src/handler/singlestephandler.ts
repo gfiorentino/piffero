@@ -1,4 +1,3 @@
-
 import { ParsedPath } from "../jsonpath";
 import { Duplex } from "stream";
 import { PifferoOpt, PifferoStatus } from "../pifferostatus";
@@ -9,14 +8,14 @@ export class SingleStepHandler {
   _output: Duplex;
   useString = false;
   outputString = "";
-  constructor(path: ParsedPath, output: Duplex, opt: PifferoOpt ) {
+  constructor(path: ParsedPath, output: Duplex, opt: PifferoOpt) {
     this.useString = opt.mode === "string";
     this.status = new PifferoStatus(path);
     this._output = output;
     this.isLast = path.next == undefined || path.next == null;
   }
 
-  push(value){ 
+  push(value) {
     if (this.useString) {
       this.outputString += value;
     } else {
@@ -253,7 +252,7 @@ export class SingleStepHandler {
     this.status.last = "value";
   }
 
-    verifyCondition(value): boolean {
+  verifyCondition(value): boolean {
     const condition = this.status.path.condition;
     return (
       condition &&
@@ -263,5 +262,5 @@ export class SingleStepHandler {
       (this.status.last === "key" || this.status.last === "openobject") &&
       condition.value === value
     );
-  } 
+  }
 }

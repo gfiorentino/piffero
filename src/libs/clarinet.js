@@ -172,7 +172,7 @@
     parser.state = S.BEGIN;
     parser.stack = new Array();
     // mostly just for error reporting
-  //  parser.position = parser.column = 0;
+    //  parser.position = parser.column = 0;
     parser.line = 1;
     parser.slashed = false;
     parser.unicodeI = 0;
