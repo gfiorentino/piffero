@@ -5,6 +5,12 @@ import {getPath} from './multiworker';
 
 const app: express.Application = express();
 
+app.use((req, res, next) => {
+    const start = Date.now();
+    res.on('finish', () => console.log(req.path + ' in', Date.now() - start, 'ms'));
+    next();
+});
+
 app.get('/favicon.ico',  (req, res) => {
     res.sendStatus(404);
 });
