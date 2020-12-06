@@ -1,9 +1,4 @@
-import { Char, MAX_BUFFER_LENGTH, STATE, stringTokenPattern } from "./const";
-
-var buffers = {
-    textNode: undefined,
-    numberNode: "",
-  };
+import { Char , STATE, stringTokenPattern } from "./const";
 
   // switcharoo
 export let S = STATE;
@@ -18,30 +13,25 @@ function isWhitespace(c) {
     );
   }
 
-  function checkBufferLength(parser) {
-    var maxAllowed = Math.max(MAX_BUFFER_LENGTH, 10),
-      maxActual = 0;
-    for (var buffer in buffers) {
-      var len = parser[buffer] === undefined ? 0 : parser[buffer].length;
-      if (len > maxAllowed) {
-        switch (buffer) {
-          case "text":
-            //   questa funzione non esiste :(
-            //   closeText(parser);
-            break;
-  
-          default:
-            error(parser, "Max buffer length exceeded: " + buffer);
-        }
+ /* function checkBufferLength(parser: CParser) {
+    let maxAllowed = MAX_BUFFER_LENGTH;
+    let maxActual = 0;
+      const lenText = parser.textNode === undefined ? 0 : parser.textNode.length;
+      if (lenText > maxAllowed) {
+        error(parser, "Max buffer length exceeded: textNode");
+      }  
+      const lenNumber = parser.numberNode === undefined ? 0 : parser.numberNode.length;
+      if (lenNumber > maxAllowed) {
+        error(parser, "Max buffer length exceeded: numberNode");
       }
-      maxActual = Math.max(maxActual, len);
-    }
+      maxActual = lenNumber > lenText ? lenNumber : lenText;
+      
     parser.bufferCheckPosition = MAX_BUFFER_LENGTH - maxActual + parser.position;
-  }
+  } */
 
 export class CParser {
     opt;
-    bufferCheckPosition = MAX_BUFFER_LENGTH;
+   // bufferCheckPosition = MAX_BUFFER_LENGTH;
     q = "";
     c = "";
     p = "";
@@ -53,7 +43,7 @@ export class CParser {
     state = S.BEGIN;
     stack = new Array();
     // mostly just for error reporting
-    position = 0;
+     // position = 0;
     column = 0;
     line = 1;
     slashed = false;
@@ -62,14 +52,19 @@ export class CParser {
     depth = 0;
     onend;
     onerror;
-    numberNode;
-    textNode;
+    numberNode: string;
+    textNode: string;
   
     constructor(_opt?) {
       this.opt = _opt ? _opt : {};
       emit(this, "onready");
+      this.clearBuffers();
     }
-  
+
+    clearBuffers() {
+      this.textNode = undefined;
+      this.numberNode = "";
+    }
   
     resume() {
       this.error = null;
@@ -102,7 +97,7 @@ export class CParser {
         else p = this.p;
     
         if (!c) break;
-        this.position++;
+        // this.position++;
         if (c === Char.lineFeed) {
           this.line++;
           this.column = 0;
@@ -214,7 +209,7 @@ export class CParser {
               while (unicodeI > 0) {
                 this.unicodeS += String.fromCharCode(c);
                 c = chunk.charCodeAt(i++);
-                this.position++;
+                // this.position++;
                 if (unicodeI === 4) {
                   // TODO this might be slow? well, probably not used too often anyway
                   this.textNode += String.fromCharCode(
@@ -231,15 +226,15 @@ export class CParser {
               if (c === Char.doubleQuote && !slashed) {
                 this.state = this.stack.pop() || S.VALUE;
                 this.textNode += chunk.substring(starti, i - 1);
-                this.position += i - 1 - starti;
+                // this.position += i - 1 - starti;
                 break;
               }
               if (c === Char.backslash && !slashed) {
                 slashed = true;
                 this.textNode += chunk.substring(starti, i - 1);
-                this.position += i - 1 - starti;
+                // this.position += i - 1 - starti;
                 c = chunk.charCodeAt(i++);
-                this.position++;
+                // this.position++;
                 if (!c) break;
               }
               if (slashed) {
@@ -262,7 +257,7 @@ export class CParser {
                   this.textNode += String.fromCharCode(c);
                 }
                 c = chunk.charCodeAt(i++);
-                this.position++;
+                // this.position++;
                 starti = i - 1;
                 if (!c) break;
                 else continue;
@@ -273,14 +268,14 @@ export class CParser {
               if (reResult === null) {
                 i = chunk.length + 1;
                 this.textNode += chunk.substring(starti, i - 1);
-                this.position += i - 1 - starti;
+                // this.position += i - 1 - starti;
                 break;
               }
               i = reResult.index + 1;
               c = chunk.charCodeAt(reResult.index);
               if (!c) {
                 this.textNode += chunk.substring(starti, i - 1);
-                this.position += i - 1 - starti;
+                // this.position += i - 1 - starti;
                 break;
               }
             }
@@ -380,13 +375,13 @@ export class CParser {
             error(this, "Unknown state: " + this.state);
         }
       }
-      if (this.position >= this.bufferCheckPosition) checkBufferLength(this);
+      // if (this.position >= this.bufferCheckPosition) checkBufferLength(this);
       return this;
     }
     end() {
     }
   }
-  
+
   export function error(parser, er) {
     closeValue(parser, "onvalue");
     er +=
@@ -404,11 +399,7 @@ export class CParser {
 
   
 
-export function clearBuffers(parser) {
-    for (var buffer in buffers) {
-      parser[buffer] = buffers[buffer];
-    }
-  }
+
 
   
 export function closeValue(parser, event) {

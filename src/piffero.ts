@@ -1,7 +1,5 @@
 import { Readable, Stream } from "stream";
-import { callbackify } from "util";
 import { MasterHandler } from "./handler/mastehandler";
-import { PifferoOpt } from "./pifferostatus";
 
 export class Piffero {
   static findByPath(stream: Readable, jsonPath: string = "$"): Stream {

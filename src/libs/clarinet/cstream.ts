@@ -1,6 +1,6 @@
 import { Stream } from "stream";
-import { Char, EVENTS, STATE } from "./const";
-import { clearBuffers, closeValue, CParser, emit, error, S } from "./Cparser";
+import { EVENTS } from "./const";
+import { closeValue, CParser, error, S } from "./Cparser";
 // non node-js needs to set clarinet debug on root
 
 export const streamWraps = EVENTS.filter(function (ev) {
@@ -23,7 +23,6 @@ export class CStream extends Stream  {
   constructor(opt?) {
     super(opt);
     this._parser = new CParser(opt);
-    clearBuffers(this._parser);
 
     this._parser.onend = function () {
      this.emit("end");
@@ -153,7 +152,7 @@ export class CStream extends Stream  {
   } 
 
   destroy() {
-    clearBuffers(this._parser);
+    this._parser.clearBuffers();
     this.emit("close");
   };
 }

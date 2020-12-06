@@ -1,6 +1,6 @@
 export var env = typeof process === "object" && process.env ? process.env : self;
 
-export const MAX_BUFFER_LENGTH = 10 * 1024 * 1024;
+// export const MAX_BUFFER_LENGTH = 10 * 1024 * 1024;
 export const EVENTS = [
   "value",
   "string",
