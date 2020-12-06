@@ -13,25 +13,8 @@ function isWhitespace(c) {
     );
   }
 
- /* function checkBufferLength(parser: CParser) {
-    let maxAllowed = MAX_BUFFER_LENGTH;
-    let maxActual = 0;
-      const lenText = parser.textNode === undefined ? 0 : parser.textNode.length;
-      if (lenText > maxAllowed) {
-        error(parser, "Max buffer length exceeded: textNode");
-      }  
-      const lenNumber = parser.numberNode === undefined ? 0 : parser.numberNode.length;
-      if (lenNumber > maxAllowed) {
-        error(parser, "Max buffer length exceeded: numberNode");
-      }
-      maxActual = lenNumber > lenText ? lenNumber : lenText;
-      
-    parser.bufferCheckPosition = MAX_BUFFER_LENGTH - maxActual + parser.position;
-  } */
-
 export class CParser {
     opt;
-   // bufferCheckPosition = MAX_BUFFER_LENGTH;
     q = "";
     c = "";
     p = "";
@@ -42,8 +25,6 @@ export class CParser {
     error = null;
     state = S.BEGIN;
     stack = new Array();
-    // mostly just for error reporting
-     // position = 0;
     column = 0;
     line = 1;
     slashed = false;
@@ -226,38 +207,21 @@ export class CParser {
               if (c === Char.doubleQuote && !slashed) {
                 this.state = this.stack.pop() || S.VALUE;
                 this.textNode += chunk.substring(starti, i - 1);
-                // this.position += i - 1 - starti;
                 break;
               }
               if (c === Char.backslash && !slashed) {
                 slashed = true;
                 this.textNode += chunk.substring(starti, i - 1);
-                // this.position += i - 1 - starti;
                 c = chunk.charCodeAt(i++);
-                // this.position++;
                 if (!c) break;
               }
               if (slashed) {
+                 this.textNode += "\\";
                 slashed = false;
-                if (c === Char.n) {
-                  this.textNode += "\n";
-                } else if (c === Char.r) {
-                  this.textNode += "\r";
-                } else if (c === Char.t) {
-                  this.textNode += "\t";
-                } else if (c === Char.f) {
-                  this.textNode += "\f";
-                } else if (c === Char.b) {
-                  this.textNode += "\b";
-                } else if (c === Char.u) {
-                  // \uxxxx. meh!
-                  unicodeI = 1;
-                  this.unicodeS = "";
-                } else {
-                  this.textNode += String.fromCharCode(c);
-                }
+           
+                this.textNode += String.fromCharCode(c);
+                
                 c = chunk.charCodeAt(i++);
-                // this.position++;
                 starti = i - 1;
                 if (!c) break;
                 else continue;
@@ -268,14 +232,12 @@ export class CParser {
               if (reResult === null) {
                 i = chunk.length + 1;
                 this.textNode += chunk.substring(starti, i - 1);
-                // this.position += i - 1 - starti;
                 break;
               }
               i = reResult.index + 1;
               c = chunk.charCodeAt(reResult.index);
               if (!c) {
                 this.textNode += chunk.substring(starti, i - 1);
-                // this.position += i - 1 - starti;
                 break;
               }
             }

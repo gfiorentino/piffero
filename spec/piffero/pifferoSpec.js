@@ -27,7 +27,8 @@ describe("piffero john-doe", function() {
     it("array jsonpath", async function() {
       const result = Piffero.findByPath(stream, '$.phoneNumbers')
       const string = await streamToString(result);
-      expect(string).toBe('[{"type":"iPhone","number":"0123-4567-8888","test":false},{"type":"home","number":"0123-4567-8910","test":true}]');
+      expect(string).toBe(JSON.stringify([{"type":"\"iPhone\"","number":"0123-4567-8888","test":false},{"type":"home","number":"0123-4567-8910","test":true}]));
+      console.log(string);
       JSON.parse(string);
     }); 
 
@@ -38,10 +39,11 @@ describe("piffero john-doe", function() {
       JSON.parse(string);
     });
 
-    it("element in an array jsonpath", async function() {
+
+    it("element in an array jsonpath 2", async function() {
       const result = Piffero.findByPath(stream, '$.phoneNumbers[0]')
       const string = await streamToString(result);
-      expect(string).toBe('{"type":"iPhone","number":"0123-4567-8888","test":false}');
+      expect(string).toBe(JSON.stringify({"type":"\"iPhone\"","number":"0123-4567-8888","test":false}));
       JSON.parse(string);
     });
  

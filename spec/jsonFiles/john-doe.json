@@ -9,7 +9,7 @@
     }],
     "phoneNumbers": [
       {
-        "type"  : "iPhone",
+        "type"  : "\"iPhone\"",
         "number": "0123-4567-8888",
         "test": false
       },
