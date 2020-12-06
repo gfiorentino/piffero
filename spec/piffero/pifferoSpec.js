@@ -28,7 +28,6 @@ describe("piffero john-doe", function() {
       const result = Piffero.findByPath(stream, '$.phoneNumbers')
       const string = await streamToString(result);
       expect(string).toBe(JSON.stringify([{"type":"\"iPhone\"","number":"0123-4567-8888","test":false},{"type":"home","number":"0123-4567-8910","test":true}]));
-      console.log(string);
       JSON.parse(string);
     }); 
 

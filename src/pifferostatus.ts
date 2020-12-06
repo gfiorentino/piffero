@@ -25,7 +25,7 @@ export class PifferoStatus {
   end: boolean = false;
   close: boolean = false;
   // conta a che livello sono sceso per aggiornare gli indici
-  private _depthCounter: number = 0;
+  public _depthCounter: number = 0;
   public needBracketes: boolean = false;
   currentIndex: number = -1;
 
@@ -80,10 +80,6 @@ export class PifferoStatus {
   }
   get depthCounter() {
     return this._depthCounter;
-  }
-
-  incrementDepthConnter() {
-    this._depthCounter++;
   }
 
   decrementDepthConnter() {

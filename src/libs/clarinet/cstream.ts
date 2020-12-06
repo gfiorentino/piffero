@@ -27,7 +27,7 @@ export class CStream extends Stream  {
      this.emit("end");
     };
 
-    this._parser.onerror = function (er) {
+   this._parser.onerror = function (er) {
       this.emit("error", er);
       this._parser.error = null;
 
@@ -47,8 +47,8 @@ export class CStream extends Stream  {
           enumerable: true,
           configurable: false,
         });
-      });
-    };
+      }); 
+    }; 
   }
 
   write(data) {
@@ -88,6 +88,7 @@ export class CStream extends Stream  {
           for (var k = 0; k <= data.length - 1 - i; k++) {
             this.temp_buffs[this.bytes_in_sequence][k] = data[i + k]; // fill temp data of correct size with bytes available in this chunk
           }
+          
           this.bytes_remaining = i + this.bytes_in_sequence - data.length;
 
           // immediately return as we need another chunk to sequence the character
@@ -103,9 +104,9 @@ export class CStream extends Stream  {
       }
 
       // is there a range of characters that are immediately parsable?
-     /* for (var p = i; p < data.length; p++) {
+      for (var p = i; p < data.length; p++) {
         if (data[p] >= 128) break;
-      } */
+      } 
       this.string = data.slice(i, p).toString();
       this._parser.write(this.string);
       this.emit("data", this.string);

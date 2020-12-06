@@ -79,7 +79,7 @@ export class SingleStepHandler {
       }
     }
     // ----------
-    this.status.incrementDepthConnter();
+    this.status._depthCounter++;
     this.status.lastkey = node;
     this.status.last = "openobject";
   }
@@ -133,7 +133,7 @@ export class SingleStepHandler {
       this.status.temp = "";
     }
     // ---------------
-    this.status.incrementDepthConnter();
+    this.status._depthCounter++;
     this.status.last = "openarray";
   }
 
