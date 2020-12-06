@@ -1,17 +1,29 @@
+
 import { ParsedPath } from "../jsonpath";
 import { Duplex } from "stream";
-import { PifferoStatus } from "../pifferostatus";
+import { PifferoOpt, PifferoStatus } from "../pifferostatus";
 
 export class SingleStepHandler {
   status: PifferoStatus;
   isLast = false;
-  output: Duplex;
-  constructor(path: ParsedPath, output: Duplex) {
+  _output: Duplex;
+  useString = false;
+  outputString = "";
+  constructor(path: ParsedPath, output: Duplex, opt: PifferoOpt ) {
+    this.useString = opt.mode === "string";
     this.status = new PifferoStatus(path);
-    this.output = output;
+    this._output = output;
     this.isLast = path.next == undefined || path.next == null;
   }
 
+  push(value){ 
+    if (this.useString) {
+      this.outputString += value;
+    } else {
+      this._output.push(value);
+    }
+  }
+  
   openObject(node: any) {
     if (this.status.end) {
       return;
@@ -26,9 +38,9 @@ export class SingleStepHandler {
         this.status.end = true;
       } else {
         if (this.status.needComma) {
-          this.output.push(`,{${node}:`);
+          this.push(`,{${node}:`);
         } else {
-          this.output.push(`{${node}:`);
+          this.push(`{${node}:`);
         }
       }
     }
@@ -48,7 +60,7 @@ export class SingleStepHandler {
         this.status.currentIndex === this.status.path.range.start
       ) {
         if (this.isLast) {
-          this.output.push(`{${node}:`);
+          this.push(`{${node}:`);
         }
         this.status.recording = true;
         this.status.verified = true;
@@ -81,7 +93,7 @@ export class SingleStepHandler {
         this.status.recording = false;
         this.status.end = true;
       } else {
-        this.output.push(`}`);
+        this.push(`}`);
       }
     }
     //------ condition case ----------
@@ -104,9 +116,9 @@ export class SingleStepHandler {
     }
     if (this.status.recording && this.status.verified && this.isLast) {
       if (this.status.needComma) {
-        this.output.push(",[");
+        this.push(",[");
       } else {
-        this.output.push("[");
+        this.push("[");
       }
     }
     // ------ condition case -------
@@ -134,10 +146,10 @@ export class SingleStepHandler {
         this.status.recording = false;
         this.status.end = true;
         if (!this.status.path.range) {
-          this.output.push(`]`);
+          this.push(`]`);
         }
       } else {
-        this.output.push(`]`);
+        this.push(`]`);
       }
     } //------ condition case close array----------
     else if (this.status.isMatching && this.status.depthCounter > 3) {
@@ -166,9 +178,9 @@ export class SingleStepHandler {
     }
     if (this.status.recording && this.status.verified && this.isLast) {
       if (this.status.needComma) {
-        this.output.push(`,${node}:`);
+        this.push(`,${node}:`);
       } else {
-        this.output.push(`${node}:`);
+        this.push(`${node}:`);
       }
     }
     if (this.status.depthCounter === 1 && this.status.path.value === node) {
@@ -203,16 +215,16 @@ export class SingleStepHandler {
     ) {
       this.status.currentIndex++;
       if (this.status.currentIndex === this.status.path.range.start) {
-        this.output.push(node);
+        this.push(node);
         this.status.recording = false;
         this.status.end = true;
       }
     }
     if (this.status.recording && this.status.verified && this.isLast) {
       if (this.status.needComma) {
-        this.output.push(`,${node}`);
+        this.push(`,${node}`);
       } else {
-        this.output.push(node);
+        this.push(node);
       }
       if (this.status.depthCounter === 1) {
         this.status.recording = false;
@@ -223,11 +235,11 @@ export class SingleStepHandler {
       this.status.recording = true;
       this.status.verified = true;
       this.status.decrementDepthConnter();
-      this.output.push(this.status.temp);
+      this.push(this.status.temp);
       if (this.status.needComma) {
-        this.output.push(`,${node}`);
+        this.push(`,${node}`);
       } else {
-        this.output.push(node);
+        this.push(node);
       }
       this.status.temp = "";
     } else if (this.status.isMatching && this.status.depthCounter > 2) {

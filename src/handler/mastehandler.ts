@@ -2,26 +2,29 @@ import { SingleStepHandler } from "./singlestephandler";
 import * as clarinet from "../libs/clarinet";
 import { JSONPath } from "../jsonpath";
 import { Duplex, Readable, Stream } from "stream";
-import { PifferoStatus } from "../pifferostatus";
+import { PifferoOpt, PifferoStatus } from "../pifferostatus";
+import { runInThisContext } from "vm";
 
 export class MasterHandler {
   handlerIndex = 0;
   stepHandlers: SingleStepHandler[] = [];
   currentHandler: SingleStepHandler;
+  _opt: PifferoOpt;
 
-  parse(stream: Readable, jsonPath: string): Stream {
+  parse(stream: Readable, jsonPath: string, opt: PifferoOpt, callback?:(result) =>{}): Stream {
+    this._opt = opt;
     let parsedPath = JSONPath.parse(jsonPath);
 
     const output: Duplex = new Stream.Transform();
 
     // ------da ottimizzare
     let status = new PifferoStatus(parsedPath);
-    const singleStepHandler = new SingleStepHandler(parsedPath, output);
+    const singleStepHandler = new SingleStepHandler(parsedPath, output, opt);
     this.stepHandlers.push(singleStepHandler);
     while (parsedPath.next) {
       parsedPath = parsedPath.next;
       status = new PifferoStatus(parsedPath);
-      const singleStepHandler = new SingleStepHandler(parsedPath, output);
+      const singleStepHandler = new SingleStepHandler(parsedPath, output, opt);
       this.stepHandlers.push(singleStepHandler);
     }
     //---------------
@@ -101,7 +104,11 @@ export class MasterHandler {
     //---END VALUE -----------------------------------------------------------
     const endOutput = () => {
       this.currentHandler.status.close = true;
-      output.push(null);
+      if(opt.mode === "stream") {
+        output.push(null);
+      } else {
+        callback(this.currentHandler.outputString);
+      }
     };
 
     cStream.on("end", () => {
@@ -116,6 +123,9 @@ export class MasterHandler {
       }
     });
     stream.pipe(cStream);
-    return output;
+    
+    if(opt.mode === "stream") {
+      return output;
+    }
   }
 }

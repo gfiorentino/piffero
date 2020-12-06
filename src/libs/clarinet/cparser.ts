@@ -60,10 +60,10 @@ export class CParser {
     unicodeI = 0;
     unicodeS = null;
     depth = 0;
-    numberNode = "";
-    textNode = "";
     onend;
     onerror;
+    numberNode;
+    textNode;
   
     constructor(_opt) {
       this.opt = _opt ? _opt : {};
@@ -425,7 +425,8 @@ export function closeValue(parser, event) {
   
   export function emit(parser, event?, data?) {
     if (parser.hasOwnProperty(event)) {
-      parser[event](data)};
+      parser[event](data)
+    }
   }
   
   

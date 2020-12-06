@@ -12,7 +12,7 @@ export function createStream(opt?) {
   return new CStream(opt);
 }
 
-export class CStream extends Stream {
+export class CStream extends Stream  {
   _parser: CParser;
   readable = true;
   bytes_remaining = 0; // number of bytes remaining in multi byte utf8 char to read after split boundary
@@ -27,21 +27,22 @@ export class CStream extends Stream {
   constructor(opt) {
     super(opt);
     this._parser = new CParser(opt);
-    //    me = this;
-    Stream.apply(this);
+    //  me = this;
+    // Stream.apply(this);
+    clearBuffers(this._parser);
 
     this._parser.onend = function () {
-      emit("end");
+     this.emit("end");
     };
 
     this._parser.onerror = function (er) {
-      emit("error", er);
+      this.emit("error", er);
       this._parser.error = null;
 
       streamWraps.forEach(function (ev) {
         Object.defineProperty(this, "on" + ev, {
           get: function () {
-            return this._parser["on" + ev];
+           return this._parser["on" + ev];
           },
           set: function (h) {
             if (!h) {
@@ -143,6 +144,7 @@ export class CStream extends Stream {
   
 
   on (ev, handler) {
+    console.log(ev);
     if (!this._parser["on" + ev] && streamWraps.indexOf(ev) !== -1) {
       this._parser["on" + ev] = function () {
         var args =

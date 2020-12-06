@@ -1,5 +1,10 @@
 import { ParsedPath } from "./jsonpath";
 
+export interface PifferoOpt {
+  mode : "stream" | "string"
+}
+
+
 export class PifferoStatus {
   //abbiamo verificato la condizione
   verified: boolean = false;

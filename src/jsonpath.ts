@@ -1,4 +1,3 @@
-import { stringify } from "querystring";
 import { PifferoJsonPathError, PATH_ERROR_MESSAGE } from "./pifferoerror";
 /* 
 $	The root object/element
