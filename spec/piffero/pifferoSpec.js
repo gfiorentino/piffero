@@ -1,6 +1,6 @@
 
 describe("piffero john-doe", function() {
-    const Piffero = require('../../dist/src/piffero2').Piffero;
+  const Piffero = require('../../dist/src/piffero').Piffero;
     const fs  =  require('fs');
     let stream
     beforeEach( function() {   
@@ -8,7 +8,7 @@ describe("piffero john-doe", function() {
     });
 
     it("simple jsonpath", async function() {
-      const result = Piffero.findPath(stream, '$.firstName')
+      const result = Piffero.findByPath(stream, '$.firstName')
       const string = await streamToString(result);
       expect(string).toBe('"John"');
       JSON.parse(string)
@@ -17,7 +17,7 @@ describe("piffero john-doe", function() {
 
     it("simple jsonpath lastname", async function() {
       
-      const result = Piffero.findPath(stream, '$.lastName')
+      const result = Piffero.findByPath(stream, '$.lastName')
       const string = await streamToString(result);
       expect(string).toBe('"doe"');
       JSON.parse(string)
@@ -25,27 +25,33 @@ describe("piffero john-doe", function() {
     
     
     it("array jsonpath", async function() {
-      const result = Piffero.findPath(stream, '$.phoneNumbers')
+      const result = Piffero.findByPath(stream, '$.phoneNumbers')
       const string = await streamToString(result);
-      expect(string).toBe('[{"type":"iPhone","number":"0123-4567-8888"},{"type":"home","number":"0123-4567-8910"}]');
+      expect(string).toBe('[{"type":"iPhone","number":"0123-4567-8888","test":false},{"type":"home","number":"0123-4567-8910","test":true}]');
       JSON.parse(string);
     }); 
 
-   it("element in an array jsonpath", async function() {
-      const result = Piffero.findPath(stream, '$.phoneNumbers[1]')
+    it("element in an array jsonpath", async function() {
+      const result = Piffero.findByPath(stream, '$.phoneNumbers[1]')
       const string = await streamToString(result);
-      expect(string).toBe('{"type":"home","number":"0123-4567-8910"}');
+      expect(string).toBe('{"type":"home","number":"0123-4567-8910","test":true}');
       JSON.parse(string);
     });
-  
+
+    it("element in an array jsonpath", async function() {
+      const result = Piffero.findByPath(stream, '$.phoneNumbers[0]')
+      const string = await streamToString(result);
+      expect(string).toBe('{"type":"iPhone","number":"0123-4567-8888","test":false}');
+      JSON.parse(string);
+    });
+ 
     it("attribute element in an array jsonpath", async function() {
-      const result = Piffero.findPath(stream, '$.phoneNumbers[1].number')
+      const result = Piffero.findByPath(stream, '$.phoneNumbers[1].number')
       const string = await streamToString(result);
       expect(string).toBe('"0123-4567-8910"');
       JSON.parse(string);
     });
-    
-});
+}); 
 
 async function streamToString (stream) {
   const chunks = []

@@ -1,80 +1,14 @@
-import * as clarinet from "./libs/clarinet";
-import { JSONPath, ParsedPath } from "./jsonpath";
-import { Duplex, Readable, Stream } from "stream";
+import { Readable, Stream } from "stream";
+import { MasterHandler } from "./handler/mastehandler";
 
 export class Piffero {
-  static findPath(stream: Readable, jsonPath: string): Stream {
-    return stream;
-}
-}
+  static findByPath(stream: Readable, jsonPath: string = "$"): Stream {
+    const handler = new MasterHandler();
+    return handler.parse(stream, jsonPath, { mode: "stream" });
+  }
 
-class MasterHandler {
-  isLast = false;
-  handlerIndex = 0;
-  stepHandlers: SingleStepHandler [];
-  currentHandler: SingleStepHandler;
-  parse(stream: Readable) {
-        this.currentHandler = this.stepHandlers[this.handlerIndex];
-        const cStream = (clarinet as any).createStream();
-        const  shiftParser = () => {
-          if (this.stepHandlers[this.handlerIndex].recording && !this.isLast) {
-              this.handlerIndex++;
-              this.isLast = this.handlerIndex == this.stepHandlers.length - 1;
-          }
-      }
-
-        // --- OPEN OBJECT -----------------------------------------------------------
-        cStream.on("openobject", (node) => {
-          this.currentHandler.openObject(node);
-          shiftParser();
-        });
-    
-        // ------ OPEN ARRAY -----------------------------------------------------------
-        cStream.on("openarray", () => {
-          this.currentHandler.openArray();
-          shiftParser();
-        });
-    
-        // --- CLOSE OBJECT  -------------------------------------------------------
-        cStream.on("closeobject", () => {
-          this.currentHandler.closeObject();
-          shiftParser();
-        });
-    
-        // --- CLOSE ARRAY  -------------------------------------------------------
-        cStream.on("closearray", () => {          
-
-        });
-    
-      // ------ KEY  --------------------------------------------------------
-        cStream.on("key", (node) => {          
-          this.currentHandler.key(node);
-          shiftParser();
-        });
-        // ------ END KEY  --------------------------------------------------------
-    
-        //--- VALUE -----------------------------------------------------------
-        cStream.on("value", (node) => {
-          this.currentHandler.key(node);
-          shiftParser();
-        });
-    
-        //---END VALUE -----------------------------------------------------------
-        cStream.on("end", () => {
-        });
-    
-        cStream.on("close", () => {
-        });
-    }
-}
-
-class SingleStepHandler {
-    recording = false;
-    openObject(node: any){}
-    closeObject(){}
-    openArray(){}
-    closeArray(){}
-    key(node: any){}
-    value(node: any){}
- 
+  static findAsString( callback: (result, err?) => {}, stream: Readable, jsonPath: string = "$") {
+    const handler = new MasterHandler();
+    handler.parse(stream, jsonPath, { mode: "string" }, callback);
+  }
 }

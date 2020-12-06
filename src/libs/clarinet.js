@@ -7,12 +7,12 @@
   clarinet.parser = function (opt) {
     return new CParser(opt);
   };
+
   clarinet.CParser = CParser;
   clarinet.CStream = CStream;
+
   clarinet.createStream = createStream;
   clarinet.MAX_BUFFER_LENGTH = 10 * 1024 * 1024;
-  clarinet.DEBUG = env.CDEBUG === "debug";
-  clarinet.INFO = env.CDEBUG === "debug" || env.CDEBUG === "info";
   clarinet.EVENTS = [
     "value",
     "string",
@@ -172,7 +172,7 @@
     parser.state = S.BEGIN;
     parser.stack = new Array();
     // mostly just for error reporting
-    parser.position = parser.column = 0;
+  //  parser.position = parser.column = 0;
     parser.line = 1;
     parser.slashed = false;
     parser.unicodeI = 0;
@@ -209,10 +209,8 @@
     if (!(this instanceof CStream)) return new CStream(opt);
 
     this._parser = new CParser(opt);
-    this.writable = true;
     this.readable = true;
 
-    //var Buffer = this.Buffer || function Buffer () {}; // if we don't have Buffers, fake it so we can do `var instanceof Buffer` and not throw an error
     this.bytes_remaining = 0; // number of bytes remaining in multi byte utf8 char to read after split boundary
     this.bytes_in_sequence = 0; // bytes in multi byte utf8 char to read
     this.temp_buffs = {
@@ -228,6 +226,7 @@
     this._parser.onend = function () {
       me.emit("end");
     };
+
     this._parser.onerror = function (er) {
       me.emit("error", er);
       me._parser.error = null;
@@ -347,40 +346,28 @@
   };
 
   function emit(parser, event, data) {
-    if (clarinet.INFO) console.log("-- emit", event, data);
     if (parser[event]) parser[event](data);
   }
 
   function emitNode(parser, event, data) {
-    closeValue(parser);
+    closeValue(parser, "onvalue");
     emit(parser, event, data);
   }
 
   function closeValue(parser, event) {
-    parser.textNode = textopts(parser.opt, parser.textNode);
     if (parser.textNode !== undefined) {
-      emit(parser, event ? event : "onvalue", parser.textNode);
+      emit(parser, event, `"${parser.textNode}"`);
     }
     parser.textNode = undefined;
   }
 
   function closeNumber(parser) {
-    if (parser.numberNode)
-      emit(parser, "onvalue", parseFloat(parser.numberNode));
+    if (parser.numberNode) emit(parser, "onvalue", "" + parser.numberNode);
     parser.numberNode = "";
   }
 
-  function textopts(opt, text) {
-    if (text === undefined) {
-      return text;
-    }
-    if (opt.trim) text = text.trim();
-    if (opt.normalize) text = text.replace(/\s+/g, " ");
-    return text;
-  }
-
   function error(parser, er) {
-    closeValue(parser);
+    closeValue(parser, "onvalue");
     er +=
       "\nLine: " +
       parser.line +
@@ -398,7 +385,7 @@
     if (parser.state !== S.VALUE || parser.depth !== 0)
       error(parser, "Unexpected end");
 
-    closeValue(parser);
+    closeValue(parser, "onvalue");
     parser.c = "";
     parser.closed = true;
     emit(parser, "onend");
@@ -427,7 +414,6 @@
     var i = 0,
       c = chunk.charCodeAt(0),
       p = parser.p;
-    if (clarinet.DEBUG) console.log("write -> [" + chunk + "]");
     while (c) {
       p = c;
       parser.c = c = chunk.charCodeAt(i++);
@@ -439,8 +425,6 @@
       else p = parser.p;
 
       if (!c) break;
-
-      if (clarinet.DEBUG) console.log(i, c, clarinet.STATE[parser.state]);
       parser.position++;
       if (c === Char.lineFeed) {
         parser.line++;
@@ -489,12 +473,13 @@
           } else if (c === Char.comma) {
             if (parser.state === S.CLOSE_OBJECT)
               parser.stack.push(S.CLOSE_OBJECT);
-            closeValue(parser);
+            closeValue(parser, "onvalue");
             parser.state = S.OPEN_KEY;
           } else error(parser, "Bad object");
           continue;
 
         case S.OPEN_ARRAY: // after an array there always a value
+
         case S.VALUE:
           if (isWhitespace(c)) continue;
           if (parser.state === S.OPEN_ARRAY) {
@@ -548,8 +533,6 @@
             slashed = parser.slashed,
             unicodeI = parser.unicodeI;
           STRING_BIGLOOP: while (true) {
-            if (clarinet.DEBUG)
-              console.log(i, c, clarinet.STATE[parser.state], slashed);
             // zero means "no unicode active". 1-4 mean "parse some more". end after 4.
             while (unicodeI > 0) {
               parser.unicodeS += String.fromCharCode(c);
@@ -640,7 +623,7 @@
 
         case S.TRUE3:
           if (c === Char.e) {
-            emit(parser, "onvalue", true);
+            emit(parser, "onvalue", "true");
             parser.state = parser.stack.pop() || S.VALUE;
           } else error(parser, "Invalid true started with tru" + c);
           continue;
@@ -662,7 +645,7 @@
 
         case S.FALSE4:
           if (c === Char.e) {
-            emit(parser, "onvalue", false);
+            emit(parser, "onvalue", "false");
             parser.state = parser.stack.pop() || S.VALUE;
           } else error(parser, "Invalid false started with fals" + c);
           continue;
@@ -679,7 +662,7 @@
 
         case S.NULL3:
           if (c === Char.l) {
-            emit(parser, "onvalue", null);
+            emit(parser, "onvalue", "null");
             parser.state = parser.stack.pop() || S.VALUE;
           } else error(parser, "Invalid null started with nul" + c);
           continue;

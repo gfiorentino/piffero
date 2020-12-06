@@ -1,1 +1,1 @@
-export { Piffero } from './src/piffero2';
+export { Piffero } from './src/piffero';
