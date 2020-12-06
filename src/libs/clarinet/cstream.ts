@@ -8,10 +8,6 @@ export const streamWraps = EVENTS.filter(function (ev) {
 });
 
 
-export function createStream(opt?) {
-  return new CStream(opt);
-}
-
 export class CStream extends Stream  {
   _parser: CParser;
   readable = true;
@@ -24,11 +20,9 @@ export class CStream extends Stream  {
   }; // for rebuilding chars split before boundary is reached
   string = "";
 
-  constructor(opt) {
+  constructor(opt?) {
     super(opt);
     this._parser = new CParser(opt);
-    //  me = this;
-    // Stream.apply(this);
     clearBuffers(this._parser);
 
     this._parser.onend = function () {
@@ -80,7 +74,7 @@ export class CStream extends Stream  {
 
         // pass data to parser and move forward to parse rest of data
         this._parser.write(this.string);
-        emit("data", this.string);
+        this.emit("data", this.string);
         continue;
       }
 
@@ -104,7 +98,7 @@ export class CStream extends Stream  {
           i = i + this.bytes_in_sequence - 1;
 
           this._parser.write(this.string);
-          emit("data", this.string);
+          this.emit("data", this.string);
           continue;
         }
       }
@@ -115,7 +109,7 @@ export class CStream extends Stream  {
       }
       this.string = data.slice(i, p).toString();
       this._parser.write(this.string);
-      emit("data", this.string);
+      this.emit("data", this.string);
       i = p - 1;
 
       // handle any remaining characters using multibyte logic
@@ -137,28 +131,30 @@ export class CStream extends Stream  {
     closeValue(parser, "onvalue");
     parser.c = "";
     parser.closed = true;
-    emit(parser, "onend");
+    this.emit(parser, "onend");
     this._parser, parser.opt;
     return parser;
   }
   
 
   on (ev, handler) {
-    console.log(ev);
-    if (!this._parser["on" + ev] && streamWraps.indexOf(ev) !== -1) {
-      this._parser["on" + ev] = function () {
+    var me = this;
+    if (!me._parser["on" + ev] && streamWraps.indexOf(ev) !== -1) {
+      me._parser["on" + ev] = function () {
         var args =
-          arguments.length === 1 ? [arguments[0]] : Array.apply(null, arguments);
+          arguments.length === 1
+            ? [arguments[0]]
+            : Array.apply(null, arguments);
         args.splice(0, 0, ev);
-        emit.apply(this, args);
+        me.emit.apply(me, args);
       };
     }
-    return Stream.prototype.on.call(this, ev, handler);
-  }
+    return Stream.prototype.on.call(me, ev, handler);
+  } 
 
   destroy() {
     clearBuffers(this._parser);
-    emit("close");
+    this.emit("close");
   };
 }
 

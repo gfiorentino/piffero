@@ -14,19 +14,18 @@ for (let index = 0; index < 3; index++) {
 }
 
 function getWorker(): Worker {
-    last_index++;
-    if (last_index === workerPool.length) {
-        last_index = 0;
-    }
-    return workerPool[last_index];
+  last_index++;
+  if (last_index === workerPool.length) {
+    last_index = 0;
   }
+  return workerPool[last_index];
+}
 
 export function getPath(req, res) {
   const path = req.params.path;
   const id_ = response_id++;
   responseMap.set(id_, res);
   let worker = getWorker();
-
   worker.postMessage({ path, id: id_ });
 }
 

@@ -65,7 +65,7 @@ export class CParser {
     numberNode;
     textNode;
   
-    constructor(_opt) {
+    constructor(_opt?) {
       this.opt = _opt ? _opt : {};
       emit(this, "onready");
     }
@@ -385,9 +385,8 @@ export class CParser {
     }
     end() {
     }
-  
-  
   }
+  
   export function error(parser, er) {
     closeValue(parser, "onvalue");
     er +=
