@@ -5,7 +5,7 @@ const workerPool = [];
 let last_index = 0;
 let response_id = 1;
 
-for (let index = 0; index < 4; index++) {
+for (let index = 0; index < 3; index++) {
   const worker = new Worker("./dev/worker.js");
   workerPool.push(worker);
   worker.on("message", (result) => {

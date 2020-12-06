@@ -23,7 +23,7 @@ export class SingleStepHandler {
       this._output.push(value);
     }
   }
-  
+
   openObject(node: any) {
     if (this.status.end) {
       return;
@@ -253,7 +253,7 @@ export class SingleStepHandler {
     this.status.last = "value";
   }
 
-  verifyCondition(value): boolean {
+    verifyCondition(value): boolean {
     const condition = this.status.path.condition;
     return (
       condition &&
@@ -263,5 +263,5 @@ export class SingleStepHandler {
       (this.status.last === "key" || this.status.last === "openobject") &&
       condition.value === value
     );
-  }
+  } 
 }
