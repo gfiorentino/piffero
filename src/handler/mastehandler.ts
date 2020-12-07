@@ -38,37 +38,6 @@ export class MasterHandler {
     this.cStream = new CStream(this) ;
 
     this.shiftParser();
-    this.cStream.on("openobject", (node) => {
-    });
-
-    // ------ OPEN ARRAY -----------------------------------------------------------
-    this.cStream.on("openarray", () => {
-    });
-
-    // --- CLOSE OBJECT  -------------------------------------------------------
-    this.cStream.on("closeobject", () => {
-    });
-
-    // --- CLOSE ARRAY  -------------------------------------------------------
-    this.cStream.on("closearray", () => {
-    });
-
-    // ------ KEY  --------------------------------------------------------
-    this.cStream.on("key", (node) => {
-    });
-    // ------ END KEY  --------------------------------------------------------
-
-    //--- VALUE -----------------------------------------------------------
-    this.cStream.on("value", (node) => {
-    });
-
-    this.cStream.on("end", () => {
-    });
-
-    this.cStream.on("close", () => {
-    });
-
-
     this.stream.pipe(this.cStream);
 
     if (opt.mode === "stream") {

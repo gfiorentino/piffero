@@ -5,7 +5,7 @@ const workerPool = [];
 let last_index = 0;
 let response_id = 1;
 
-for (let index = 0; index < 2; index++) {
+for (let index = 0; index < 3; index++) {
   const worker = new Worker("./dev/worker.js");
   workerPool.push(worker);
   worker.on("message", (result) => {
@@ -27,12 +27,12 @@ function getWorker(): Worker {
   return workerPool[last_index];
 }
 
-export function getPath(req, res) {
+export function getPath(req, res, file) {
   const path = req.params.path;
   const id_ = response_id++;
   responseMap.set(id_, res);
   let worker = getWorker();
-  worker.postMessage({ path, id: id_ });
+  worker.postMessage({ path, id: id_, file: file });
 }
 
 

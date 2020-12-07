@@ -28,7 +28,7 @@ export class CStream extends Writable {
 
     this._parser.onend = function () {
       this.handler.onend();
-      this.emit("end");
+      // this.emit("end"); // noot used any more
     };
 
     this._parser.onerror = function (er) {
@@ -124,7 +124,7 @@ export class CStream extends Writable {
 
   end(chunk) {
     if (chunk && chunk.length) this._parser.write(chunk.toString());
-    //this._parser.end();
+    this._parser.end();
     this.endParser();
   }
 
@@ -138,25 +138,9 @@ export class CStream extends Writable {
     this._parser.onend();
   }
 
- /* on(ev, handler) {
-    var me = this;
-    if (!me._parser["on" + ev] && streamWraps.indexOf(ev) !== -1) {
-      me._parser["on" + ev] = function () {
-        var args =
-          arguments.length === 1
-            ? [arguments[0]]
-            : Array.apply(null, arguments);
-        args.splice(0, 0, ev);
-        // console.log(args);
-       // me.emit.apply(me, args);
-      };
-    }
-    return  this // Stream.prototype.on.call(me, ev, handler);
-  } */
-
   destroy() {
     this._parser.clearBuffers();
     this.handler.onclose();
-    this.emit("close"); // not used any more 
+   // this.emit("close"); // not used any more 
   }
 }

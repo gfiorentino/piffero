@@ -4,14 +4,7 @@ import { Char, STATE, stringTokenPattern } from "./const";
 // switcharoo
 export let S = STATE;
 
-function isWhitespace(c) {
-  return (
-    c === Char.space ||
-    c === Char.carriageReturn ||
-    c === Char.lineFeed ||
-    c === Char.tab
-  );
-}
+
 
 export class CParser {
   opt;
@@ -58,6 +51,15 @@ export class CParser {
     return this.write(null);
   }
 
+  isWhitespace(c) {
+    return (
+      c === Char.space ||
+      c === Char.carriageReturn ||
+      c === Char.lineFeed ||
+      c === Char.tab
+    );
+  }
+
   write(chunk) {
     if (this.errorString) throw this.errorString;
     if (this.closed)
@@ -86,13 +88,13 @@ export class CParser {
         case S.BEGIN:
           if (c === Char.openBrace) this.state = S.OPEN_OBJECT;
           else if (c === Char.openBracket) this.state = S.OPEN_ARRAY;
-          else if (!isWhitespace(c)) {
+          else if (!this.isWhitespace(c)) {
             this.error("Non-whitespace before {[."); 
           }
           continue;
         case S.OPEN_KEY:
         case S.OPEN_OBJECT:
-          if (isWhitespace(c)) continue;
+          if (this.isWhitespace(c)) continue;
           if (this.state === S.OPEN_KEY) this.stack.push(S.CLOSE_KEY);
           else {
             if (c === Char.closeBrace) {
@@ -110,7 +112,7 @@ export class CParser {
 
         case S.CLOSE_KEY:
         case S.CLOSE_OBJECT:
-          if (isWhitespace(c)) continue;
+          if (this.isWhitespace(c)) continue;
           var event = this.state === S.CLOSE_KEY ? "key" : "object";
           if (c === Char.colon) {
             if (this.state === S.CLOSE_OBJECT) {
@@ -132,7 +134,7 @@ export class CParser {
 
         case S.OPEN_ARRAY: // after an array there always a value
         case S.VALUE:
-          if (isWhitespace(c)) continue;
+          if (this.isWhitespace(c)) continue;
           if (this.state === S.OPEN_ARRAY) {
             this.emit("onopenarray");
             this.depth++;
@@ -163,14 +165,14 @@ export class CParser {
 
         case S.CLOSE_ARRAY:
           if (c === Char.comma) {
-            this.stack.push(S.CLOSE_ARRAY);
             this.closeValue("onvalue");
+            this.stack.push(S.CLOSE_ARRAY);
             this.state = S.VALUE;
           } else if (c === Char.closeBracket) {
             this.emitNode("onclosearray");
             this.depth--;
             this.state = this.stack.pop() || S.VALUE;
-          } else if (isWhitespace(c)) continue;
+          } else if (this.isWhitespace(c)) continue;
           else this.error("Bad array");
           continue;
 
@@ -335,9 +337,9 @@ export class CParser {
           this.error("Unknown state: " + this.state);
       }
     }
-
     return this;
   }
+  
   end() {
     if (this.state !== S.VALUE || this.depth !== 0)
       this.error("Unexpected end");
@@ -346,15 +348,11 @@ export class CParser {
     this.c = "";
     this.closed = true;
     this.emit("onend");
-    CParser.call(this, this.opt);
     return this;
   }
 
-  emit(event, data?) {
-    // if (parser.hasOwnProperty(event)) { // we don't need this check
-    // this[event](data);
+  emit(event, data?) {   
     this.handler[event](data);
-    // }
   }
 
   emitNode(event?, data?) {

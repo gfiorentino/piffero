@@ -27,9 +27,13 @@ app.get('/:path',  (req, res) => {
     result.pipe(res);
 });
 
-app.get('/worker/:path',  (req, res) => {
-    getPath(req,res);
+app.get('/worker/:path',  (req, res, ) => {
+    getPath(req,res,'large-file.json'); //11350
 });
+
+/*app.get('/worker-large/:path',  (req, res) => {
+    getPath(req,res, 'citylots.json'); // 206559
+}); */
 
 app.listen(3000, () => {
     console.log('Open your browser at: http://localhost:3000/$[1].payload');
