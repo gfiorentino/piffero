@@ -1,3 +1,4 @@
+import { MasterHandler } from './../../handler/mastehandler';
 import { Char, STATE, stringTokenPattern } from "./const";
 
 // switcharoo
@@ -14,6 +15,7 @@ function isWhitespace(c) {
 
 export class CParser {
   opt;
+  handler: MasterHandler;
   q = "";
   c = "";
   p = "";
@@ -35,8 +37,9 @@ export class CParser {
   numberNode: string;
   textNode: string;
 
-  constructor(_opt?) {
-    this.opt = _opt ? _opt : {};
+  constructor(handler, opt?) {
+    this.handler = handler;
+    this.opt = opt ? opt : {};
     // this.emit("onready");  not needed
     this.clearBuffers();
   }
@@ -350,6 +353,7 @@ export class CParser {
   emit(event, data?) {
     // if (parser.hasOwnProperty(event)) { // we don't need this check
     this[event](data);
+    this.handler[event](data);
     // }
   }
 

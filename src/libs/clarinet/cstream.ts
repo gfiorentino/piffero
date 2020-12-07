@@ -1,4 +1,5 @@
-import { Stream } from "stream";
+import { MasterHandler } from './../../handler/mastehandler';
+import { Stream, Writable } from "stream";
 import { EVENTS } from "./const";
 import { CParser, S } from "./Cparser";
 // non node-js needs to set clarinet debug on root
@@ -7,9 +8,10 @@ export const streamWraps = EVENTS.filter(function (ev) {
   return ev !== "error" && ev !== "end";
 });
 
-export class CStream extends Stream {
+export class CStream extends Writable {
   _parser: CParser;
   readable = true;
+  handler: MasterHandler;
   bytes_remaining = 0; // number of bytes remaining in multi byte utf8 char to read after split boundary
   bytes_in_sequence = 0; // bytes in multi byte utf8 char to read
   temp_buffs = {
@@ -19,16 +21,19 @@ export class CStream extends Stream {
   }; // for rebuilding chars split before boundary is reached
   string = "";
 
-  constructor(opt?) {
+  constructor(handler: MasterHandler,opt?) {
     super(opt);
-    this._parser = new CParser(opt);
+    this.handler = handler;
+    this._parser = new CParser(handler, opt);
 
     this._parser.onend = function () {
+      this.handler.onend();
       this.emit("end");
     };
 
     this._parser.onerror = function (er) {
       this.emit("error", er);
+      this.handler.onerror(er)
       this._parser.error = null;
 
       streamWraps.forEach(function (ev) {
@@ -144,14 +149,16 @@ export class CStream extends Stream {
             ? [arguments[0]]
             : Array.apply(null, arguments);
         args.splice(0, 0, ev);
-        me.emit.apply(me, args);
+        // console.log(args);
+       // me.emit.apply(me, args);
       };
     }
-    return Stream.prototype.on.call(me, ev, handler);
+    return  this // Stream.prototype.on.call(me, ev, handler);
   }
 
   destroy() {
     this._parser.clearBuffers();
-    this.emit("close");
+    this.handler.onclose();
+    this.emit("close"); // not used any more 
   }
 }
