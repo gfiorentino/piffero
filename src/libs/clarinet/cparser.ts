@@ -352,7 +352,7 @@ export class CParser {
 
   emit(event, data?) {
     // if (parser.hasOwnProperty(event)) { // we don't need this check
-    this[event](data);
+    // this[event](data);
     this.handler[event](data);
     // }
   }
@@ -385,7 +385,8 @@ export class CParser {
       this.c;
     er = new Error(er);
     this.error = er;
-    this.emit("onerror", er);
+    this.handler.onerror(er)
+    // this.emit("onerror", er);
     return this;
   }
   

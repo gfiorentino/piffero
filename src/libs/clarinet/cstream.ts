@@ -125,22 +125,20 @@ export class CStream extends Writable {
   end(chunk) {
     if (chunk && chunk.length) this._parser.write(chunk.toString());
     //this._parser.end();
-    this.endParser(this._parser);
+    this.endParser();
   }
 
-  endParser(parser) {
-    if (parser.state !== S.VALUE || parser.depth !== 0)
-      parser.error("Unexpected end");
+  endParser() {
+    if (this._parser.state !== S.VALUE || this._parser.depth !== 0)
+      this._parser.error("Unexpected end");
 
-    parser.closeValue( "onvalue");
-    parser.c = "";
-    parser.closed = true;
-    this.emit(parser, "onend");
-    this._parser, parser.opt;
-    return parser;
+    this._parser.closeValue( "onvalue");
+    this._parser.c = "";
+    this._parser.closed = true;
+    this._parser.onend();
   }
 
-  on(ev, handler) {
+ /* on(ev, handler) {
     var me = this;
     if (!me._parser["on" + ev] && streamWraps.indexOf(ev) !== -1) {
       me._parser["on" + ev] = function () {
@@ -154,7 +152,7 @@ export class CStream extends Writable {
       };
     }
     return  this // Stream.prototype.on.call(me, ev, handler);
-  }
+  } */
 
   destroy() {
     this._parser.clearBuffers();
