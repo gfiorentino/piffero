@@ -21,7 +21,7 @@ export class MasterHandler {
 
     const output: Duplex = new Stream.Transform();
 
-    // ------da ottimizzare
+    // ------ da ottimizzare
     let status = new PifferoStatus(parsedPath);
     const singleStepHandler = new SingleStepHandler(parsedPath, output, opt);
     this.stepHandlers.push(singleStepHandler);

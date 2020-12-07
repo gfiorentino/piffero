@@ -1,6 +1,6 @@
 import { Stream } from "stream";
 import { EVENTS } from "./const";
-import { closeValue, CParser, error, S } from "./Cparser";
+import { CParser, S } from "./Cparser";
 // non node-js needs to set clarinet debug on root
 
 export const streamWraps = EVENTS.filter(function (ev) {
@@ -125,9 +125,9 @@ export class CStream extends Stream {
 
   endParser(parser) {
     if (parser.state !== S.VALUE || parser.depth !== 0)
-      error(parser, "Unexpected end");
+      parser.error("Unexpected end");
 
-    closeValue(parser, "onvalue");
+    parser.closeValue( "onvalue");
     parser.c = "";
     parser.closed = true;
     this.emit(parser, "onend");

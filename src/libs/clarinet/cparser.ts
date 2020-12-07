@@ -21,7 +21,7 @@ export class CParser {
   closedRoot = false;
   sawRoot = false;
   tag = null;
-  error = null;
+  errorString = null;
   state = S.BEGIN;
   stack = new Array();
   column = 0;
@@ -37,7 +37,7 @@ export class CParser {
 
   constructor(_opt?) {
     this.opt = _opt ? _opt : {};
-    emit(this, "onready");
+    // this.emit("onready");  not needed
     this.clearBuffers();
   }
 
@@ -47,7 +47,7 @@ export class CParser {
   }
 
   resume() {
-    this.error = null;
+    this.errorString = null;
     return this;
   }
 
@@ -56,12 +56,9 @@ export class CParser {
   }
 
   write(chunk) {
-    if (this.error) throw this.error;
+    if (this.errorString) throw this.errorString;
     if (this.closed)
-      return error(
-        this,
-        "Cannot write after close. Assign an onready handler."
-      );
+      return this.error("Cannot write after close. Assign an onready handler.");
     if (chunk === null) return this.end();
     var i: any = 0;
     let c: any = chunk.charCodeAt(0);
@@ -86,25 +83,26 @@ export class CParser {
         case S.BEGIN:
           if (c === Char.openBrace) this.state = S.OPEN_OBJECT;
           else if (c === Char.openBracket) this.state = S.OPEN_ARRAY;
-          else if (!isWhitespace(c)) error(this, "Non-whitespace before {[.");
+          else if (!isWhitespace(c)) {
+            this.error("Non-whitespace before {[."); 
+          }
           continue;
-
         case S.OPEN_KEY:
         case S.OPEN_OBJECT:
           if (isWhitespace(c)) continue;
           if (this.state === S.OPEN_KEY) this.stack.push(S.CLOSE_KEY);
           else {
             if (c === Char.closeBrace) {
-              emit(this, "onopenobject");
+              this.emit("onopenobject");
               this.depth++;
-              emit(this, "oncloseobject");
+              this.emit("oncloseobject");
               this.depth--;
               this.state = this.stack.pop() || S.VALUE;
               continue;
             } else this.stack.push(S.CLOSE_OBJECT);
           }
           if (c === Char.doubleQuote) this.state = S.STRING;
-          else error(this, 'Malformed object key should start with "');
+          else this.error('Malformed object key should start with "');
           continue;
 
         case S.CLOSE_KEY:
@@ -114,30 +112,30 @@ export class CParser {
           if (c === Char.colon) {
             if (this.state === S.CLOSE_OBJECT) {
               this.stack.push(S.CLOSE_OBJECT);
-              closeValue(this, "onopenobject");
+              this.closeValue("onopenobject");
               this.depth++;
-            } else closeValue(this, "onkey");
+            } else this.closeValue("onkey");
             this.state = S.VALUE;
           } else if (c === Char.closeBrace) {
-            emitNode(this, "oncloseobject");
+            this.emitNode("oncloseobject");
             this.depth--;
             this.state = this.stack.pop() || S.VALUE;
           } else if (c === Char.comma) {
             if (this.state === S.CLOSE_OBJECT) this.stack.push(S.CLOSE_OBJECT);
-            closeValue(this, "onvalue");
+            this.closeValue("onvalue");
             this.state = S.OPEN_KEY;
-          } else error(this, "Bad object");
+          } else this.error("Bad object");
           continue;
 
         case S.OPEN_ARRAY: // after an array there always a value
         case S.VALUE:
           if (isWhitespace(c)) continue;
           if (this.state === S.OPEN_ARRAY) {
-            emit(this, "onopenarray");
+            this.emit("onopenarray");
             this.depth++;
             this.state = S.VALUE;
             if (c === Char.closeBracket) {
-              emit(this, "onclosearray");
+              this.emit("onclosearray");
               this.depth--;
               this.state = this.stack.pop() || S.VALUE;
               continue;
@@ -157,20 +155,20 @@ export class CParser {
           } else if (Char._0 <= c && c <= Char._9) {
             this.numberNode += String.fromCharCode(c);
             this.state = S.NUMBER_DIGIT;
-          } else error(this, "Bad value");
+          } else this.error("Bad value");
           continue;
 
         case S.CLOSE_ARRAY:
           if (c === Char.comma) {
             this.stack.push(S.CLOSE_ARRAY);
-            closeValue(this, "onvalue");
+            this.closeValue("onvalue");
             this.state = S.VALUE;
           } else if (c === Char.closeBracket) {
-            emitNode(this, "onclosearray");
+            this.emitNode("onclosearray");
             this.depth--;
             this.state = this.stack.pop() || S.VALUE;
           } else if (isWhitespace(c)) continue;
-          else error(this, "Bad array");
+          else this.error("Bad array");
           continue;
 
         case S.STRING:
@@ -244,65 +242,65 @@ export class CParser {
 
         case S.TRUE:
           if (c === Char.r) this.state = S.TRUE2;
-          else error(this, "Invalid true started with t" + c);
+          else this.error("Invalid true started with t" + c);
           continue;
 
         case S.TRUE2:
           if (c === Char.u) this.state = S.TRUE3;
-          else error(this, "Invalid true started with tr" + c);
+          else this.error("Invalid true started with tr" + c);
           continue;
 
         case S.TRUE3:
           if (c === Char.e) {
-            emit(this, "onvalue", "true");
+            this.emit("onvalue", "true");
             this.state = this.stack.pop() || S.VALUE;
-          } else error(this, "Invalid true started with tru" + c);
+          } else this.error("Invalid true started with tru" + c);
           continue;
 
         case S.FALSE:
           if (c === Char.a) this.state = S.FALSE2;
-          else error(this, "Invalid false started with f" + c);
+          else this.error("Invalid false started with f" + c);
           continue;
 
         case S.FALSE2:
           if (c === Char.l) this.state = S.FALSE3;
-          else error(this, "Invalid false started with fa" + c);
+          else this.error("Invalid false started with fa" + c);
           continue;
 
         case S.FALSE3:
           if (c === Char.s) this.state = S.FALSE4;
-          else error(this, "Invalid false started with fal" + c);
+          else this.error("Invalid false started with fal" + c);
           continue;
 
         case S.FALSE4:
           if (c === Char.e) {
-            emit(this, "onvalue", "false");
+            this.emit("onvalue", "false");
             this.state = this.stack.pop() || S.VALUE;
-          } else error(this, "Invalid false started with fals" + c);
+          } else this.error("Invalid false started with fals" + c);
           continue;
 
         case S.NULL:
           if (c === Char.u) this.state = S.NULL2;
-          else error(this, "Invalid null started with n" + c);
+          else this.error("Invalid null started with n" + c);
           continue;
 
         case S.NULL2:
           if (c === Char.l) this.state = S.NULL3;
-          else error(this, "Invalid null started with nu" + c);
+          else this.error("Invalid null started with nu" + c);
           continue;
 
         case S.NULL3:
           if (c === Char.l) {
-            emit(this, "onvalue", "null");
+            this.emit("onvalue", "null");
             this.state = this.stack.pop() || S.VALUE;
-          } else error(this, "Invalid null started with nul" + c);
+          } else this.error("Invalid null started with nul" + c);
           continue;
 
         case S.NUMBER_DECIMAL_POINT:
           if (c === Char.period) {
             this.numberNode += ".";
             this.state = S.NUMBER_DIGIT;
-          } else error(this, "Leading zero not followed by .");
+          } else this.error("Leading zero not followed by .");
           continue;
 
         case S.NUMBER_DIGIT:
@@ -310,28 +308,28 @@ export class CParser {
             this.numberNode += String.fromCharCode(c);
           else if (c === Char.period) {
             if (this.numberNode.indexOf(".") !== -1)
-              error(this, "Invalid number has two dots");
+              this.error("Invalid number has two dots");
             this.numberNode += ".";
           } else if (c === Char.e || c === Char.E) {
             if (
               this.numberNode.indexOf("e") !== -1 ||
               this.numberNode.indexOf("E") !== -1
             )
-              error(this, "Invalid number has two exponential");
+              this.error("Invalid number has two exponential");
             this.numberNode += "e";
           } else if (c === Char.plus || c === Char.minus) {
             if (!(p === Char.e || p === Char.E))
-              error(this, "Invalid symbol in number");
+              this.error("Invalid symbol in number");
             this.numberNode += String.fromCharCode(c);
           } else {
-            closeNumber(this);
+            this.closeNumber();
             i--; // go back one
             this.state = this.stack.pop() || S.VALUE;
           }
           continue;
 
         default:
-          error(this, "Unknown state: " + this.state);
+          this.error("Unknown state: " + this.state);
       }
     }
 
@@ -339,50 +337,53 @@ export class CParser {
   }
   end() {
     if (this.state !== S.VALUE || this.depth !== 0)
-      error(this, "Unexpected end");
+      this.error("Unexpected end");
 
-    closeValue(this, "onvalue");
+    this.closeValue("onvalue");
     this.c = "";
     this.closed = true;
-    emit(this, "onend");
+    this.emit("onend");
     CParser.call(this, this.opt);
     return this;
   }
-}
 
-export function error(parser, er) {
-  closeValue(parser, "onvalue");
-  er +=
-    "\nLine: " +
-    parser.line +
-    "\nColumn: " +
-    parser.column +
-    "\nChar: " +
-    parser.c;
-  er = new Error(er);
-  parser.error = er;
-  emit(parser, "onerror", er);
-  return parser;
-}
-
-export function closeValue(parser, event) {
-  if (parser.textNode !== undefined) {
-    emit(parser, event, `"${parser.textNode}"`);
+  emit(event, data?) {
+    // if (parser.hasOwnProperty(event)) { // we don't need this check
+    this[event](data);
+    // }
   }
-  parser.textNode = undefined;
-}
-export function closeNumber(parser) {
-  if (parser.numberNode) emit(parser, "onvalue", "" + parser.numberNode);
-  parser.numberNode = "";
-}
 
-export function emit(parser, event?, data?) {
-  if (parser.hasOwnProperty(event)) {
-    parser[event](data);
+  emitNode(event?, data?) {
+    this.closeValue("onvalue");
+    this.emit(event, data);
   }
+  closeValue(event) {
+    if (this.textNode !== undefined) {
+      this.emit(event, `"${this.textNode}"`);
+    }
+    this.textNode = undefined;
+  }
+
+  closeNumber() {
+    if (this.numberNode) this.emit("onvalue", "" + this.numberNode);
+    this.numberNode = "";
+  }
+
+
+ error(er) {
+    this.closeValue("onvalue");
+    er +=
+      "\nLine: " +
+      this.line +
+      "\nColumn: " +
+      this.column +
+      "\nChar: " +
+      this.c;
+    er = new Error(er);
+    this.error = er;
+    this.emit("onerror", er);
+    return this;
+  }
+  
 }
 
-function emitNode(parser?, event?, data?) {
-  closeValue(parser, "onvalue");
-  emit(parser, event, data);
-}
