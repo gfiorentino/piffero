@@ -1,4 +1,4 @@
-import { MasterHandler } from './../../handler/mastehandler';
+import { MasterHandler } from "./../../handler/mastehandler";
 import { Stream, Writable } from "stream";
 import { EVENTS } from "./const";
 import { CParser, S } from "./Cparser";
@@ -21,7 +21,7 @@ export class CStream extends Writable {
   }; // for rebuilding chars split before boundary is reached
   string = "";
 
-  constructor(handler: MasterHandler,opt?) {
+  constructor(handler: MasterHandler, opt?) {
     super(opt);
     this.handler = handler;
     this._parser = new CParser(handler, opt);
@@ -33,7 +33,7 @@ export class CStream extends Writable {
 
     this._parser.onerror = function (er) {
       this.emit("error", er);
-      this.handler.onerror(er)
+      this.handler.onerror(er);
       this._parser.error = null;
 
       streamWraps.forEach(function (ev) {
@@ -132,7 +132,7 @@ export class CStream extends Writable {
     if (this._parser.state !== S.VALUE || this._parser.depth !== 0)
       this._parser.error("Unexpected end");
 
-    this._parser.closeValue( "onvalue");
+    this._parser.closeValue("onvalue");
     this._parser.c = "";
     this._parser.closed = true;
     this._parser.onend();
@@ -141,6 +141,6 @@ export class CStream extends Writable {
   destroy() {
     this._parser.clearBuffers();
     this.handler.onclose();
-   // this.emit("close"); // not used any more 
+    // this.emit("close"); // not used any more
   }
 }

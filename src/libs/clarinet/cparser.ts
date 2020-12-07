@@ -1,10 +1,8 @@
-import { MasterHandler } from './../../handler/mastehandler';
+import { MasterHandler } from "./../../handler/mastehandler";
 import { Char, STATE, stringTokenPattern } from "./const";
 
 // switcharoo
 export let S = STATE;
-
-
 
 export class CParser {
   opt;
@@ -89,7 +87,7 @@ export class CParser {
           if (c === Char.openBrace) this.state = S.OPEN_OBJECT;
           else if (c === Char.openBracket) this.state = S.OPEN_ARRAY;
           else if (!this.isWhitespace(c)) {
-            this.error("Non-whitespace before {[."); 
+            this.error("Non-whitespace before {[.");
           }
           continue;
         case S.OPEN_KEY:
@@ -339,7 +337,7 @@ export class CParser {
     }
     return this;
   }
-  
+
   end() {
     if (this.state !== S.VALUE || this.depth !== 0)
       this.error("Unexpected end");
@@ -351,7 +349,7 @@ export class CParser {
     return this;
   }
 
-  emit(event, data?) {   
+  emit(event, data?) {
     this.handler[event](data);
   }
 
@@ -371,22 +369,14 @@ export class CParser {
     this.numberNode = "";
   }
 
-
- error(er) {
+  error(er) {
     this.closeValue("onvalue");
     er +=
-      "\nLine: " +
-      this.line +
-      "\nColumn: " +
-      this.column +
-      "\nChar: " +
-      this.c;
+      "\nLine: " + this.line + "\nColumn: " + this.column + "\nChar: " + this.c;
     er = new Error(er);
     this.error = er;
-    this.handler.onerror(er)
+    this.handler.onerror(er);
     // this.emit("onerror", er);
     return this;
   }
-  
 }
-

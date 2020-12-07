@@ -15,7 +15,11 @@ export class MasterHandler {
   output: Duplex;
 
   parse(
-    stream: Readable,jsonPath: string,opt: PifferoOpt, callback?: (result) => {}): Stream {
+    stream: Readable,
+    jsonPath: string,
+    opt: PifferoOpt,
+    callback?: (result) => {}
+  ): Stream {
     this.callback = callback;
     this.stream = stream;
     this._opt = opt;
@@ -25,17 +29,25 @@ export class MasterHandler {
 
     // ------ da ottimizzare
     let status = new PifferoStatus(parsedPath);
-    const singleStepHandler = new SingleStepHandler(parsedPath, this.output, opt);
+    const singleStepHandler = new SingleStepHandler(
+      parsedPath,
+      this.output,
+      opt
+    );
     this.stepHandlers.push(singleStepHandler);
     while (parsedPath.next) {
       parsedPath = parsedPath.next;
       status = new PifferoStatus(parsedPath);
-      const singleStepHandler = new SingleStepHandler(parsedPath, this.output, opt);
+      const singleStepHandler = new SingleStepHandler(
+        parsedPath,
+        this.output,
+        opt
+      );
       this.stepHandlers.push(singleStepHandler);
     }
 
     this.currentHandler = this.stepHandlers[this.handlerIndex];
-    this.cStream = new CStream(this) ;
+    this.cStream = new CStream(this);
 
     this.shiftParser();
     this.stream.pipe(this.cStream);
@@ -45,14 +57,14 @@ export class MasterHandler {
     }
   }
 
-  checkStreams () {
+  checkStreams() {
     if (this.currentHandler.status.end && this.currentHandler.isLast) {
       this.cStream.destroy();
       this.stream.unpipe();
       this.stream.destroy();
     }
-  };
-  
+  }
+
   shiftParser() {
     if (this.currentHandler.status.recording && !this.currentHandler.isLast) {
       const last = this.currentHandler.status.last;
@@ -67,75 +79,74 @@ export class MasterHandler {
       this.currentHandler.status.lastkey = lastkey;
       this.currentHandler.status.depthCounter = depthCounter;
     }
-  };
+  }
 
-    
-    // --- OPEN OBJECT -----------------------------------------------------------
-    onopenobject (node) {
-      this.currentHandler.openObject(node);
-      this.shiftParser();
-      // checkStreams();
-    };
+  // --- OPEN OBJECT -----------------------------------------------------------
+  onopenobject(node) {
+    this.currentHandler.openObject(node);
+    this.shiftParser();
+    // checkStreams();
+  }
 
-    // ------ OPEN ARRAY -----------------------------------------------------------
-    onopenarray (){
-      this.currentHandler.openArray();
-      this.shiftParser();
-      // checkStreams();
-    };
+  // ------ OPEN ARRAY -----------------------------------------------------------
+  onopenarray() {
+    this.currentHandler.openArray();
+    this.shiftParser();
+    // checkStreams();
+  }
 
-    // --- CLOSE OBJECT  -------------------------------------------------------
-    oncloseobject () {
-      this.currentHandler.closeObject();
-      // shiftParser();
-      this.checkStreams();
-    };
+  // --- CLOSE OBJECT  -------------------------------------------------------
+  oncloseobject() {
+    this.currentHandler.closeObject();
+    // shiftParser();
+    this.checkStreams();
+  }
 
-    // --- CLOSE ARRAY  -------------------------------------------------------
-    onclosearray () {
-      this.currentHandler.closeArray();
-      // shiftParser();
-      this.checkStreams();
-    };
+  // --- CLOSE ARRAY  -------------------------------------------------------
+  onclosearray() {
+    this.currentHandler.closeArray();
+    // shiftParser();
+    this.checkStreams();
+  }
 
-    // ------ KEY  --------------------------------------------------------
-    onkey (node) {
-      this.currentHandler.key(node);
-      this.shiftParser();
-      this.checkStreams();
+  // ------ KEY  --------------------------------------------------------
+  onkey(node) {
+    this.currentHandler.key(node);
+    this.shiftParser();
+    this.checkStreams();
+  }
+  // ------ END KEY  --------------------------------------------------------
+
+  //--- VALUE -----------------------------------------------------------
+  onvalue(node) {
+    this.currentHandler.value(node);
+    // shiftParser();
+    this.checkStreams();
+  }
+
+  //---END VALUE -----------------------------------------------------------
+  endOutput() {
+    this.currentHandler.status.close = true;
+    if (this._opt.mode === "stream") {
+      this.output.push(null);
+    } else {
+      this.callback(this.currentHandler.outputString);
     }
-    // ------ END KEY  --------------------------------------------------------
+  }
 
-    //--- VALUE -----------------------------------------------------------
-    onvalue(node) {
-      this.currentHandler.value(node);
-      // shiftParser();
-      this.checkStreams();
+  onend() {
+    if (!this.currentHandler.status.close) {
+      this.endOutput();
     }
+  }
 
-    //---END VALUE -----------------------------------------------------------
-    endOutput () {
-      this.currentHandler.status.close = true;
-      if (this._opt.mode === "stream") {
-        this.output.push(null);
-      } else {
-        this.callback(this.currentHandler.outputString);
-      }
-    };
-
-    onend () {
-      if (!this.currentHandler.status.close) {
-        this.endOutput();
-      }
+  onclose() {
+    if (!this.currentHandler.status.close) {
+      this.endOutput();
     }
+  }
 
-    onclose(){
-      if (!this.currentHandler.status.close) {
-        this.endOutput();
-      }
-    }
-
-    onerror(er) {
-      console.error("error", er)
-    }
+  onerror(er) {
+    console.error("error", er);
+  }
 }
