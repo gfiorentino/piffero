@@ -115,9 +115,9 @@ export class SingleStepHandler {
     }
     if (this.status.recording && this.status.verified && this.isLast) {
       if (
-       (this.status.depthCounter === 0 ||
-        (this.status.isMatching && this.status.depthCounter === 1)) 
-        && this.status.path.value !== '"$"' // accrocco;
+        (this.status.depthCounter === 0 ||
+          (this.status.isMatching && this.status.depthCounter === 1)) &&
+        this.status.path.value !== '"$"' // accrocco;
       ) {
         this.status.recording = false;
         this.status.verified = false;
