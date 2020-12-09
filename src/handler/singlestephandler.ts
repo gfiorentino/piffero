@@ -114,10 +114,20 @@ export class SingleStepHandler {
       return;
     }
     if (this.status.recording && this.status.verified && this.isLast) {
-      if (this.status.needComma) {
-        this.push(",[");
+      if (
+       (this.status.depthCounter === 0 ||
+        (this.status.isMatching && this.status.depthCounter === 1)) 
+        && this.status.path.value !== '"$"' // accrocco;
+      ) {
+        this.status.recording = false;
+        this.status.verified = false;
+        this.status.end = true;
       } else {
-        this.push("[");
+        if (this.status.needComma) {
+          this.push(",[");
+        } else {
+          this.push("[");
+        }
       }
     }
     // ------ condition case -------
@@ -130,6 +140,24 @@ export class SingleStepHandler {
       }
     } else if (this.status.depthCounter === 3) {
       this.status.temp = "";
+    } else if (this.status.isMatching && this.status.depthCounter === 2) {
+      this.status.currentIndex++;
+      // se lavoriamo con un indice
+
+      if (
+        this.status.path.range &&
+        this.status.currentIndex === this.status.path.range.start
+      ) {
+        if (this.isLast) {
+          this.push(`[`);
+        }
+        this.status.recording = true;
+        this.status.verified = true;
+        this.status._depthCounter--; // da verificare
+        // --------------- condition per json path query -------
+      } else if (this.status.path.condition) {
+        this.status.temp = `[`;
+      }
     }
     // ---------------
     this.status._depthCounter++;
