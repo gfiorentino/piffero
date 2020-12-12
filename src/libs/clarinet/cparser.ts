@@ -62,7 +62,9 @@ export class CParser {
     if (this.errorString) throw this.errorString;
     if (this.closed)
       return this.error("Cannot write after close. Assign an onready handler.");
-    if (chunk === null) return this.end();
+    if (chunk === null) {
+      return this.end();
+    }
     var i: any = 0;
     let c: any = chunk.charCodeAt(0);
     let p: any = this.p;
@@ -73,15 +75,20 @@ export class CParser {
       // this way we need to check if previous is really previous
       // if not we need to reset to what the parser says is the previous
       // from buffer
-      if (p !== c) this.p = p;
-      else p = this.p;
+      if (p !== c) {
+        this.p = p;
+      } else {
+        p = this.p;
+      }
 
       if (!c) break;
       // this.position++;
       if (c === Char.lineFeed) {
         this.line++;
         this.column = 0;
-      } else this.column++;
+      } else {
+        this.column++;
+      }
       switch (this.state) {
         case S.BEGIN:
           if (c === Char.openBrace) this.state = S.OPEN_OBJECT;
@@ -97,9 +104,9 @@ export class CParser {
             this.stack.push(S.CLOSE_KEY);
           } else {
             if (c === Char.closeBrace) {
-              this.emit("onopenobject");
+              this.handler.onopenobject(undefined);
               this.depth++;
-              this.emit("oncloseobject");
+              this.handler.oncloseobject();
               this.depth--;
               this.state = this.stack.pop() || S.VALUE;
               continue;
@@ -121,11 +128,15 @@ export class CParser {
             } else this.closeValue("onkey");
             this.state = S.VALUE;
           } else if (c === Char.closeBrace) {
-            this.emitNode("oncloseobject");
+            this.closeValue("onvalue");
+
+            this.handler.oncloseobject();
             this.depth--;
             this.state = this.stack.pop() || S.VALUE;
           } else if (c === Char.comma) {
-            if (this.state === S.CLOSE_OBJECT) this.stack.push(S.CLOSE_OBJECT);
+            if (this.state === S.CLOSE_OBJECT) {
+              this.stack.push(S.CLOSE_OBJECT);
+            }
             this.closeValue("onvalue");
             this.state = S.OPEN_KEY;
           } else this.error("Bad object");
@@ -135,11 +146,11 @@ export class CParser {
         case S.VALUE:
           if (this.isWhitespace(c)) continue;
           if (this.state === S.OPEN_ARRAY) {
-            this.emit("onopenarray");
+            this.handler.onopenarray();
             this.depth++;
             this.state = S.VALUE;
             if (c === Char.closeBracket) {
-              this.emit("onclosearray");
+              this.handler.onclosearray();
               this.depth--;
               this.state = this.stack.pop() || S.VALUE;
               continue;
@@ -168,7 +179,8 @@ export class CParser {
             this.stack.push(S.CLOSE_ARRAY);
             this.state = S.VALUE;
           } else if (c === Char.closeBracket) {
-            this.emitNode("onclosearray");
+            this.closeValue("onvalue");
+            this.handler.onclosearray();
             this.depth--;
             this.state = this.stack.pop() || S.VALUE;
           } else if (this.isWhitespace(c)) continue;
@@ -256,7 +268,8 @@ export class CParser {
 
         case S.TRUE3:
           if (c === Char.e) {
-            this.emit("onvalue", "true");
+            //this.emit("onvalue", "true");
+            this.handler.onvalue("true");
             this.state = this.stack.pop() || S.VALUE;
           } else this.error("Invalid true started with tru" + c);
           continue;
@@ -278,7 +291,7 @@ export class CParser {
 
         case S.FALSE4:
           if (c === Char.e) {
-            this.emit("onvalue", "false");
+            this.handler.onvalue("false");
             this.state = this.stack.pop() || S.VALUE;
           } else this.error("Invalid false started with fals" + c);
           continue;
@@ -295,7 +308,7 @@ export class CParser {
 
         case S.NULL3:
           if (c === Char.l) {
-            this.emit("onvalue", "null");
+            this.handler.onvalue("null");
             this.state = this.stack.pop() || S.VALUE;
           } else this.error("Invalid null started with nul" + c);
           continue;
@@ -346,28 +359,22 @@ export class CParser {
     this.closeValue("onvalue");
     this.c = "";
     this.closed = true;
-    this.emit("onend");
+    this.handler.onend();
     return this;
   }
 
-  emit(event, data?) {
-    this.handler[event](data);
-  }
-
-  emitNode(event?, data?) {
-    this.closeValue("onvalue");
-    this.emit(event, data);
-  }
   closeValue(event) {
     if (this.textNode !== undefined) {
-      this.emit(event, `"${this.textNode}"`);
+      this.handler[event](`"${this.textNode}"`);
+      this.textNode = undefined;
     }
-    this.textNode = undefined;
   }
 
   closeNumber() {
-    if (this.numberNode) this.emit("onvalue", "" + this.numberNode);
-    this.numberNode = "";
+    if (this.numberNode){
+      this.handler.onvalue("" + this.numberNode);
+      this.numberNode = "";
+    }
   }
 
   error(er) {

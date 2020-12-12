@@ -58,7 +58,8 @@ export class CStream extends Writable {
   write(data) {
     // useless maybe
     // data = Buffer.from(data);
-    for (var i = 0; i < data.length; i++) {
+    const l = data.length;
+    for (var i = 0; i < l; i++) {
       var n = data[i];
 
       // check for carry over of a multi byte char split between data chunks

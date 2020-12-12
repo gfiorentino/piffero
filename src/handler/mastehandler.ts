@@ -27,14 +27,16 @@ export class MasterHandler {
 
     this.output = new Stream.Transform();
 
-    // ------ da ottimizzare
+    // ------ da ottimizzare ----
     let status = new PifferoStatus(parsedPath);
     const singleStepHandler = new SingleStepHandler(
       parsedPath,
       this.output,
       opt
     );
+
     this.stepHandlers.push(singleStepHandler);
+    
     while (parsedPath.next) {
       parsedPath = parsedPath.next;
       status = new PifferoStatus(parsedPath);

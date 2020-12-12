@@ -42,8 +42,7 @@ export class SingleStepHandler {
           this.push(`{${node}:`);
         }
       }
-    }
-    if (this.status.path.value === node && this.status.depthCounter === 0) {
+    } else if (this.status.path.value === node && this.status.depthCounter === 0) {
       if (!this.status.isInArray) {
         this.status.recording = true;
         this.status.verified = true;
@@ -210,8 +209,7 @@ export class SingleStepHandler {
       } else {
         this.push(`${node}:`);
       }
-    }
-    if (this.status.depthCounter === 1 && this.status.path.value === node) {
+    } else if (this.status.depthCounter === 1 && this.status.path.value === node) {
       if (!this.status.isInArray) {
         this.status.recording = true;
         this.status.verified = true;
@@ -231,6 +229,7 @@ export class SingleStepHandler {
     this.status.lastkey = node;
     this.status.last = "key";
   }
+
   value(node: any) {
     if (this.status.last === "openarray" && this.status.depthCounter === 2) {
       this.status.isPrimitiveTypeArray = true;
@@ -284,9 +283,9 @@ export class SingleStepHandler {
   verifyCondition(value): boolean {
     const condition = this.status.path.condition;
     return (
+      this.status.isMatching &&
       condition &&
       this.status.depthCounter === 3 &&
-      this.status.isMatching &&
       condition.key === this.status.lastkey &&
       (this.status.last === "key" || this.status.last === "openobject") &&
       condition.value === value
