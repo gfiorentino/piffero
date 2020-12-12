@@ -80,7 +80,7 @@ export class JSONPath {
       ) {
         value = '"' + value.substr(1, value.length - 2) + '"';
       }
-      return { key: conditions[0], value: value };
+      return { key: `"${conditions[0]}"`, value: value };
     }
     return null;
   }

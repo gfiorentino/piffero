@@ -36,7 +36,7 @@ describe("JsonPath", function() {
         expect(next.range.start).toBe(1);
  
         expect(next2.value).toBe('"second"'); 
-        expect(next2.condition).toEqual({key:"attribute", value:'"asd"'});
+        expect(next2.condition).toEqual({key:`"attribute"`, value:'"asd"'});
     })
 
 
@@ -48,10 +48,10 @@ describe("JsonPath", function() {
         let next = result.next;
         let next2 = next.next;
         expect(next.value).toBe('"first"');
-        expect(next.condition).toEqual({key:"att", value:'21'});
+        expect(next.condition).toEqual({key:`"att"`, value:'21'});
  
         expect(next2.value).toBe('"second"'); 
-        expect(next2.condition).toEqual({key:"attribute", value:'"asd"'});
+        expect(next2.condition).toEqual({key:`"attribute"`, value:'"asd"'});
     })
     
   
