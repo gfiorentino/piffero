@@ -23,7 +23,6 @@ export class CParser {
   unicodeI = 0;
   unicodeS = null;
   depth = 0;
-  onend;
   onerror;
   numberNode: string;
   textNode: string;
@@ -48,6 +47,7 @@ export class CParser {
   close() {
     return this.write(null);
   }
+
 
   isWhitespace(c) {
     return (

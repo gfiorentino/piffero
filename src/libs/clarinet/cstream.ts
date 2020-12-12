@@ -25,13 +25,7 @@ export class CStream extends Writable {
     this.handler = handler;
     this._parser = new CParser(handler, opt);
 
-    this._parser.onend = function () {
-      this.handler.onend();
-      // this.emit("end"); // noot used any more
-    };
-
-    this._parser.onerror = function (er) {
-      // this.emit("error", er);
+    this._parser.onerror = (er) => {
       this.handler.onerror(er);
       this._parser.error = null;
 
@@ -56,8 +50,6 @@ export class CStream extends Writable {
   }
 
   write(data) {
-    // useless maybe
-    // data = Buffer.from(data);
     const l = data.length;
     for (var i = 0; i < l; i++) {
       var n = data[i];
@@ -78,7 +70,6 @@ export class CStream extends Writable {
 
         // pass data to parser and move forward to parse rest of data
         this._parser.write(this.string);
-        // this.emit("data", this.string);
         continue;
       }
 
@@ -108,7 +99,6 @@ export class CStream extends Writable {
           i = i + this.bytes_in_sequence - 1;
 
           this._parser.write(this.string);
-          // this.emit("data", this.string); // unused
           continue;
         }
       }
@@ -119,10 +109,7 @@ export class CStream extends Writable {
       }
       this.string = data.slice(i, p).toString();
       this._parser.write(this.string);
-      // this.emit("data", this.string);  // unused
       i = p - 1;
-
-      // handle any remaining characters using multibyte logic
       continue;
     }
   }
@@ -140,12 +127,12 @@ export class CStream extends Writable {
     this._parser.closeValue("onvalue");
     this._parser.c = "";
     this._parser.closed = true;
-    this._parser.onend();
+    this.handler.onend();
+   // this._parser.onend();
   }
 
   destroy() {
     this._parser.clearBuffers();
     this.handler.onclose();
-    // this.emit("close"); // not used any more
   }
 }
