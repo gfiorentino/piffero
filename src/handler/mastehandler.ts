@@ -47,9 +47,10 @@ export class MasterHandler {
     }
 
     this.currentHandler = this.stepHandlers[this.handlerIndex];
-    this.cStream = new CStream(this);
+
 
     this.shiftParser();
+    this.cStream = new CStream(this);
     this.stream.pipe(this.cStream);
 
     if (opt.mode === "stream") {
@@ -67,11 +68,12 @@ export class MasterHandler {
 
   shiftParser() {
     if (this.currentHandler.status.recording && !this.currentHandler.isLast) {
-      const last = this.currentHandler.status.last;
+      let last = this.currentHandler.status.last;
       const lastkey = this.currentHandler.status.lastkey;
       let depthCounter = 0;
       if (this.currentHandler.status.last === "openobject") {
         depthCounter = 1;
+        last = "first";
       }
       this.handlerIndex++;
       this.currentHandler = this.stepHandlers[this.handlerIndex];

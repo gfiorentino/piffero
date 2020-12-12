@@ -1,8 +1,7 @@
 import { MasterHandler } from "./../../handler/mastehandler";
-import { Stream, Writable } from "stream";
+import { Writable } from "stream";
 import { EVENTS } from "./const";
 import { CParser, S } from "./Cparser";
-// non node-js needs to set clarinet debug on root
 
 export const streamWraps = EVENTS.filter(function (ev) {
   return ev !== "error" && ev !== "end";
@@ -32,7 +31,7 @@ export class CStream extends Writable {
     };
 
     this._parser.onerror = function (er) {
-      this.emit("error", er);
+      // this.emit("error", er);
       this.handler.onerror(er);
       this._parser.error = null;
 
@@ -78,7 +77,7 @@ export class CStream extends Writable {
 
         // pass data to parser and move forward to parse rest of data
         this._parser.write(this.string);
-        this.emit("data", this.string);
+        // this.emit("data", this.string);
         continue;
       }
 
@@ -109,7 +108,7 @@ export class CStream extends Writable {
           i = i + this.bytes_in_sequence - 1;
 
           this._parser.write(this.string);
-          this.emit("data", this.string);
+          // this.emit("data", this.string); // unused 
           continue;
         }
       }
@@ -120,7 +119,7 @@ export class CStream extends Writable {
       }
       this.string = data.slice(i, p).toString();
       this._parser.write(this.string);
-      this.emit("data", this.string);
+      // this.emit("data", this.string);  // unused 
       i = p - 1;
 
       // handle any remaining characters using multibyte logic
@@ -135,9 +134,9 @@ export class CStream extends Writable {
   }
 
   endParser() {
-    if (this._parser.state !== S.VALUE || this._parser.depth !== 0)
+    if (this._parser.state !== S.VALUE || this._parser.depth !== 0){
       this._parser.error("Unexpected end");
-
+    }
     this._parser.closeValue("onvalue");
     this._parser.c = "";
     this._parser.closed = true;

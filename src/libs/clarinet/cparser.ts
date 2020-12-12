@@ -93,7 +93,9 @@ export class CParser {
         case S.OPEN_KEY:
         case S.OPEN_OBJECT:
           if (this.isWhitespace(c)) continue;
-          if (this.state === S.OPEN_KEY) this.stack.push(S.CLOSE_KEY);
+          if (this.state === S.OPEN_KEY) {
+            this.stack.push(S.CLOSE_KEY);
+          }
           else {
             if (c === Char.closeBrace) {
               this.emit("onopenobject");

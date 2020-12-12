@@ -78,7 +78,10 @@ export class SingleStepHandler {
       }
     }
     // ----------
-    this.status._depthCounter++;
+    
+    if(this.status.last !== "first") {
+      this.status._depthCounter++;
+    }
     this.status.lastkey = node;
     this.status.last = "openobject";
   }
@@ -142,8 +145,6 @@ export class SingleStepHandler {
       this.status.temp = "";
     } else if (this.status.isMatching && this.status.depthCounter === 2) {
       this.status.currentIndex++;
-      // se lavoriamo con un indice
-
       if (
         this.status.path.range &&
         this.status.currentIndex === this.status.path.range.start
@@ -209,8 +210,7 @@ export class SingleStepHandler {
       } else {
         this.push(`${node}:`);
       }
-    }
-    if (this.status.depthCounter === 1 && this.status.path.value === node) {
+    } if (this.status.depthCounter === 1 && this.status.path.value === node) {
       if (!this.status.isInArray) {
         this.status.recording = true;
         this.status.verified = true;

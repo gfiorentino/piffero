@@ -2,6 +2,7 @@
     "firstName": "John",
     "lastName" : "doe",
     "age"      : 26,
+    "object"   : {"key": "object"},
     "array": [[1,2],[3,4]],
     "address"  : [{
       "streetAddress": "naist street",

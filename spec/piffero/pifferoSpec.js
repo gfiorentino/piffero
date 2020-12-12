@@ -52,6 +52,14 @@ describe("piffero john-doe", function() {
       expect(string).toBe('"0123-4567-8910"');
       JSON.parse(string);
     });
+
+    it("attribute boolean element in an array jsonpath", async function() {
+      const result = Piffero.findByPath(stream, '$.phoneNumbers[1].test')
+      const string = await streamToString(result);
+      expect(string).toBe('true');
+      JSON.parse(string);
+    });
+
     it("array in an array ", async function() {
       const result = Piffero.findByPath(stream, '$.array')
       const string = await streamToString(result);
