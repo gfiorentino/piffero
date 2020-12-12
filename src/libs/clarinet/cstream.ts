@@ -83,14 +83,12 @@ export class CStream extends Writable {
 
       // if no remainder bytes carried over, parse multi byte (>=128) chars one at a time
       if (this.bytes_remaining === 0 && n >= 128) {
-        if (n >= 194 && n <= 223){ 
+        if (n >= 194 && n <= 223) {
           this.bytes_in_sequence = 2;
-        }
-        else if (n >= 224 && n <= 239) {
-           this.bytes_in_sequence = 3; 
-          }
-        else if (n >= 240 && n <= 244) { 
-          this.bytes_in_sequence = 4; 
+        } else if (n >= 224 && n <= 239) {
+          this.bytes_in_sequence = 3;
+        } else if (n >= 240 && n <= 244) {
+          this.bytes_in_sequence = 4;
         }
         if (this.bytes_in_sequence + i > data.length) {
           // if bytes needed to complete char fall outside data length, we have a boundary split
@@ -108,7 +106,7 @@ export class CStream extends Writable {
           i = i + this.bytes_in_sequence - 1;
 
           this._parser.write(this.string);
-          // this.emit("data", this.string); // unused 
+          // this.emit("data", this.string); // unused
           continue;
         }
       }
@@ -119,7 +117,7 @@ export class CStream extends Writable {
       }
       this.string = data.slice(i, p).toString();
       this._parser.write(this.string);
-      // this.emit("data", this.string);  // unused 
+      // this.emit("data", this.string);  // unused
       i = p - 1;
 
       // handle any remaining characters using multibyte logic
@@ -134,7 +132,7 @@ export class CStream extends Writable {
   }
 
   endParser() {
-    if (this._parser.state !== S.VALUE || this._parser.depth !== 0){
+    if (this._parser.state !== S.VALUE || this._parser.depth !== 0) {
       this._parser.error("Unexpected end");
     }
     this._parser.closeValue("onvalue");

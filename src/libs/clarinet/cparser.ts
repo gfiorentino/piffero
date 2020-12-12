@@ -95,8 +95,7 @@ export class CParser {
           if (this.isWhitespace(c)) continue;
           if (this.state === S.OPEN_KEY) {
             this.stack.push(S.CLOSE_KEY);
-          }
-          else {
+          } else {
             if (c === Char.closeBrace) {
               this.emit("onopenobject");
               this.depth++;

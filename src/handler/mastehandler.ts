@@ -48,7 +48,6 @@ export class MasterHandler {
 
     this.currentHandler = this.stepHandlers[this.handlerIndex];
 
-
     this.shiftParser();
     this.cStream = new CStream(this);
     this.stream.pipe(this.cStream);

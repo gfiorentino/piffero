@@ -78,8 +78,8 @@ export class SingleStepHandler {
       }
     }
     // ----------
-    
-    if(this.status.last !== "first") {
+
+    if (this.status.last !== "first") {
       this.status._depthCounter++;
     }
     this.status.lastkey = node;
@@ -210,7 +210,8 @@ export class SingleStepHandler {
       } else {
         this.push(`${node}:`);
       }
-    } if (this.status.depthCounter === 1 && this.status.path.value === node) {
+    }
+    if (this.status.depthCounter === 1 && this.status.path.value === node) {
       if (!this.status.isInArray) {
         this.status.recording = true;
         this.status.verified = true;

@@ -50,7 +50,6 @@ export class PifferoStatus {
   path: ParsedPath = undefined;
 
   constructor(path: ParsedPath) {
-   
     this.path = path;
     if (this.path.range || path.condition) {
       this.isInArray = true;
@@ -65,9 +64,9 @@ export class PifferoStatus {
       this.recording = true;
     }
 
-    if (this.path.value !== '"$"'){
+    if (this.path.value !== '"$"') {
       this._last = "first";
-    } 
+    }
   }
 
   get needComma(): boolean {
