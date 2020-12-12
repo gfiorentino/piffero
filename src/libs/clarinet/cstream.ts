@@ -94,7 +94,8 @@ export class CStream extends Writable {
         if (this.bytes_in_sequence + i > data.length) {
           // if bytes needed to complete char fall outside data length, we have a boundary split
 
-          for (var k = 0; k <= data.length - 1 - i; k++) {
+          const length = l - 1 - i
+          for (var k = 0; k <= length ; k++) {
             this.temp_buffs[this.bytes_in_sequence][k] = data[i + k]; // fill temp data of correct size with bytes available in this chunk
           }
 
@@ -113,7 +114,7 @@ export class CStream extends Writable {
       }
 
       // is there a range of characters that are immediately parsable?
-      for (var p = i; p < data.length; p++) {
+      for (var p = i; p < l ; p++) {
         if (data[p] >= 128) break;
       }
       this.string = data.slice(i, p).toString();
