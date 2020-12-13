@@ -9,6 +9,22 @@ describe("piffero large", function () {
     stream = fs.createReadStream("spec/jsonFiles/large.json");
   });
 
+  it("no jsonpath", async function (done) {
+    const result = Piffero.findByPath(stream);
+    const string = await streamToString(result);
+    expect(JSON.stringify(JSON.parse(string))).toBe(results.SIMPLE_JSON_LARGE);
+    done();
+  });
+
+  it("no jsonpath as string", async function (done) {
+    const callback = (json) => {
+      expect(JSON.stringify(JSON.parse(json))).toBe(results.SIMPLE_JSON_LARGE);
+      done();
+    };
+    Piffero.findAsString(callback, stream);
+  });
+
+  
   it("simple jsonpath", async function (done) {
     const result = Piffero.findByPath(stream, "$");
     const string = await streamToString(result);
