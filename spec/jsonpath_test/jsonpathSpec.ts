@@ -1,3 +1,4 @@
+import { PATH_ERROR_MESSAGE, PifferoJsonPathError } from "../../src/pifferoerror";
 
 describe("JsonPath", function() {
     const JSONPath = require('../../src/jsonpath').JSONPath;
@@ -10,6 +11,12 @@ describe("JsonPath", function() {
       expect(next.value).toBe('"first"');
       let next2 = next.next;
       expect(next2.value).toBe('"second"'); 
+    });
+
+    it("simple jsonpath exception", function() {
+      const jsonPath = 'first.second';
+      expect(function() {JSONPath.parse(jsonPath)})
+        .toThrow(new PifferoJsonPathError(`${PATH_ERROR_MESSAGE}: ${jsonPath}`));
     });
 
    it("simple jsonpath wiith index", function() {
