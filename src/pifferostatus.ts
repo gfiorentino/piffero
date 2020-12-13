@@ -88,26 +88,14 @@ export class PifferoStatus {
 
   decrementDepthConnter() {
     this._depthCounter--;
-    if (this._depthCounter === 0 && this.recording) {
-      this.recording = false;
-      this.end = true;
-    }
+   // if (this._depthCounter === 0 && this.recording) {
+    //  this.recording = false;
+    //  this.end = true;
+   // }
   }
 
   hasNext(): boolean {
     return this.path.next !== null && this.path.next !== undefined;
   }
 
-  private next(): ParsedPath {
-    this.verified = false;
-    this.isInArray = false;
-    this.depthCounter = 0;
-    this.currentIndex = -1;
-    this.path = this.path.next;
-    if (this.path.range) {
-      this.isInArray = true;
-    }
-    this.isPrimitiveTypeArray = false;
-    return this.path;
-  }
 }

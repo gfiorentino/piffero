@@ -10,7 +10,7 @@ export class MasterHandler {
   currentHandler: SingleStepHandler;
   _opt: PifferoOpt;
   cStream: CStream;
-  callback: (result) => {};
+  callback: (result) => void;
   stream: Readable;
   output: Duplex;
 
@@ -18,7 +18,7 @@ export class MasterHandler {
     stream: Readable,
     jsonPath: string,
     opt: PifferoOpt,
-    callback?: (result) => {}
+    callback?: (result) => void
   ): Stream {
     this.callback = callback;
     this.stream = stream;

@@ -1,7 +1,7 @@
 import { streamToString } from "../utils";
+import { Piffero } from "../../src/piffero"
 
 describe("piffero large", function() {
-  const Piffero = require('../../src/piffero').Piffero;
   const results = require('./results'); 
   const fs  =  require('fs');
   let stream
@@ -11,7 +11,9 @@ describe("piffero large", function() {
 
   it("simple jsonpath", async function() {
       const result = Piffero.findByPath(stream, '$')
-      const string = await streamToString(result);  
+      const string = await streamToString(result); 
+      let callback =(json)=> { expect(JSON.stringify(JSON.parse(json))).toBe(results.SIMPLE_JSON_LARGE);}
+      Piffero.findAsString( callback,stream, '$');  
       expect(JSON.stringify(JSON.parse(string))).toBe(results.SIMPLE_JSON_LARGE);
   }); 
     

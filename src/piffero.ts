@@ -8,7 +8,7 @@ export class Piffero {
   }
 
   static findAsString(
-    callback: (result, err?) => {},
+    callback: (result, err?) => void,
     stream: Readable,
     jsonPath: string = "$"
   ) {
