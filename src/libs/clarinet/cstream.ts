@@ -1,7 +1,7 @@
 import { MasterHandler } from "./../../handler/mastehandler";
 import { Writable } from "stream";
 import { EVENTS } from "./const";
-import { CParser, S } from "./Cparser";
+import { CParser, S } from "./cparser";
 
 export const streamWraps = EVENTS.filter(function (ev) {
   return ev !== "error" && ev !== "end";

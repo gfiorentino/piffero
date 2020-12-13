@@ -94,8 +94,8 @@ export class PifferoStatus {
    // }
   }
 
-  hasNext(): boolean {
-    return this.path.next !== null && this.path.next !== undefined;
-  }
+ // hasNext(): boolean {
+  //  return this.path.next !== null && this.path.next !== undefined;
+ // }
 
 }
