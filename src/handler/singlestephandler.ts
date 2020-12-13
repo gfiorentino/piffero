@@ -172,7 +172,7 @@ export class SingleStepHandler {
       if (this.status.depthCounter === 1) {
         this.status.recording = false;
         this.status.end = true;
-        if (!this.status.path.range) {
+        if (!this.status.path.range && !this.status.path.hascondtion) {
           this.push(`]`);
         }
       } else {

@@ -7,11 +7,7 @@ export class Piffero {
     return handler.parse(stream, jsonPath, { mode: "stream" });
   }
 
-  static findAsString(
-    callback: (result, err?) => void,
-    stream: Readable,
-    jsonPath: string = "$"
-  ) {
+  static findAsString(callback: (result, err?) => void, stream: Readable, jsonPath: string = "$") {
     const handler = new MasterHandler();
     handler.parse(stream, jsonPath, { mode: "string" }, callback);
   }

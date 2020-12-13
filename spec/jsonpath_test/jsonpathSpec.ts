@@ -60,6 +60,7 @@ describe("JsonPath", function() {
         expect(next2.value).toBe('"second"'); 
         expect(next2.condition).toEqual({key:`"attribute"`, value:'"asd"'});
     })
+  
     
   
  });

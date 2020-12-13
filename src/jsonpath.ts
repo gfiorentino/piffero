@@ -80,8 +80,10 @@ export class JSONPath {
         value.startsWith('"') ||
         value.startsWith("'")
       ) {
+
         value = '"' + value.substr(1, value.length - 2) + '"';
       }
+      console.log(value);
       return { key: `"${conditions[0]}"`, value: value };
     }
     return null;
