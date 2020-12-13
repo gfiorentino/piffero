@@ -10,7 +10,7 @@
   "scripts": {
     "test": "jasmine-ts JASMINE_CONFIG_PATH=jasmine.json",
     "nyc:report": "nyc report",
-    "coverage": "npm run test && npm run nyc:report",
+    "coverage": "nyc npm run test",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\"",
