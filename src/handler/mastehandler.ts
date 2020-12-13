@@ -36,7 +36,7 @@ export class MasterHandler {
     );
 
     this.stepHandlers.push(singleStepHandler);
-    
+
     while (parsedPath.next) {
       parsedPath = parsedPath.next;
       status = new PifferoStatus(parsedPath);

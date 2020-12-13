@@ -65,7 +65,7 @@ export class JSONPath {
       condition: condition,
       range: range,
       recursiveDescendant: false,
-      hascondtion: condition !== null && condition !== undefined
+      hascondtion: condition !== null && condition !== undefined,
     };
   }
 
@@ -80,7 +80,6 @@ export class JSONPath {
         value.startsWith('"') ||
         value.startsWith("'")
       ) {
-
         value = '"' + value.substr(1, value.length - 2) + '"';
       }
       console.log(value);

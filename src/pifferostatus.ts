@@ -89,5 +89,4 @@ export class PifferoStatus {
   decrementDepthConnter() {
     this._depthCounter--;
   }
-
 }

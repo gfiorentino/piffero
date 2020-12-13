@@ -42,7 +42,10 @@ export class SingleStepHandler {
           this.push(`{${node}:`);
         }
       }
-    } else if (this.status.path.value === node && this.status.depthCounter === 0) {
+    } else if (
+      this.status.path.value === node &&
+      this.status.depthCounter === 0
+    ) {
       if (!this.status.isInArray) {
         this.status.recording = true;
         this.status.verified = true;
@@ -209,7 +212,10 @@ export class SingleStepHandler {
       } else {
         this.push(`${node}:`);
       }
-    } else if (this.status.depthCounter === 1 && this.status.path.value === node) {
+    } else if (
+      this.status.depthCounter === 1 &&
+      this.status.path.value === node
+    ) {
       if (!this.status.isInArray) {
         this.status.recording = true;
         this.status.verified = true;

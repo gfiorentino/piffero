@@ -48,7 +48,6 @@ export class CParser {
     return this.write(null);
   } */
 
-
   isWhitespace(c) {
     return (
       c === Char.space ||
@@ -371,7 +370,7 @@ export class CParser {
   }
 
   closeNumber() {
-    if (this.numberNode){
+    if (this.numberNode) {
       this.handler.onvalue("" + this.numberNode);
       this.numberNode = "";
     }
