@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "test": "jasmine-ts JASMINE_CONFIG_PATH=jasmine.json",
-    "coverage": "nyc npm run test | coveralls",
+    "coverage": "nyc npm run test  --coverageReporters=text-lcov | coveralls",
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
