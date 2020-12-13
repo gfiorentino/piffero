@@ -39,14 +39,14 @@ export class CParser {
     this.numberNode = "";
   }
 
-  resume() {
+  /*resume() {
     this.errorString = null;
     return this;
   }
 
   close() {
     return this.write(null);
-  }
+  } */
 
 
   isWhitespace(c) {
