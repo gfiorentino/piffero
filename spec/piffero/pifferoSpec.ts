@@ -1,6 +1,7 @@
+import { streamToString } from "../utils";
 
 describe("piffero john-doe", function() {
-  const Piffero = require('../../dist/src/piffero').Piffero;
+  const Piffero = require('../../src/piffero').Piffero;
     const fs  =  require('fs');
     let stream
     beforeEach( function() {   
@@ -9,7 +10,7 @@ describe("piffero john-doe", function() {
 
     it("simple jsonpath", async function() {
       const result = Piffero.findByPath(stream, '$.firstName')
-      const string = await streamToString(result);
+      const string: string = await streamToString(result);
       expect(string).toBe('"John"');
       JSON.parse(string)
     
@@ -82,11 +83,3 @@ describe("piffero john-doe", function() {
     });
 }); 
 
-async function streamToString (stream) {
-  const chunks = []
-  return new Promise((resolve, reject) => {
-    stream.on('data', chunk => chunks.push(chunk))
-    stream.on('error', reject)
-    stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')))
-  })
-}

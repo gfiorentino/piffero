@@ -258,7 +258,7 @@ export class SingleStepHandler {
         this.status.end = true;
       }
       ///-----condition value -----
-    } else if (this.verifyCondition(node)) {
+    } else if (this.status.path.hascondtion && this.verifyCondition(node)) {
       this.status.recording = true;
       this.status.verified = true;
       this.status.decrementDepthConnter();
@@ -284,7 +284,6 @@ export class SingleStepHandler {
     const condition = this.status.path.condition;
     return (
       this.status.isMatching &&
-      condition &&
       this.status.depthCounter === 3 &&
       condition.key === this.status.lastkey &&
       (this.status.last === "key" || this.status.last === "openobject") &&

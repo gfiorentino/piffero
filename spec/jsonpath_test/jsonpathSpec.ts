@@ -1,6 +1,6 @@
 
 describe("JsonPath", function() {
-    const JSONPath = require('../../dist/src/jsonpath').JSONPath;
+    const JSONPath = require('../../src/jsonpath').JSONPath;
 
     it("simple jsonpath", function() {
       const result = JSONPath.parse('$.first.second')

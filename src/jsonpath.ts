@@ -20,6 +20,7 @@ export interface ParsedPath {
     value: string;
   }; // ?? not supported yet
   next: ParsedPath;
+  hascondtion: boolean;
   recursiveDescendant: boolean; // ?? not supported yet
 }
 
@@ -64,6 +65,7 @@ export class JSONPath {
       condition: condition,
       range: range,
       recursiveDescendant: false,
+      hascondtion: condition !== null && condition !== undefined
     };
   }
 

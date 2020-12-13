@@ -1,6 +1,7 @@
+import { streamToString } from "../utils";
 
 describe("piffero large", function() {
-  const Piffero = require('../../dist/src/piffero').Piffero;
+  const Piffero = require('../../src/piffero').Piffero;
   const results = require('./results'); 
   const fs  =  require('fs');
   let stream
@@ -35,11 +36,3 @@ describe("piffero large", function() {
 
 });
 
- async function streamToString (stream) {
-  const chunks = []
-  return new Promise((resolve, reject) => {
-    stream.on('data', chunk => chunks.push(chunk))
-    stream.on('error', reject)
-    stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')))
-  })
-}
