@@ -19,6 +19,12 @@ describe("JsonPath", function() {
         .toThrow(new PifferoJsonPathError(`${PATH_ERROR_MESSAGE}: ${jsonPath}`));
     });
 
+    it("simple jsonpath exception", function() {
+      const jsonPath = '$.second';
+      expect(function() {JSONPath.parse(jsonPath)})
+        .toThrow(new PifferoJsonPathError(`${PATH_ERROR_MESSAGE}: ${jsonPath}`));
+    });
+
    it("simple jsonpath wiith index", function() {
       const result = JSONPath.parse('$.first[1].second[2]')
         //demonstrates use of custom matcher
