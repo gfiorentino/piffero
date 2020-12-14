@@ -14,7 +14,7 @@ describe("JsonPath", function() {
     });
 
     it("simple jsonpath exception", function() {
-      const jsonPath = 'first.second';
+      const jsonPath = '$.second]';
       expect(function() {JSONPath.parse(jsonPath)})
         .toThrow(new PifferoJsonPathError(`${PATH_ERROR_MESSAGE}: ${jsonPath}`));
     });
