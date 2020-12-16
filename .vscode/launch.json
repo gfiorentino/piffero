@@ -1,12 +1,13 @@
 {
     "version": "0.2.0",
     "configurations": [
+
         {
             "type": "node", 
             "request": "launch", 
             "name": "Jasmine Current File", 
-            "program": "${workspaceRoot}\\node_modules\\jasmine\\bin\\jasmine.js",
-            "args": ["--config=./jasmine.json", "${file}"],
+            "program": "${workspaceRoot}\\node_modules\\jasmine-ts\\lib\\index",
+            "args": ["--config=./spec/support/jasmine.json", "${file}"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
         },

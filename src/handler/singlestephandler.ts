@@ -8,6 +8,7 @@ export class SingleStepHandler {
   _output: Duplex;
   useString = false;
   outputString = "";
+  
   constructor(path: ParsedPath, output: Duplex, opt: PifferoOpt) {
     this.useString = opt.mode === "string";
     this.status = new PifferoStatus(path);

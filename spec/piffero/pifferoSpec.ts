@@ -5,7 +5,7 @@ describe("piffero john-doe", function() {
     const fs  =  require('fs');
     let stream
     beforeEach( function() {   
-      stream = fs.createReadStream('spec/jsonFiles/john-doe.json');
+      stream = fs.createReadStream('spec/jsonFiles/john-doe.json','utf8');
     });
 
     it("simple jsonpath", async function() {
@@ -25,13 +25,20 @@ describe("piffero john-doe", function() {
     }); 
 
     it("simple jsonpath diacriticals", async function() {
-      
       const result = Piffero.findByPath(stream, '$.diacriticals')
       const string = await streamToString(result);
       expect(string).toBe('"áÇÂôÜ"');
       JSON.parse(string)
+    });
+  
+
+    it("simple jsonpath character", async function() {
+      const result = Piffero.findByPath(stream, '$.character')
+      const string = await streamToString(result);
+      expect(string).toBe('"£$%&/()"');
+      JSON.parse(string)
     }); 
-    
+
     
     it("array jsonpath", async function() {
       const result = Piffero.findByPath(stream, '$.phoneNumbers')
@@ -54,6 +61,19 @@ describe("piffero john-doe", function() {
       JSON.parse(string);
     });
 
+    it("simple jsonpath chinese chinese", async function() {
+      const result = Piffero.findByPath(stream, '$.普派')
+      const string = await streamToString(result);
+      expect(string).toBe('"普派"');
+      JSON.parse(string)
+    }); 
+
+    it("simple jsonpath chinese", async function() {
+      const result = Piffero.findByPath(stream, '$.chinese')
+      const string = await streamToString(result);
+      expect(string).toBe('"普派是"');
+      JSON.parse(string)
+    }); 
 
     it("element in an array jsonpath 2", async function() {
       const result = Piffero.findByPath(stream, '$.phoneNumbers[0]')

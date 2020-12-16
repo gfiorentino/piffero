@@ -1,4 +1,4 @@
-{
+{   "普派":"普派",
     "firstName": "John",
     "lastName" : "doe",
     "age"      : 26,
@@ -9,7 +9,9 @@
       "city"         : "Nara",
       "postalCode"   : "630-0192"
     }],
-    "diacriticals": "áÇÂôÜ", 
+    "diacriticals": "áÇÂôÜ",
+    "chinese": "普派是",
+    "character": "£$%&/()",
     "phoneNumbers": [
       {
         "type"  : "\"iPhone\"",
