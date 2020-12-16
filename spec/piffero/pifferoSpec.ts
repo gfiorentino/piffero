@@ -5,7 +5,7 @@ describe("piffero john-doe", function() {
     const fs  =  require('fs');
     let stream
     beforeEach( function() {   
-      stream = fs.createReadStream('spec/jsonFiles/john-doe.json','utf8');
+      stream = fs.createReadStream('spec/jsonFiles/john-doe.json');
     });
 
     it("simple jsonpath", async function() {
