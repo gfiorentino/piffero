@@ -9,6 +9,7 @@
       "city"         : "Nara",
       "postalCode"   : "630-0192"
     }],
+    "diacriticals": "áÇÂôÜ", 
     "phoneNumbers": [
       {
         "type"  : "\"iPhone\"",

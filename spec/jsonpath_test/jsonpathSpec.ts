@@ -67,7 +67,5 @@ describe("JsonPath", function() {
         expect(next2.condition).toEqual({key:`"attribute"`, value:'"asd"'});
     })
   
-    
-  
  });
   

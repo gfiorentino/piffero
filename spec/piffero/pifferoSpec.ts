@@ -23,6 +23,14 @@ describe("piffero john-doe", function() {
       expect(string).toBe('"doe"');
       JSON.parse(string)
     }); 
+
+    it("simple jsonpath diacriticals", async function() {
+      
+      const result = Piffero.findByPath(stream, '$.diacriticals')
+      const string = await streamToString(result);
+      expect(string).toBe('"áÇÂôÜ"');
+      JSON.parse(string)
+    }); 
     
     
     it("array jsonpath", async function() {
