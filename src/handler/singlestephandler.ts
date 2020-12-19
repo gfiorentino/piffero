@@ -13,7 +13,7 @@ export class SingleStepHandler {
     this.useString = opt.mode === "string";
     this.status = new PifferoStatus(path);
     this._output = output;
-    this.isLast = path.next == undefined || path.next == null;
+    this.isLast = path.next == undefined || path.next == null || path.hascondtion;
   }
 
   push(value) {

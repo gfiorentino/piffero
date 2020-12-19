@@ -1,6 +1,6 @@
 import { CStream } from "./../libs/clarinet/cstream";
 import { SingleStepHandler } from "./singlestephandler";
-import { JSONPath } from "../jsonpath";
+import { ParsedPath } from "../jsonpath";
 import { Duplex, Readable, Stream } from "stream";
 import { PifferoOpt, PifferoStatus } from "../pifferostatus";
 
@@ -15,15 +15,15 @@ export class MasterHandler {
   output: Duplex;
 
   parse(
-    stream: Readable,
-    jsonPath: string,
+    stream: Stream,
+    parsedPath: ParsedPath,
     opt: PifferoOpt,
     callback?: (result) => void
   ): Stream {
     this.callback = callback;
-    this.stream = stream;
+    this.stream = stream as Readable;
     this._opt = opt;
-    let parsedPath = JSONPath.parse(jsonPath);
+    //  let parsedPath = JSONPath.parse(jsonPath);
 
     this.output = new Stream.Transform();
 
@@ -37,7 +37,7 @@ export class MasterHandler {
 
     this.stepHandlers.push(singleStepHandler);
 
-    while (parsedPath.next) {
+    while (parsedPath.next && !parsedPath.hascondtion) {
       parsedPath = parsedPath.next;
       status = new PifferoStatus(parsedPath);
       const singleStepHandler = new SingleStepHandler(
@@ -47,6 +47,25 @@ export class MasterHandler {
       );
       this.stepHandlers.push(singleStepHandler);
     }
+    
+    let output2: Stream = undefined
+
+    // recursive if has condition ... no better solution for now
+    if(parsedPath.next) {
+
+      const nexthandler : MasterHandler = new MasterHandler();
+      output2 = new Stream.Transform();
+      const nextParsedPath : ParsedPath = {
+        value: '"$"',
+        next: parsedPath.next,
+        hascondtion: false,
+        recursiveDescendant: false,
+      }  
+      const opt2 = {...this._opt};
+      this._opt.mode = "stream";
+      output2 = nexthandler.parse(this.output as Stream, nextParsedPath, opt2, callback);
+      this.callback = (result) => {};
+    }
 
     this.currentHandler = this.stepHandlers[this.handlerIndex];
 
@@ -55,6 +74,9 @@ export class MasterHandler {
     this.stream.pipe(this.cStream);
 
     if (opt.mode === "stream") {
+      if(output2){
+        return output2;
+      }
       return this.output;
     }
   }
