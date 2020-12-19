@@ -8,12 +8,13 @@ export class SingleStepHandler {
   _output: Duplex;
   useString = false;
   outputString = "";
-  
+
   constructor(path: ParsedPath, output: Duplex, opt: PifferoOpt) {
     this.useString = opt.mode === "string";
     this.status = new PifferoStatus(path);
     this._output = output;
-    this.isLast = path.next == undefined || path.next == null || path.hascondtion;
+    this.isLast =
+      path.next == undefined || path.next == null || path.hascondtion;
   }
 
   push(value) {

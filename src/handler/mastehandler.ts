@@ -47,23 +47,27 @@ export class MasterHandler {
       );
       this.stepHandlers.push(singleStepHandler);
     }
-    
-    let output2: Stream = undefined
+
+    let output2: Stream = undefined;
 
     // recursive if has condition ... no better solution for now
-    if(parsedPath.next) {
-
-      const nexthandler : MasterHandler = new MasterHandler();
+    if (parsedPath.next) {
+      const nexthandler: MasterHandler = new MasterHandler();
       output2 = new Stream.Transform();
-      const nextParsedPath : ParsedPath = {
+      const nextParsedPath: ParsedPath = {
         value: '"$"',
         next: parsedPath.next,
         hascondtion: false,
         recursiveDescendant: false,
-      }  
-      const opt2 = {...this._opt};
+      };
+      const opt2 = { ...this._opt };
       this._opt.mode = "stream";
-      output2 = nexthandler.parse(this.output as Stream, nextParsedPath, opt2, callback);
+      output2 = nexthandler.parse(
+        this.output as Stream,
+        nextParsedPath,
+        opt2,
+        callback
+      );
       this.callback = (result) => {};
     }
 
@@ -74,7 +78,7 @@ export class MasterHandler {
     this.stream.pipe(this.cStream);
 
     if (opt.mode === "stream") {
-      if(output2){
+      if (output2) {
         return output2;
       }
       return this.output;

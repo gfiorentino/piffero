@@ -6,7 +6,7 @@ export class Piffero {
   static findByPath(stream: Readable, jsonPath: string = "$"): Stream {
     const handler = new MasterHandler();
     let parsedPath = JSONPath.parse(jsonPath);
-    return handler.parse(stream , parsedPath, { mode: "stream" });
+    return handler.parse(stream, parsedPath, { mode: "stream" });
   }
 
   static findAsString(
