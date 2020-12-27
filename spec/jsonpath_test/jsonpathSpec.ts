@@ -25,7 +25,7 @@ describe("JsonPath", function() {
         .toThrow(new PifferoJsonPathError(`${PATH_ERROR_MESSAGE}: ${jsonPath}`));
     });
 
-   it("simple jsonpath wiith index", function() {
+   it("simple jsonpath with index", function() {
       const result = JSONPath.parse('$.first[1].second[2]')
         //demonstrates use of custom matcher
         expect(result.value).toBe('"$"');
