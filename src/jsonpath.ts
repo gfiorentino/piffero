@@ -1,5 +1,5 @@
 import { PifferoJsonPathError, PATH_ERROR_MESSAGE } from "./pifferoerror";
-import { ConditionEval } from "./conditioneval/conditioneval"
+import { ConditionEval } from "./conditioneval/conditioneval";
 /* 
 $	The root object/element
 @	The current object/element
