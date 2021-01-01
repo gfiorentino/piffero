@@ -1,5 +1,5 @@
 import { PifferoJsonPathError, PATH_ERROR_MESSAGE } from "./pifferoerror";
-
+import { ConditionEval } from "./conditioneval/conditioneval"
 /* 
 $	The root object/element
 @	The current object/element
@@ -82,8 +82,10 @@ export class JSONPath {
         value.startsWith("'")
       ) {
         value = '"' + value.substr(1, value.length - 2) + '"';
+      } else {
+        value = ConditionEval.staticEval(value);
+        console.log(value);
       }
-      console.log(value);
       return { key: `"${conditions[0]}"`, value: value };
     }
     return null;
