@@ -94,7 +94,7 @@ export class MasterHandler {
   }
 
   shiftParser() {
-    if (this.currentHandler.status.recording && !this.currentHandler.isLast) {
+    if (!this.currentHandler.isLast && this.currentHandler.status.recording ) {
       let last = this.currentHandler.status.last;
       const lastkey = this.currentHandler.status.lastkey;
       let depthCounter = 0;
@@ -114,27 +114,23 @@ export class MasterHandler {
   onopenobject(node) {
     this.currentHandler.openObject(node);
     this.shiftParser();
-    // checkStreams();
   }
 
   // ------ OPEN ARRAY -----------------------------------------------------------
   onopenarray() {
     this.currentHandler.openArray();
     this.shiftParser();
-    // checkStreams();
   }
 
   // --- CLOSE OBJECT  -------------------------------------------------------
   oncloseobject() {
     this.currentHandler.closeObject();
-    // shiftParser();
     this.checkStreams();
   }
 
   // --- CLOSE ARRAY  -------------------------------------------------------
   onclosearray() {
     this.currentHandler.closeArray();
-    // shiftParser();
     this.checkStreams();
   }
 

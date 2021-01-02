@@ -18,6 +18,6 @@ describe("ConditionEval", function () {
 
   it("or condition", function () {
     const result = ConditionEval.createCondition('?(!.attribute===1+2 || !.check===true)');
-    console.log(result)
+    // TODO assert
   });
 })

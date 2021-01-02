@@ -24,11 +24,11 @@ export class PifferoStatus {
   end: boolean = false;
   close: boolean = false;
   // conta a che livello sono sceso per aggiornare gli indici
-  public _depthCounter: number = 0;
+  public depthCounter: number = 0;
   public needBracketes: boolean = false;
   currentIndex: number = -1;
 
-  private _last:
+ public last:
     | "openobject"
     | "closeobject"
     | "openarray"
@@ -39,14 +39,6 @@ export class PifferoStatus {
 
   lastkey: string;
 
-  set last(last) {
-    this._last = last;
-  }
-
-  get last() {
-    return this._last;
-  }
-
   path: ParsedPath = undefined;
 
   constructor(path: ParsedPath) {
@@ -54,7 +46,7 @@ export class PifferoStatus {
     if (this.path.range || path.condition) {
       this.isInArray = true;
       if (this.path.value === '"$"') {
-        this._depthCounter = 1;
+        this.depthCounter = 1;
         this.isMatching = true;
       }
     } else if (this.path.value === '"$"') {
@@ -65,7 +57,7 @@ export class PifferoStatus {
     }
 
     if (this.path.value !== '"$"') {
-      this._last = "first";
+      this.last = "first"
     }
   }
 
@@ -77,16 +69,4 @@ export class PifferoStatus {
     );
   }
 
-  set depthCounter(counter: number) {
-    if (counter >= 0) {
-      this._depthCounter = counter;
-    }
-  }
-  get depthCounter() {
-    return this._depthCounter;
-  }
-
-  decrementDepthConnter() {
-    this._depthCounter--;
-  }
 }
