@@ -23,6 +23,7 @@ export class PifferoStatus {
 
   end: boolean = false;
   close: boolean = false;
+  
   // conta a che livello sono sceso per aggiornare gli indici
   public depthCounter: number = 0;
   public needBracketes: boolean = false;
