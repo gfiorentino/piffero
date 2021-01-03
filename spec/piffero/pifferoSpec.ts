@@ -140,6 +140,14 @@ describe("piffero john-doe", function() {
       JSON.parse(string);
     });
 
+    it("element in an array as string jsonpath with eval ", async function(done) {
+      const callback = (json) => {
+        expect(JSON.stringify(JSON.parse(json))).toBe('[{"id":3,"type":"home","number":"0123-4567-8910","test":true}]');
+        done();
+      };
+      Piffero.findAsString(callback, stream,  '$.phoneNumbers[?(@.id===1+2)]');
+    });
+
     it("element in an array jsonpath with eval2", async function() {
       const result = Piffero.findByPath(stream, '$.phoneNumbers[?(@.id===1*3-2)]')
       const string = await streamToString(result);

@@ -28,7 +28,9 @@ export class SingleStepHandler {
   stopHandler() {
     this.status.recording = false;
     this.status.verified = false;
-    this.status.end = true;
+    if(!this.status.path.hascondtion){
+      this.status.end = true;
+    }
   }
 
   openObject(node: any) {
