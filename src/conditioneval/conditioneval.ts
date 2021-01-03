@@ -7,7 +7,6 @@ export class ConditionEval {
       type: string;
       value: string;
     }[] = esprima.tokenize(condition);
-
     return conditionTokenized;
   }
 

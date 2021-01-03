@@ -69,6 +69,8 @@ export class MasterHandler {
         callback
       );
       this.callback = (result) => {};
+    } else {
+      this.output.push('[');
     }
 
     this.currentHandler = this.stepHandlers[this.handlerIndex];
@@ -145,7 +147,6 @@ export class MasterHandler {
   //--- VALUE -----------------------------------------------------------
   onvalue(node) {
     this.currentHandler.value(node);
-    // shiftParser();
     this.checkStreams();
   }
 
@@ -153,8 +154,10 @@ export class MasterHandler {
   endOutput() {
     this.currentHandler.status.close = true;
     if (this._opt.mode === "stream") {
+      this.output.push(']');
       this.output.push(null);
     } else {
+      this.currentHandler.outputString += "]"; 
       this.callback(this.currentHandler.outputString);
     }
   }

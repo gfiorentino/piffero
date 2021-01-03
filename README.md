@@ -84,14 +84,14 @@ printResult(result);
          "name":"Joe",
          "surname":"Black",
          "phoneNumbers":[
-            
          ]
       }
    ]
+}
 ```
 #### console result 
 ```js
-{"name":"Joe","surname":"Black","phoneNumbers":[]}
+[{"name":"Joe","surname":"Black","phoneNumbers":[]}]
 ```
 ```js
 // object inside an array 
@@ -99,11 +99,12 @@ const stream = fs.createReadStream('employees.json');
 const result = piffero.Piffero.findPath(stream, "$.employees[0].phoneNumbers[1]");
 .....
 // the content of the stream
-{"type":"home","number":"0123-4567-8910","test":true}
+[{"type":"home","number":"0123-4567-8910","test":true}]
 ...
 ```
 ## Other tools
 * Piffero is built on [Clarinet](https://github.com/dscape/clarinet) 
 * You can try [Oboe](https://github.com/jimhigson/oboe.js)  
+* You can also try [JSONPath Online Evaluator](https://jsonpath.com/)
 
 enjoy piffero!!

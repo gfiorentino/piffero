@@ -30,7 +30,6 @@ export class CParser {
   constructor(handler, opt?) {
     this.handler = handler;
     this.opt = opt ? opt : {};
-    // this.emit("onready");  not needed
     this.clearBuffers();
   }
 
@@ -39,14 +38,6 @@ export class CParser {
     this.numberNode = "";
   }
 
-  /*resume() {
-    this.errorString = null;
-    return this;
-  }
-
-  close() {
-    return this.write(null);
-  } */
 
   isWhitespace(c) {
     return (
@@ -81,7 +72,6 @@ export class CParser {
       }
 
       if (!c) break;
-      // this.position++;
       if (c === Char.lineFeed) {
         this.line++;
         this.column = 0;
@@ -267,7 +257,6 @@ export class CParser {
 
         case S.TRUE3:
           if (c === Char.e) {
-            //this.emit("onvalue", "true");
             this.handler.onvalue("true");
             this.state = this.stack.pop() || S.VALUE;
           } else this.error("Invalid true started with tru" + c);
