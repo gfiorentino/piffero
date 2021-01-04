@@ -9,6 +9,8 @@ export class SingleStepHandler {
   useString = false;
   outputString = "[";
 
+  debug = false;
+
   constructor(path: ParsedPath, output: Duplex, opt: PifferoOpt) {
     this.useString = opt.mode === "string";
     this.status = new PifferoStatus(path);
@@ -26,11 +28,12 @@ export class SingleStepHandler {
   }
  
   stopHandler() {
-    this.status.recording = false;
     this.status.verified = false;
     if(!this.status.path.hascondtion){
+      this.status.recording = false;
       this.status.end = true;
     }
+    this.debug = true;
   }
 
   openObject(node: any) {
@@ -43,6 +46,8 @@ export class SingleStepHandler {
         (this.status.isMatching && this.status.depthCounter === 1)
       ) {
         this.stopHandler();
+        this.status.temp = `,{${node}:`;
+        this.status.depthCounter++;
       } else {
         if (this.status.needComma) {
           this.push(`,{${node}:`);
@@ -74,7 +79,8 @@ export class SingleStepHandler {
         this.status.verified = true;
         this.status.depthCounter--;
         // --------------- condition per json path query -------
-      } else if (this.status.path.condition) {
+      } 
+      if (this.status.path.condition) {
         this.status.temp = `{${node}:`;
       }
     } else if (this.status.isMatching && this.status.depthCounter > 2) {
@@ -234,7 +240,6 @@ export class SingleStepHandler {
         this.status.temp = this.status.temp + `${node}:`;
       }
     }
-
     this.status.lastkey = node;
     this.status.last = "key";
   }

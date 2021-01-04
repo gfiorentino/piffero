@@ -1,7 +1,7 @@
 import { streamToString } from "../utils";
 import { Piffero } from "../../src/piffero";
 
-describe("piffero john-doe", function() {
+describe("piffero array", function() {
     const fs  =  require('fs');
     let stream
     beforeEach( function() {   
@@ -11,9 +11,16 @@ describe("piffero john-doe", function() {
     it("simple jsonpath", async function() {
       const result = Piffero.findByPath(stream, '$.array[?(@.a===2)]')
       const string: string = await streamToString(result);
-      expect(string).toBe(JSON.stringify([{"id":1,"type":"\"iPhone\"","number":"0123-4567-8888","test":false,"a":2}]));
-      JSON.parse(string)
+      expect(string).toBe(JSON.stringify([{"id":1,"type":"iPhone","a":2},{"id":3,"type":"home","a":2,"b":3}]));
+      JSON.parse(string);
     }); 
+
+    /*it("simple jsonpath 2", async function() {
+      const result = Piffero.findByPath(stream, '$.array[?(@.a===2)].type')
+      const string: string = await streamToString(result);
+      expect(string).toBe(JSON.stringify(["iPhone","home"]));
+      JSON.parse(string);
+    }); */ 
 
     
 }); 

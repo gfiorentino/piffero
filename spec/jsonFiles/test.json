@@ -2,17 +2,14 @@
     "array": [
       {
         "id":1,
-        "type"  : "\"iPhone\"",
-        "number": "0123-4567-8888",
-        "test": false,
+        "type"  : "iPhone",
         "a": 2
       },
       {
         "id":3,
         "type"  : "home",
-        "number": "0123-4567-8910",
-        "test": true,
-        "a": 2
+        "a": 2,
+        "b": 3
       } 
     ]
   }

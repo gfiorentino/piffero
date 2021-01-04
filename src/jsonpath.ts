@@ -84,7 +84,6 @@ export class JSONPath {
         value = '"' + value.substr(1, value.length - 2) + '"';
       } else {
         value = ConditionEval.staticEval(value);
-        console.log(value);
       }
       return { key: `"${conditions[0]}"`, value: value };
     }
