@@ -54,9 +54,11 @@ export class JSONPath {
       if (splitted.length < 2) {
         throw new PifferoJsonPathError(`${PATH_ERROR_MESSAGE}: ${jsonPath}`);
       }
+    
       condition = JSONPath.checkCondition(splitted[1]);
       if (!condition) {
-        range = { start: Number(splitted[1]) };
+        const[start, end, step] = splitted[1].split(':');
+        range = { start: Number(start), end: Number(end), step: Number(step)};
       }
     }
 
