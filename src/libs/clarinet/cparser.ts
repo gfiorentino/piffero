@@ -159,7 +159,7 @@ export class CParser {
           } else if (Char._0 <= c && c <= Char._9) {
             this.numberNode += String.fromCharCode(c);
             this.state = S.NUMBER_DIGIT;
-          } else this.error("Bad value");
+          } // else this.error("Bad value"); // removed not needed for nested stream
           continue;
 
         case S.CLOSE_ARRAY:

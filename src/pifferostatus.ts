@@ -19,6 +19,11 @@ export class PifferoStatus {
 
   isMatching = false;
 
+  _needComma = false;
+
+  _isBulkResponse = false;
+
+
   temp = "";
 
   end: boolean = false;
@@ -42,8 +47,9 @@ export class PifferoStatus {
 
   path: ParsedPath = undefined;
 
-  constructor(path: ParsedPath) {
+  constructor(path: ParsedPath, isBulk: boolean = false) {
     this.path = path;
+    this._isBulkResponse = isBulk;
     if (this.path.range || path.condition) {
       this.isInArray = true;
       if (this.path.value === '"$"') {
@@ -66,8 +72,12 @@ export class PifferoStatus {
     return (
       this.last === "closearray" ||
       this.last === "closeobject" ||
-      this.last === "value"
+      this.last === "value" || 
+      this._needComma
     );
   }
+  get isBulkResponse(): boolean {
+    return(this.path.hascondtion || this._isBulkResponse);
+  } 
 
 }

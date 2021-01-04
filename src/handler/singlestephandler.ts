@@ -3,7 +3,7 @@ import { Duplex } from "stream";
 import { PifferoOpt, PifferoStatus } from "../pifferostatus";
 
 export class SingleStepHandler {
-  status: PifferoStatus;
+  status: PifferoStatus;n
   isLast = false;
   _output: Duplex;
   useString = false;
@@ -11,9 +11,9 @@ export class SingleStepHandler {
 
   debug = false;
 
-  constructor(path: ParsedPath, output: Duplex, opt: PifferoOpt) {
+  constructor(path: ParsedPath, output: Duplex, opt: PifferoOpt, isBulk: boolean=false) {
     this.useString = opt.mode === "string";
-    this.status = new PifferoStatus(path);
+    this.status = new PifferoStatus(path, isBulk);
     this._output = output;
     this.isLast =
       path.next == undefined || path.next == null || path.hascondtion;
@@ -29,7 +29,7 @@ export class SingleStepHandler {
  
   stopHandler() {
     this.status.verified = false;
-    if(!this.status.path.hascondtion){
+    if(!this.status.isBulkResponse){
       this.status.recording = false;
       this.status.end = true;
     }
@@ -185,6 +185,7 @@ export class SingleStepHandler {
     if (this.status.recording && this.status.verified && this.isLast) {
       if (this.status.depthCounter === 1) {
         this.stopHandler();
+        this.status._needComma = true;
         if (!this.status.path.range && !this.status.path.hascondtion) {
           this.push(`]`);
         }
@@ -258,6 +259,7 @@ export class SingleStepHandler {
       if (this.status.currentIndex === this.status.path.range.start) {
         this.push(node);
         this.stopHandler();
+        this.status._needComma = true;
       }
     }
     if (this.status.recording && this.status.verified && this.isLast) {
@@ -268,6 +270,7 @@ export class SingleStepHandler {
       }
       if (this.status.depthCounter === 1) {
         this.stopHandler();
+        this.status._needComma = true;
       }
       ///-----condition value -----
     } else if (this.status.path.hascondtion && this.verifyCondition(node)) {

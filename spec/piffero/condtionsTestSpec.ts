@@ -15,13 +15,11 @@ describe("piffero array", function() {
       JSON.parse(string);
     }); 
 
-    /*it("simple jsonpath 2", async function() {
+    it("simple jsonpath 2", async function() {
       const result = Piffero.findByPath(stream, '$.array[?(@.a===2)].type')
       const string: string = await streamToString(result);
       expect(string).toBe(JSON.stringify(["iPhone","home"]));
       JSON.parse(string);
-    }); */ 
-
-    
+    });     
 }); 
 
