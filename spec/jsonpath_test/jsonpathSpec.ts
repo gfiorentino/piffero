@@ -47,7 +47,7 @@ describe("JsonPath", function() {
         let next2 = next.next;
         expect(next.value).toBe('"first"');
         expect(next.range.start).toBe(1);
- 
+        
         expect(next2.value).toBe('"second"'); 
         expect(next2.condition).toEqual({key:`"attribute"`, value:'"asd"'});
     })

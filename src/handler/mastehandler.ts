@@ -58,6 +58,7 @@ export class MasterHandler {
       const nextParsedPath: ParsedPath = {
         value: '"$"',
         next: parsedPath.next,
+        indexes: [],
         hascondtion: false,
         recursiveDescendant: false,
       };

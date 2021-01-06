@@ -77,7 +77,7 @@ export class PifferoStatus {
     );
   }
   get isBulkResponse(): boolean {
-    return(this.path.hascondtion || this._isBulkResponse);
-  } 
-
+    return(this.path.hascondtion || this._isBulkResponse || this.path.indexes.length > 0);
+  }
+  
 }
