@@ -1,7 +1,7 @@
 # PIFFERO  [![Build Status](https://travis-ci.com/gfiorentino/piffero.svg?branch=master)](https://travis-ci.com/github/gfiorentino/piffero) [![Coverage Status](https://coveralls.io/repos/github/gfiorentino/piffero/badge.svg?branch=master)](https://coveralls.io/github/gfiorentino/piffero?branch=master) [![NPM version](https://img.shields.io/npm/v/piffero.svg)](https://www.npmjs.com/package/piffero)
 The ultimate JSON SAX parser 
 
-Piffero is an open source SAX parser who work directely on the streams to get part of big JSON files.
+Piffero is an open source SAX parser who work directely on the streams to get parts of big JSON files.
 
 Piffero can load big files larger than memory used and return the required content in a stream.
 

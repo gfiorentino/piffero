@@ -1,9 +1,10 @@
 import { ParsedPath } from "../jsonpath";
 import { Duplex } from "stream";
 import { PifferoOpt, PifferoStatus } from "../pifferostatus";
+import { pathToFileURL } from "url";
 
 export class SingleStepHandler {
-  status: PifferoStatus;n
+  status: PifferoStatus;
   isLast = false;
   _output: Duplex;
   useString = false;
@@ -305,4 +306,6 @@ export class SingleStepHandler {
       condition.value === value
     );
   }
+
+
 }

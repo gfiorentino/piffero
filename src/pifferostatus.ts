@@ -79,5 +79,25 @@ export class PifferoStatus {
   get isBulkResponse(): boolean {
     return(this.path.hascondtion || this._isBulkResponse || this.path.indexes.length > 0);
   }
+
+  isIndexRange(index) {
+    const range = this.path.range 
+    let start = 0;
+    let end  = index + 1 ;
+    let step = 1;
+    if(range.start >= 0 ){
+      start = range.start;
+    }
+    if(range.end >= 0 ) {
+      end = range.end;
+    } 
+    if(range.step >= 0 ){
+      step = range.step;
+    } 
+    if(index > end){
+      return false;
+    }
+    return Number.isInteger((index-start)/step);
+  }
   
 }
