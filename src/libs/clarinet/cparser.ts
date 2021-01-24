@@ -38,7 +38,6 @@ export class CParser {
     this.numberNode = "";
   }
 
-
   isWhitespace(c) {
     return (
       c === Char.space ||

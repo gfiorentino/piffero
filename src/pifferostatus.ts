@@ -23,18 +23,17 @@ export class PifferoStatus {
 
   _isBulkResponse = false;
 
-
   temp = "";
 
   end: boolean = false;
   close: boolean = false;
-  
+
   // conta a che livello sono sceso per aggiornare gli indici
   public depthCounter: number = 0;
   public needBracketes: boolean = false;
   currentIndex: number = -1;
 
- public last:
+  public last:
     | "openobject"
     | "closeobject"
     | "openarray"
@@ -64,7 +63,7 @@ export class PifferoStatus {
     }
 
     if (this.path.value !== '"$"') {
-      this.last = "first"
+      this.last = "first";
     }
   }
 
@@ -72,32 +71,35 @@ export class PifferoStatus {
     return (
       this.last === "closearray" ||
       this.last === "closeobject" ||
-      this.last === "value" || 
+      this.last === "value" ||
       this._needComma
     );
   }
   get isBulkResponse(): boolean {
-    return(this.path.hascondtion || this._isBulkResponse || this.path.indexes.length > 0);
+    return (
+      this.path.hascondtion ||
+      this._isBulkResponse ||
+      this.path.indexes.length > 0
+    );
   }
 
   isIndexRange(index) {
-    const range = this.path.range 
+    const range = this.path.range;
     let start = 0;
-    let end  = index + 1 ;
+    let end = index + 1;
     let step = 1;
-    if(range.start >= 0 ){
+    if (range.start >= 0) {
       start = range.start;
     }
-    if(range.end >= 0 ) {
+    if (range.end >= 0) {
       end = range.end;
-    } 
-    if(range.step >= 0 ){
+    }
+    if (range.step >= 0) {
       step = range.step;
-    } 
-    if(index > end){
+    }
+    if (index > end) {
       return false;
     }
-    return Number.isInteger((index-start)/step);
+    return Number.isInteger((index - start) / step);
   }
-  
 }

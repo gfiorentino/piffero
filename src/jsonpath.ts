@@ -58,12 +58,16 @@ export class JSONPath {
       }
       condition = JSONPath.checkCondition(splitted[1]);
       if (!condition) {
-        const splittedIndexes = splitted[1].split(',');
+        const splittedIndexes = splitted[1].split(",");
         if (splittedIndexes.length > 1) {
-          splittedIndexes.forEach(element => indexes.push(Number(element)));
+          splittedIndexes.forEach((element) => indexes.push(Number(element)));
         } else {
-          const[start, end, step] = splitted[1].split(':');
-          range = { start: Number(start), end: end? Number(end): 0, step: step? Number(step): 0};
+          const [start, end, step] = splitted[1].split(":");
+          range = {
+            start: Number(start),
+            end: end ? Number(end) : 0,
+            step: step ? Number(step) : 0,
+          };
         }
       }
       indexes;

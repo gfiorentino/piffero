@@ -12,7 +12,12 @@ export class SingleStepHandler {
 
   debug = false;
 
-  constructor(path: ParsedPath, output: Duplex, opt: PifferoOpt, isBulk: boolean=false) {
+  constructor(
+    path: ParsedPath,
+    output: Duplex,
+    opt: PifferoOpt,
+    isBulk: boolean = false
+  ) {
     this.useString = opt.mode === "string";
     this.status = new PifferoStatus(path, isBulk);
     this._output = output;
@@ -27,10 +32,10 @@ export class SingleStepHandler {
       this._output.push(value);
     }
   }
- 
+
   stopHandler() {
     this.status.verified = false;
-    if(!this.status.isBulkResponse){
+    if (!this.status.isBulkResponse) {
       this.status.recording = false;
       this.status.end = true;
     }
@@ -80,7 +85,7 @@ export class SingleStepHandler {
         this.status.verified = true;
         this.status.depthCounter--;
         // --------------- condition per json path query -------
-      } 
+      }
       if (this.status.path.condition) {
         this.status.temp = `{${node}:`;
       }
@@ -98,7 +103,7 @@ export class SingleStepHandler {
     if (this.status.last !== "first") {
       this.status.depthCounter++;
     }
-  
+
     this.status.lastkey = node;
     this.status.last = "openobject";
   }
@@ -306,6 +311,4 @@ export class SingleStepHandler {
       condition.value === value
     );
   }
-
-
 }

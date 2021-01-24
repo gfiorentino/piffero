@@ -39,7 +39,7 @@ export class MasterHandler {
 
     while (parsedPath.next && !parsedPath.hascondtion) {
       parsedPath = parsedPath.next;
-    //  status = new PifferoStatus(parsedPath,isBulk);
+      //  status = new PifferoStatus(parsedPath,isBulk);
       const singleStepHandler = new SingleStepHandler(
         parsedPath,
         this.output,
@@ -73,7 +73,7 @@ export class MasterHandler {
       );
       this.callback = (result) => {};
     } else {
-      this.output.push('[');
+      this.output.push("[");
     }
 
     this.currentHandler = this.stepHandlers[this.handlerIndex];
@@ -99,7 +99,7 @@ export class MasterHandler {
   }
 
   shiftParser() {
-    if (!this.currentHandler.isLast && this.currentHandler.status.recording ) {
+    if (!this.currentHandler.isLast && this.currentHandler.status.recording) {
       let last = this.currentHandler.status.last;
       const lastkey = this.currentHandler.status.lastkey;
       let depthCounter = 0;
@@ -157,10 +157,10 @@ export class MasterHandler {
   endOutput() {
     this.currentHandler.status.close = true;
     if (this._opt.mode === "stream") {
-      this.output.push(']');
+      this.output.push("]");
       this.output.push(null);
     } else {
-      this.currentHandler.outputString += "]"; 
+      this.currentHandler.outputString += "]";
       this.callback(this.currentHandler.outputString);
     }
   }
