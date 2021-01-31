@@ -17,7 +17,6 @@ describe("piffero john-doe", function() {
     }); 
 
     it("simple jsonpath lastname", async function() {
-      
       const result = Piffero.findByPath(stream, '$.lastName')
       const string = await streamToString(result);
       expect(string).toBe('["doe"]');

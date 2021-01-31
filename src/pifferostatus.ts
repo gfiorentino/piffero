@@ -85,9 +85,15 @@ export class PifferoStatus {
 
   checkIndex() {
     const range = this.path.range;
+    console.log(range, this.currentIndex, this.path.indexes)
+    if (this.path.indexes && this.path.indexes.length > 0) {
+       return this.path.indexes.indexOf(this.currentIndex) >= 0 ;
+    }
+
     let start = 0;
     let end = this.currentIndex + 1;
     let step = 1;
+
     if (range.start >= 0) {
       start = range.start;
     }

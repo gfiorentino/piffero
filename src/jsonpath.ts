@@ -16,7 +16,7 @@ $	The root object/element
 export interface ParsedPath {
   value: string;
   range?: { start?: number; end?: number; step?: number };
-  indexes: number[];
+  indexes?: number[];
   condition?: {
     key: string;
     value: string;
@@ -63,11 +63,15 @@ export class JSONPath {
           splittedIndexes.forEach((element) => indexes.push(Number(element)));
         } else {
           const [start, end, step] = splitted[1].split(":");
-          range = {
-            start: Number(start),
-            end: end ? Number(end) : 0,
-            step: step ? Number(step) : 0,
-          };
+          //if (end || step) {
+            range = {
+              start: Number(start),
+              end: end ? Number(end) : 0,
+              step: step ? Number(step) : 0,
+            };
+        // } else  {
+            indexes.push(Number(start));
+        // }
         }
       }
       indexes;
