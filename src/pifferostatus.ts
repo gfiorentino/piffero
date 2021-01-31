@@ -83,23 +83,26 @@ export class PifferoStatus {
     );
   }
 
-  isIndexRange(index) {
+  checkIndex() {
     const range = this.path.range;
     let start = 0;
-    let end = index + 1;
+    let end = this.currentIndex + 1;
     let step = 1;
     if (range.start >= 0) {
       start = range.start;
     }
-    if (range.end >= 0) {
-      end = range.end;
-    }
-    if (range.step >= 0) {
-      step = range.step;
-    }
-    if (index > end) {
+    if ( this.currentIndex  < start ) {
       return false;
     }
-    return Number.isInteger((index - start) / step);
+    if (range.end > 0) {
+      end = range.end;
+    }
+    if (range.step > 0) {
+      step = range.step;
+    }
+    if (  this.currentIndex > end) {
+      return false;
+    }
+    return Number.isInteger(( this.currentIndex - start) / step);
   }
 }

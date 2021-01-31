@@ -118,7 +118,7 @@ describe("piffero john-doe", function() {
       JSON.parse(string);
     });
 
-    it("array element in an array ", async function() {
+    it("array element in an array2 ", async function() {
       const result = Piffero.findByPath(stream, '$.array[1]')
       const string = await streamToString(result);
       expect(string).toBe('[[3,4]]');

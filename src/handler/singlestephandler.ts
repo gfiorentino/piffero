@@ -2,6 +2,7 @@ import { ParsedPath } from "../jsonpath";
 import { Duplex } from "stream";
 import { PifferoOpt, PifferoStatus } from "../pifferostatus";
 import { pathToFileURL } from "url";
+import { runInThisContext } from "vm";
 
 export class SingleStepHandler {
   status: PifferoStatus;
@@ -76,7 +77,7 @@ export class SingleStepHandler {
       // se lavoriamo con un indice
       if (
         this.status.path.range &&
-        this.status.currentIndex === this.status.path.range.start
+        this.status.checkIndex() 
       ) {
         if (this.isLast) {
           this.push(`{${node}:`);
@@ -166,7 +167,7 @@ export class SingleStepHandler {
       this.status.currentIndex++;
       if (
         this.status.path.range &&
-        this.status.currentIndex === this.status.path.range.start
+        this.status.checkIndex()
       ) {
         if (this.isLast) {
           this.push(`[`);
