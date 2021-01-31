@@ -103,6 +103,6 @@ export class PifferoStatus {
     if (  this.currentIndex > end) {
       return false;
     }
-    return Number.isInteger(( this.currentIndex - start) / step);
+    return Number.isInteger((this.currentIndex - start) / step);
   }
 }
