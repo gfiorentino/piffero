@@ -33,7 +33,7 @@ export class PifferoStatus {
   public needBracketes: boolean = false;
   currentIndex: number = -1;
 
-  public last:
+  private _last:
     | "openobject"
     | "closeobject"
     | "openarray"
@@ -67,6 +67,16 @@ export class PifferoStatus {
     }
   }
 
+  set last (_last) {
+  //  if (this.recording) {
+      this._last = _last;
+   // }
+  }
+
+  get last() {
+  return this._last ;
+  }
+
   get needComma(): boolean {
     return (
       this.last === "closearray" ||
@@ -86,7 +96,7 @@ export class PifferoStatus {
   checkIndex() {
     const range = this.path.range;
     if (this.path.indexes && this.path.indexes.length > 0) {
-       return this.path.indexes.indexOf(this.currentIndex) >= 0 ;
+      return this.path.indexes.indexOf(this.currentIndex) >= 0 ;
     }
 
     let start = 0;

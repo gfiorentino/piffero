@@ -1,8 +1,6 @@
 import { ParsedPath } from "../jsonpath";
 import { Duplex } from "stream";
 import { PifferoOpt, PifferoStatus } from "../pifferostatus";
-import { pathToFileURL } from "url";
-import { runInThisContext } from "vm";
 
 export class SingleStepHandler {
   status: PifferoStatus;
@@ -10,8 +8,6 @@ export class SingleStepHandler {
   _output: Duplex;
   useString = false;
   outputString = "[";
-
-  debug = false;
 
   constructor(
     path: ParsedPath,
@@ -36,11 +32,11 @@ export class SingleStepHandler {
 
   stopHandler() {
     this.status.verified = false;
+  
     if (!this.status.isBulkResponse) {
-      this.status.recording = false;
-      this.status.end = true;
+       this.status.recording = false;
+       this.status.end = true; // temporaneo 
     }
-    this.debug = true;
   }
 
   openObject(node: any) {
@@ -209,7 +205,10 @@ export class SingleStepHandler {
       }
     }
     this.status.depthCounter--;
-    this.status.last = "closearray";
+  //  if (this.status.depthCounter < 3) {
+  // this.status.currentIndex=0;
+  // }   
+  this.status.last = "closearray";
   }
 
   key(node: any) {
@@ -263,8 +262,12 @@ export class SingleStepHandler {
       this.status.depthCounter === 2
     ) {
       this.status.currentIndex++;
-      if (this.status.currentIndex === this.status.path.range.start) {
-        this.push(node);
+      if (this.status.checkIndex() && !this.status.close) {
+        console.log(this.status.path.range ,this.status.currentIndex);
+        if(this.status.currentIndex > this.status.path.range.start) {
+          this.push(',');
+        }
+        this.push(`${node}`);
         this.stopHandler();
         this.status._needComma = true;
       }
@@ -273,9 +276,9 @@ export class SingleStepHandler {
       if (this.status.needComma) {
         this.push(`,${node}`);
       } else {
-        this.push(node);
-      }
-      if (this.status.depthCounter === 1) {
+        this.push(`${node}`);
+      }     
+       if (this.status.depthCounter === 1) {
         this.stopHandler();
         this.status._needComma = true;
       }
