@@ -63,20 +63,20 @@ export class JSONPath {
           splittedIndexes.forEach((element) => indexes.push(Number(element)));
         } else {
           const [start, end, step] = splitted[1].split(":");
-        // TODO: refactoring 
-            range = {
-              start: Number(start),
-              end: end ? Number(end) : 0,
-              step: step ? Number(step) : 0,
-            };
-         
-             let _start = range.start;
-             let _end = range.end;
-             let _step= step ? Number(step) : 1;
-             indexes.push(_start);
-             for (let i = _start + _step; i < _end; i += _step){
-              indexes.push(i);
-             }  
+          // TODO: refactoring
+          range = {
+            start: Number(start),
+            end: end ? Number(end) : 0,
+            step: step ? Number(step) : 0,
+          };
+
+          let _start = range.start;
+          let _end = range.end;
+          let _step = step ? Number(step) : 1;
+          indexes.push(_start);
+          for (let i = _start + _step; i < _end; i += _step) {
+            indexes.push(i);
+          }
         }
       }
       indexes;

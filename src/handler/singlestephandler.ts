@@ -32,10 +32,10 @@ export class SingleStepHandler {
 
   stopHandler() {
     this.status.verified = false;
-  
+
     if (!this.status.isBulkResponse) {
-       this.status.recording = false;
-       this.status.end = true; // temporaneo 
+      this.status.recording = false;
+      this.status.end = true; // temporaneo
     }
   }
 
@@ -71,10 +71,7 @@ export class SingleStepHandler {
     } else if (this.status.isMatching && this.status.depthCounter === 2) {
       this.status.currentIndex++;
       // se lavoriamo con un indice
-      if (
-        this.status.path.range &&
-        this.status.checkIndex() 
-      ) {
+      if (this.status.path.range && this.status.checkIndex()) {
         if (this.isLast) {
           this.push(`{${node}:`);
         }
@@ -161,10 +158,7 @@ export class SingleStepHandler {
       this.status.temp = "";
     } else if (this.status.isMatching && this.status.depthCounter === 2) {
       this.status.currentIndex++;
-      if (
-        this.status.path.range &&
-        this.status.checkIndex()
-      ) {
+      if (this.status.path.range && this.status.checkIndex()) {
         if (this.isLast) {
           this.push(`[`);
         }
@@ -205,10 +199,10 @@ export class SingleStepHandler {
       }
     }
     this.status.depthCounter--;
-  //  if (this.status.depthCounter < 3) {
-  // this.status.currentIndex=0;
-  // }   
-  this.status.last = "closearray";
+    //  if (this.status.depthCounter < 3) {
+    // this.status.currentIndex=0;
+    // }
+    this.status.last = "closearray";
   }
 
   key(node: any) {
@@ -263,9 +257,9 @@ export class SingleStepHandler {
     ) {
       this.status.currentIndex++;
       if (this.status.checkIndex() && !this.status.close) {
-        console.log(this.status.path.range ,this.status.currentIndex);
-        if(this.status.currentIndex > this.status.path.range.start) {
-          this.push(',');
+        console.log(this.status.path.range, this.status.currentIndex);
+        if (this.status.currentIndex > this.status.path.range.start) {
+          this.push(",");
         }
         this.push(`${node}`);
         this.stopHandler();
@@ -277,8 +271,8 @@ export class SingleStepHandler {
         this.push(`,${node}`);
       } else {
         this.push(`${node}`);
-      }     
-       if (this.status.depthCounter === 1) {
+      }
+      if (this.status.depthCounter === 1) {
         this.stopHandler();
         this.status._needComma = true;
       }

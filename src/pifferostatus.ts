@@ -67,14 +67,14 @@ export class PifferoStatus {
     }
   }
 
-  set last (_last) {
-  //  if (this.recording) {
-      this._last = _last;
-   // }
+  set last(_last) {
+    //  if (this.recording) {
+    this._last = _last;
+    // }
   }
 
   get last() {
-  return this._last ;
+    return this._last;
   }
 
   get needComma(): boolean {
@@ -96,7 +96,7 @@ export class PifferoStatus {
   checkIndex() {
     const range = this.path.range;
     if (this.path.indexes && this.path.indexes.length > 0) {
-      return this.path.indexes.indexOf(this.currentIndex) >= 0 ;
+      return this.path.indexes.indexOf(this.currentIndex) >= 0;
     }
 
     let start = 0;
@@ -106,7 +106,7 @@ export class PifferoStatus {
     if (range.start >= 0) {
       start = range.start;
     }
-    if ( this.currentIndex  < start ) {
+    if (this.currentIndex < start) {
       return false;
     }
     if (range.end > 0) {
@@ -115,7 +115,7 @@ export class PifferoStatus {
     if (range.step > 0) {
       step = range.step;
     }
-    if (  this.currentIndex > end) {
+    if (this.currentIndex > end) {
       return false;
     }
     return Number.isInteger((this.currentIndex - start) / step);
