@@ -30,7 +30,6 @@ export class CParser {
   constructor(handler, opt?) {
     this.handler = handler;
     this.opt = opt ? opt : {};
-    // this.emit("onready");  not needed
     this.clearBuffers();
   }
 
@@ -38,15 +37,6 @@ export class CParser {
     this.textNode = undefined;
     this.numberNode = "";
   }
-
-  /*resume() {
-    this.errorString = null;
-    return this;
-  }
-
-  close() {
-    return this.write(null);
-  } */
 
   isWhitespace(c) {
     return (
@@ -81,7 +71,6 @@ export class CParser {
       }
 
       if (!c) break;
-      // this.position++;
       if (c === Char.lineFeed) {
         this.line++;
         this.column = 0;
@@ -169,7 +158,7 @@ export class CParser {
           } else if (Char._0 <= c && c <= Char._9) {
             this.numberNode += String.fromCharCode(c);
             this.state = S.NUMBER_DIGIT;
-          } else this.error("Bad value");
+          } // else this.error("Bad value"); // removed not needed for nested stream
           continue;
 
         case S.CLOSE_ARRAY:
@@ -267,7 +256,6 @@ export class CParser {
 
         case S.TRUE3:
           if (c === Char.e) {
-            //this.emit("onvalue", "true");
             this.handler.onvalue("true");
             this.state = this.stack.pop() || S.VALUE;
           } else this.error("Invalid true started with tru" + c);
@@ -380,10 +368,8 @@ export class CParser {
     this.closeValue("onvalue");
     er +=
       "\nLine: " + this.line + "\nColumn: " + this.column + "\nChar: " + this.c;
-    er = new Error(er);
-    this.error = er;
     this.handler.onerror(er);
-    // this.emit("onerror", er);
-    return this;
+    er = new Error(er);
+    throw er;
   }
 }

@@ -16,6 +16,7 @@ $	The root object/element
 export interface ParsedPath {
   value: string;
   range?: { start?: number; end?: number; step?: number };
+  indexes?: number[];
   condition?: {
     key: string;
     value: string;
@@ -46,6 +47,7 @@ export class JSONPath {
     }
     let value = paths[0];
     let range = null;
+    const indexes = [];
     let condition = null;
     if (value.endsWith("]")) {
       value = value.substr(0, value.length - 1);
@@ -56,8 +58,28 @@ export class JSONPath {
       }
       condition = JSONPath.checkCondition(splitted[1]);
       if (!condition) {
-        range = { start: Number(splitted[1]) };
+        const splittedIndexes = splitted[1].split(",");
+        if (splittedIndexes.length > 1) {
+          splittedIndexes.forEach((element) => indexes.push(Number(element)));
+        } else {
+          const [start, end, step] = splitted[1].split(":");
+          // TODO: refactoring
+          range = {
+            start: Number(start),
+            end: end ? Number(end) : 0,
+            step: step ? Number(step) : 0,
+          };
+
+          let _start = range.start;
+          let _end = range.end;
+          let _step = step ? Number(step) : 1;
+          indexes.push(_start);
+          for (let i = _start + _step; i < _end; i += _step) {
+            indexes.push(i);
+          }
+        }
       }
+      indexes;
     }
 
     return {
@@ -65,6 +87,7 @@ export class JSONPath {
       next: JSONPath.buildParsedPath(jsonPath, paths.slice(1)),
       condition: condition,
       range: range,
+      indexes: indexes,
       recursiveDescendant: false,
       hascondtion: condition !== null && condition !== undefined,
     };
@@ -84,7 +107,6 @@ export class JSONPath {
         value = '"' + value.substr(1, value.length - 2) + '"';
       } else {
         value = ConditionEval.staticEval(value);
-        console.log(value);
       }
       return { key: `"${conditions[0]}"`, value: value };
     }

@@ -7,11 +7,16 @@ export class SingleStepHandler {
   isLast = false;
   _output: Duplex;
   useString = false;
-  outputString = "";
+  outputString = "[";
 
-  constructor(path: ParsedPath, output: Duplex, opt: PifferoOpt) {
+  constructor(
+    path: ParsedPath,
+    output: Duplex,
+    opt: PifferoOpt,
+    isBulk: boolean = false
+  ) {
     this.useString = opt.mode === "string";
-    this.status = new PifferoStatus(path);
+    this.status = new PifferoStatus(path, isBulk);
     this._output = output;
     this.isLast =
       path.next == undefined || path.next == null || path.hascondtion;
@@ -25,6 +30,15 @@ export class SingleStepHandler {
     }
   }
 
+  stopHandler() {
+    this.status.verified = false;
+
+    if (!this.status.isBulkResponse) {
+      this.status.recording = false;
+      this.status.end = true; // temporaneo
+    }
+  }
+
   openObject(node: any) {
     if (this.status.end) {
       return;
@@ -34,9 +48,9 @@ export class SingleStepHandler {
         this.status.depthCounter === 0 ||
         (this.status.isMatching && this.status.depthCounter === 1)
       ) {
-        this.status.recording = false;
-        this.status.verified = false;
-        this.status.end = true;
+        this.stopHandler();
+        this.status.temp = `,{${node}:`;
+        this.status.depthCounter++;
       } else {
         if (this.status.needComma) {
           this.push(`,{${node}:`);
@@ -57,19 +71,16 @@ export class SingleStepHandler {
     } else if (this.status.isMatching && this.status.depthCounter === 2) {
       this.status.currentIndex++;
       // se lavoriamo con un indice
-
-      if (
-        this.status.path.range &&
-        this.status.currentIndex === this.status.path.range.start
-      ) {
+      if (this.status.path.range && this.status.checkIndex()) {
         if (this.isLast) {
           this.push(`{${node}:`);
         }
         this.status.recording = true;
         this.status.verified = true;
-        this.status.decrementDepthConnter();
+        this.status.depthCounter--;
         // --------------- condition per json path query -------
-      } else if (this.status.path.condition) {
+      }
+      if (this.status.path.condition) {
         this.status.temp = `{${node}:`;
       }
     } else if (this.status.isMatching && this.status.depthCounter > 2) {
@@ -84,8 +95,9 @@ export class SingleStepHandler {
     // ----------
 
     if (this.status.last !== "first") {
-      this.status._depthCounter++;
+      this.status.depthCounter++;
     }
+
     this.status.lastkey = node;
     this.status.last = "openobject";
   }
@@ -96,8 +108,7 @@ export class SingleStepHandler {
     }
     if (this.status.recording && this.status.verified && this.isLast) {
       if (this.status.depthCounter === 1) {
-        this.status.recording = false;
-        this.status.end = true;
+        this.stopHandler();
       } else {
         this.push(`}`);
       }
@@ -112,7 +123,7 @@ export class SingleStepHandler {
       }
     }
     // -------------
-    this.status.decrementDepthConnter();
+    this.status.depthCounter--;
     this.status.last = "closeobject";
   }
 
@@ -126,9 +137,7 @@ export class SingleStepHandler {
           (this.status.isMatching && this.status.depthCounter === 1)) &&
         this.status.path.value !== '"$"' // accrocco;
       ) {
-        this.status.recording = false;
-        this.status.verified = false;
-        this.status.end = true;
+        this.stopHandler();
       } else {
         if (this.status.needComma) {
           this.push(",[");
@@ -149,23 +158,20 @@ export class SingleStepHandler {
       this.status.temp = "";
     } else if (this.status.isMatching && this.status.depthCounter === 2) {
       this.status.currentIndex++;
-      if (
-        this.status.path.range &&
-        this.status.currentIndex === this.status.path.range.start
-      ) {
+      if (this.status.path.range && this.status.checkIndex()) {
         if (this.isLast) {
           this.push(`[`);
         }
         this.status.recording = true;
         this.status.verified = true;
-        this.status._depthCounter--; // da verificare
+        this.status.depthCounter--; // da verificare
         // --------------- condition per json path query -------
       } else if (this.status.path.condition) {
         this.status.temp = `[`;
       }
     }
     // ---------------
-    this.status._depthCounter++;
+    this.status.depthCounter++;
     this.status.last = "openarray";
   }
 
@@ -175,8 +181,8 @@ export class SingleStepHandler {
     }
     if (this.status.recording && this.status.verified && this.isLast) {
       if (this.status.depthCounter === 1) {
-        this.status.recording = false;
-        this.status.end = true;
+        this.stopHandler();
+        this.status._needComma = true;
         if (!this.status.path.range && !this.status.path.hascondtion) {
           this.push(`]`);
         }
@@ -192,7 +198,10 @@ export class SingleStepHandler {
         this.status.temp = this.status.temp + "]";
       }
     }
-    this.status.decrementDepthConnter();
+    this.status.depthCounter--;
+    //  if (this.status.depthCounter < 3) {
+    // this.status.currentIndex=0;
+    // }
     this.status.last = "closearray";
   }
 
@@ -205,8 +214,7 @@ export class SingleStepHandler {
       this.status.recording &&
       this.isLast
     ) {
-      this.status.recording = false;
-      this.status.end = true;
+      this.stopHandler();
     }
     if (this.status.recording && this.status.verified && this.isLast) {
       if (this.status.needComma) {
@@ -233,7 +241,6 @@ export class SingleStepHandler {
         this.status.temp = this.status.temp + `${node}:`;
       }
     }
-
     this.status.lastkey = node;
     this.status.last = "key";
   }
@@ -249,27 +256,31 @@ export class SingleStepHandler {
       this.status.depthCounter === 2
     ) {
       this.status.currentIndex++;
-      if (this.status.currentIndex === this.status.path.range.start) {
-        this.push(node);
-        this.status.recording = false;
-        this.status.end = true;
+      if (this.status.checkIndex() && !this.status.close) {
+        console.log(this.status.path.range, this.status.currentIndex);
+        if (this.status.currentIndex > this.status.path.range.start) {
+          this.push(",");
+        }
+        this.push(`${node}`);
+        this.stopHandler();
+        this.status._needComma = true;
       }
     }
     if (this.status.recording && this.status.verified && this.isLast) {
       if (this.status.needComma) {
         this.push(`,${node}`);
       } else {
-        this.push(node);
+        this.push(`${node}`);
       }
       if (this.status.depthCounter === 1) {
-        this.status.recording = false;
-        this.status.end = true;
+        this.stopHandler();
+        this.status._needComma = true;
       }
       ///-----condition value -----
     } else if (this.status.path.hascondtion && this.verifyCondition(node)) {
       this.status.recording = true;
       this.status.verified = true;
-      this.status.decrementDepthConnter();
+      this.status.depthCounter--;
       this.push(this.status.temp);
       if (this.status.needComma) {
         this.push(`,${node}`);

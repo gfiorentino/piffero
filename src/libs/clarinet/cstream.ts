@@ -75,11 +75,11 @@ export class CStream extends Writable {
 
       // if no remainder bytes carried over, parse multi byte (>=128) chars one at a time
       if (this.bytes_remaining === 0 && n >= 128) {
-        if (n >= 194 && n <= 223) {
+        if (n <= 223 && n >= 194) {
           this.bytes_in_sequence = 2;
-        } else if (n >= 224 && n <= 239) {
+        } else if (n <= 239 && n >= 224) {
           this.bytes_in_sequence = 3;
-        } else if (n >= 240 && n <= 244) {
+        } else if (n <= 244 && n >= 240) {
           this.bytes_in_sequence = 4;
         }
         if (this.bytes_in_sequence + i > data.length) {
