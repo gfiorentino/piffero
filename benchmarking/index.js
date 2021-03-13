@@ -3,7 +3,6 @@
  */
 
 var fs = require("fs");
-var performance = require('perf_hooks').performance;
 var Benchmark = require('benchmark');
 var suite = new Benchmark.Suite;
 
