@@ -20,7 +20,8 @@
     "preversion": "npm run lint",
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags",
-    "dev": "node --inspect=5858 -r ts-node/register dev/index.ts"
+    "dev": "node --inspect=5858 -r ts-node/register dev/index.ts",
+    "benchmark": "cd benchmarking && node index.js"
   },
   "repository": {
     "type": "git",
