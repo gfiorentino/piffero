@@ -7,7 +7,6 @@ export class ConditionEval {
       type: string;
       value: string;
     }[] = esprima.tokenize(condition);
-
     return conditionTokenized;
   }
 
@@ -18,5 +17,9 @@ export class ConditionEval {
       return value;
     }
     return "" + evaluated;
+  }
+
+  static checkIndex(): boolean {
+    return false;
   }
 }

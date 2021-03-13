@@ -58,12 +58,18 @@ describe("piffero large", function () {
   it("simple jsonpath array", async function () {
     const result = Piffero.findByPath(stream, "$[2].tags");
     const string = await streamToString(result);
-    expect(string).toBe('["cillum","fugiat","ad","cillum","eu"]');
+    expect(string).toBe('[["cillum","fugiat","ad","cillum","eu"]]');
   });
 
   it("simple jsonpath array primitive", async function () {
-    const result = Piffero.findByPath(stream, "$[2].tags[2]");
+    const result = Piffero.findByPath(stream, "$[2].tags[1:2]");
     const string = await streamToString(result);
-    expect(string).toBe('"ad"');
+    expect(string).toBe('["fugiat"]');
+  });
+
+  it("simple jsonpath array primitive", async function () {
+    const result = Piffero.findByPath(stream, "$[2].tags[1:3]");
+    const string = await streamToString(result);
+    expect(string).toBe('["fugiat","ad"]');
   });
 });

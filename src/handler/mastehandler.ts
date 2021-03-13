@@ -18,17 +18,17 @@ export class MasterHandler {
     stream: Stream,
     parsedPath: ParsedPath,
     opt: PifferoOpt,
-    callback?: (result) => void
+    callback?: (result) => void,
+    isBulk: boolean = false
   ): Stream {
     this.callback = callback;
     this.stream = stream as Readable;
     this._opt = opt;
-    //  let parsedPath = JSONPath.parse(jsonPath);
-
+    // let parsedPath = JSONPath.parse(jsonPath);
     this.output = new Stream.Transform();
 
     // ------ da ottimizzare ----
-    let status = new PifferoStatus(parsedPath);
+    //let status = new PifferoStatus(parsedPath);
     const singleStepHandler = new SingleStepHandler(
       parsedPath,
       this.output,
@@ -39,24 +39,26 @@ export class MasterHandler {
 
     while (parsedPath.next && !parsedPath.hascondtion) {
       parsedPath = parsedPath.next;
-      status = new PifferoStatus(parsedPath);
+      //  status = new PifferoStatus(parsedPath,isBulk);
       const singleStepHandler = new SingleStepHandler(
         parsedPath,
         this.output,
-        opt
+        opt,
+        isBulk
       );
       this.stepHandlers.push(singleStepHandler);
     }
 
     let output2: Stream = undefined;
 
-    // recursive if has condition ... no better solution for now
+    // recursive if has condition ... no better solution for now :(
     if (parsedPath.next) {
       const nexthandler: MasterHandler = new MasterHandler();
       output2 = new Stream.Transform();
       const nextParsedPath: ParsedPath = {
         value: '"$"',
         next: parsedPath.next,
+        indexes: [],
         hascondtion: false,
         recursiveDescendant: false,
       };
@@ -66,9 +68,12 @@ export class MasterHandler {
         this.output as Stream,
         nextParsedPath,
         opt2,
-        callback
+        callback,
+        true
       );
       this.callback = (result) => {};
+    } else {
+      this.output.push("[");
     }
 
     this.currentHandler = this.stepHandlers[this.handlerIndex];
@@ -94,7 +99,7 @@ export class MasterHandler {
   }
 
   shiftParser() {
-    if (this.currentHandler.status.recording && !this.currentHandler.isLast) {
+    if (!this.currentHandler.isLast && this.currentHandler.status.recording) {
       let last = this.currentHandler.status.last;
       const lastkey = this.currentHandler.status.lastkey;
       let depthCounter = 0;
@@ -114,27 +119,23 @@ export class MasterHandler {
   onopenobject(node) {
     this.currentHandler.openObject(node);
     this.shiftParser();
-    // checkStreams();
   }
 
   // ------ OPEN ARRAY -----------------------------------------------------------
   onopenarray() {
     this.currentHandler.openArray();
     this.shiftParser();
-    // checkStreams();
   }
 
   // --- CLOSE OBJECT  -------------------------------------------------------
   oncloseobject() {
     this.currentHandler.closeObject();
-    // shiftParser();
     this.checkStreams();
   }
 
   // --- CLOSE ARRAY  -------------------------------------------------------
   onclosearray() {
     this.currentHandler.closeArray();
-    // shiftParser();
     this.checkStreams();
   }
 
@@ -149,7 +150,6 @@ export class MasterHandler {
   //--- VALUE -----------------------------------------------------------
   onvalue(node) {
     this.currentHandler.value(node);
-    // shiftParser();
     this.checkStreams();
   }
 
@@ -157,8 +157,10 @@ export class MasterHandler {
   endOutput() {
     this.currentHandler.status.close = true;
     if (this._opt.mode === "stream") {
+      this.output.push("]");
       this.output.push(null);
     } else {
+      this.currentHandler.outputString += "]";
       this.callback(this.currentHandler.outputString);
     }
   }

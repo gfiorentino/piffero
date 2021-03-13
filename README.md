@@ -1,7 +1,7 @@
 # PIFFERO  [![Build Status](https://travis-ci.com/gfiorentino/piffero.svg?branch=master)](https://travis-ci.com/github/gfiorentino/piffero) [![Coverage Status](https://coveralls.io/repos/github/gfiorentino/piffero/badge.svg?branch=master)](https://coveralls.io/github/gfiorentino/piffero?branch=master) [![NPM version](https://img.shields.io/npm/v/piffero.svg)](https://www.npmjs.com/package/piffero)
 The ultimate JSON SAX parser 
 
-Piffero is an open source SAX parser who work directely on the streams to get part of big JSON files.
+Piffero is an open source SAX parser who work directely on the streams to get parts of big JSON files.
 
 Piffero can load big files larger than memory used and return the required content in a stream.
 
@@ -84,14 +84,14 @@ printResult(result);
          "name":"Joe",
          "surname":"Black",
          "phoneNumbers":[
-            
          ]
       }
    ]
+}
 ```
 #### console result 
 ```js
-{"name":"Joe","surname":"Black","phoneNumbers":[]}
+[{"name":"Joe","surname":"Black","phoneNumbers":[]}]
 ```
 ```js
 // object inside an array 
@@ -99,11 +99,12 @@ const stream = fs.createReadStream('employees.json');
 const result = piffero.Piffero.findPath(stream, "$.employees[0].phoneNumbers[1]");
 .....
 // the content of the stream
-{"type":"home","number":"0123-4567-8910","test":true}
+[{"type":"home","number":"0123-4567-8910","test":true}]
 ...
 ```
 ## Other tools
 * Piffero is built on [Clarinet](https://github.com/dscape/clarinet) 
 * You can try [Oboe](https://github.com/jimhigson/oboe.js)  
+* You can also try [JSONPath Online Evaluator](https://jsonpath.com/)
 
 enjoy piffero!!

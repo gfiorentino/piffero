@@ -19,12 +19,17 @@ export class PifferoStatus {
 
   isMatching = false;
 
+  _needComma = false;
+
+  _isBulkResponse = false;
+
   temp = "";
 
   end: boolean = false;
   close: boolean = false;
+
   // conta a che livello sono sceso per aggiornare gli indici
-  public _depthCounter: number = 0;
+  public depthCounter: number = 0;
   public needBracketes: boolean = false;
   currentIndex: number = -1;
 
@@ -39,22 +44,15 @@ export class PifferoStatus {
 
   lastkey: string;
 
-  set last(last) {
-    this._last = last;
-  }
-
-  get last() {
-    return this._last;
-  }
-
   path: ParsedPath = undefined;
 
-  constructor(path: ParsedPath) {
+  constructor(path: ParsedPath, isBulk: boolean = false) {
     this.path = path;
+    this._isBulkResponse = isBulk;
     if (this.path.range || path.condition) {
       this.isInArray = true;
       if (this.path.value === '"$"') {
-        this._depthCounter = 1;
+        this.depthCounter = 1;
         this.isMatching = true;
       }
     } else if (this.path.value === '"$"') {
@@ -65,28 +63,61 @@ export class PifferoStatus {
     }
 
     if (this.path.value !== '"$"') {
-      this._last = "first";
+      this.last = "first";
     }
+  }
+
+  set last(_last) {
+    //  if (this.recording) {
+    this._last = _last;
+    // }
+  }
+
+  get last() {
+    return this._last;
   }
 
   get needComma(): boolean {
     return (
       this.last === "closearray" ||
       this.last === "closeobject" ||
-      this.last === "value"
+      this.last === "value" ||
+      this._needComma
+    );
+  }
+  get isBulkResponse(): boolean {
+    return (
+      this.path.hascondtion ||
+      this._isBulkResponse ||
+      this.path.indexes.length > 0
     );
   }
 
-  set depthCounter(counter: number) {
-    if (counter >= 0) {
-      this._depthCounter = counter;
+  checkIndex() {
+    const range = this.path.range;
+    if (this.path.indexes && this.path.indexes.length > 0) {
+      return this.path.indexes.indexOf(this.currentIndex) >= 0;
     }
-  }
-  get depthCounter() {
-    return this._depthCounter;
-  }
 
-  decrementDepthConnter() {
-    this._depthCounter--;
+    let start = 0;
+    let end = this.currentIndex + 1;
+    let step = 1;
+
+    if (range.start >= 0) {
+      start = range.start;
+    }
+    if (this.currentIndex < start) {
+      return false;
+    }
+    if (range.end > 0) {
+      end = range.end;
+    }
+    if (range.step > 0) {
+      step = range.step;
+    }
+    if (this.currentIndex > end) {
+      return false;
+    }
+    return Number.isInteger((this.currentIndex - start) / step);
   }
 }
