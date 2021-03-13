@@ -15,18 +15,18 @@ var JSON_PATH = '[2].tags[2]';
 
 // test library ...
 
-function oboeTest() {
+function oboeTest(cb) {
     var t0 = performance.now();
     oboe(fs.createReadStream(JSON_FILE)).node(JSON_PATH, function (result) {
         this.abort();
-        console.log('oboe time', performance.now() - t0, 'result', result);
+        cb({name: 'oboe', time: performance.now() - t0, result: result});
     });
 }
 
-function pifferoTest() {
+function pifferoTest(cb) {
     var t0 = performance.now();
     Piffero.findAsString(function (result) {
-            console.log('Piffero time', performance.now() - t0, 'result', result);
+            cb({name: 'Piffero', time: performance.now() - t0, result: result});
         },  
         fs.createReadStream(JSON_FILE), 
         '$' + JSON_PATH
@@ -38,5 +38,7 @@ function pifferoTest() {
 var testMethods = [oboeTest, pifferoTest];
 
 testMethods.forEach(function(method) {
-    method();
+    method(function(result){
+        console.log(result);
+    });
 });
