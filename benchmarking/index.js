@@ -5,6 +5,8 @@
 var fs = require("fs");
 var Benchmark = require('benchmark');
 var suite = new Benchmark.Suite;
+var Benchmark = require('benchmark');
+var suite = new Benchmark.Suite;
 
 
 // JsonPath streaming libs
