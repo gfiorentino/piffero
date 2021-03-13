@@ -72,11 +72,12 @@ suite.add('oboe', {
 
     }
 })
-.on('cycle', function(event) {
-    console.log(String(event.target));
-})
 .on('complete', function () {
-    // console.log(this[0].stats)
+    console.log('###########################################');
+    for (var i = 0; i < this.length; i++) {
+        console.log(this[i].name + " " + this[i].hz + " ops/sec ("+ this[i].stats.sample.length +" runs sampled)");
+    }
     console.log('Fastest is ' + this.filter('fastest').map('name'));
+    console.log('Slowest is ' + this.filter('slowest').map('name'));
 })
 .run()
