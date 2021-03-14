@@ -98,7 +98,7 @@ const resultStream = piffero.Piffero.findByPath(inputStream, "$.employees[1]");
 // trasform the stream to string and print into console
 const chunks = [];
 resultStream.on('data', chunk => chunks.push(chunk));
-resultStream.on('end', () => console.log(Buffer.concat(chunks).toString('utf8'));
+resultStream.on('end', () => console.log(Buffer.concat(chunks).toString('utf8')));
 ```
 #### console result 
 ```js
@@ -119,7 +119,7 @@ const resultStream = piffero.Piffero.findPath(inputStream, '$.employees[0].phone
 // trasform the stream to string and print into console
 const chunks = [];
 resultStream.on('data', chunk => chunks.push(chunk));
-resultStream.on('end', () => console.log(Buffer.concat(chunks).toString('utf8'));
+resultStream.on('end', () => console.log(Buffer.concat(chunks).toString('utf8')));
 ```
 #### console result 
 ```js
