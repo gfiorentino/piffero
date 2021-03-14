@@ -94,12 +94,12 @@ export class SingleStepHandler {
     }
     // ----------
 
-    if (this.status.last !== "first") {
+    if (this.status.last !== "f") {
       this.status.depthCounter++;
     }
 
     this.status.lastkey = node;
-    this.status.last = "openobject";
+    this.status.last = "{";
   }
 
   closeObject() {
@@ -124,7 +124,7 @@ export class SingleStepHandler {
     }
     // -------------
     this.status.depthCounter--;
-    this.status.last = "closeobject";
+    this.status.last = "}";
   }
 
   openArray() {
@@ -172,7 +172,7 @@ export class SingleStepHandler {
     }
     // ---------------
     this.status.depthCounter++;
-    this.status.last = "openarray";
+    this.status.last = "[";
   }
 
   closeArray() {
@@ -202,7 +202,7 @@ export class SingleStepHandler {
     //  if (this.status.depthCounter < 3) {
     // this.status.currentIndex=0;
     // }
-    this.status.last = "closearray";
+    this.status.last = "]";
   }
 
   key(node: any) {
@@ -242,11 +242,11 @@ export class SingleStepHandler {
       }
     }
     this.status.lastkey = node;
-    this.status.last = "key";
+    this.status.last = "k";
   }
 
   value(node: any) {
-    if (this.status.last === "openarray" && this.status.depthCounter === 2) {
+    if (this.status.last === "[" && this.status.depthCounter === 2) {
       this.status.isPrimitiveTypeArray = true;
     }
     if (
@@ -296,7 +296,7 @@ export class SingleStepHandler {
         this.status.temp = this.status.temp + node;
       }
     }
-    this.status.last = "value";
+    this.status.last = "v";
   }
 
   verifyCondition(value): boolean {
@@ -305,7 +305,7 @@ export class SingleStepHandler {
       this.status.isMatching &&
       this.status.depthCounter === 3 &&
       condition.key === this.status.lastkey &&
-      (this.status.last === "key" || this.status.last === "openobject") &&
+      (this.status.last === "k" || this.status.last === "{") &&
       condition.value === value
     );
   }

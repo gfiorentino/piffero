@@ -33,14 +33,14 @@ export class PifferoStatus {
   public needBracketes: boolean = false;
   currentIndex: number = -1;
 
-  private _last:
-    | "openobject"
-    | "closeobject"
-    | "openarray"
-    | "closearray"
-    | "value"
-    | "key"
-    | "first";
+  public last:
+    | "{" // openobject
+    | "}" // closeobject
+    | "[" // openarray
+    | "]" // closearray
+    | "v" // value
+    | "k" // key
+    | "f" // cirst;
 
   lastkey: string;
 
@@ -63,25 +63,18 @@ export class PifferoStatus {
     }
 
     if (this.path.value !== '"$"') {
-      this.last = "first";
+      this.last = "f";
     }
   }
 
-  set last(_last) {
-    //  if (this.recording) {
-    this._last = _last;
-    // }
-  }
+ 
 
-  get last() {
-    return this._last;
-  }
 
   get needComma(): boolean {
     return (
-      this.last === "closearray" ||
-      this.last === "closeobject" ||
-      this.last === "value" ||
+      this.last === "]" ||
+      this.last === "}" ||
+      this.last === "v" ||
       this._needComma
     );
   }
