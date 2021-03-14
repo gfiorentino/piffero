@@ -53,7 +53,7 @@ or
 
 For example, if you have this json:
 
-#### empoyees.json
+#### employees.json
 ```js
 {
    "employees":[
@@ -90,7 +90,7 @@ const piffero = require('piffero');
 const fs = require('fs');
 
 // create read stream of json
-const inputStream = fs.createReadStream('./empoyees.json');
+const inputStream = fs.createReadStream('./employees.json');
 // pass the stream to Piffero with the json path
 const resultStream = piffero.Piffero.findByPath(inputStream, "$.employees[1]");
 
@@ -104,14 +104,14 @@ resultStream.on('end', () => console.log(Buffer.concat(chunks).toString('utf8'))
 [{"name":"Joe","surname":"Black","phoneNumbers":[]}]
 ```
 
-Otherwise, if you want the second phone number of tje first employees, you need to call `findByPath` with the json path `$.employees[0].phoneNumbers[1]`, eg:
+Otherwise, if you want the second phone number of the first employees, you need to call `findByPath` with the json path `$.employees[0].phoneNumbers[1]`, eg:
 
 ```js
 const piffero = require('piffero');
 const fs = require('fs');
 
 // create read stream of json
-const inputStream = fs.createReadStream('./empoyees.json');
+const inputStream = fs.createReadStream('./employees.json');
 // pass the stream to Piffero with the json path
 const resultStream = piffero.Piffero.findPath(inputStream, '$.employees[0].phoneNumbers[1]');
 
