@@ -12,23 +12,12 @@ var Piffero = require('../dist/index.js').Piffero;
 
 // config
 var JSON_FILE = '../spec/jsonFiles/large.json';
-var JSON_PATH = '[2].tags[2]';
+var JSON_PATH = '[5].tags[3]';
 
 
 // run test ...
 
-suite.add('oboe', {
-    defer: true,
-    fn: function (deferred) {
-      
-        oboe(fs.createReadStream(JSON_FILE)).node(JSON_PATH, function (result) {
-            this.abort();
-            deferred.resolve();
-        });
-
-    }
-})
-.add('Piffero', {
+suite.add('Piffero', {
     defer: true,
     fn: function (deferred) {
       
@@ -40,7 +29,18 @@ suite.add('oboe', {
         );
 
     }
+}).add('oboe', {
+    defer: true,
+    fn: function (deferred) {
+      
+        oboe(fs.createReadStream(JSON_FILE)).node(JSON_PATH, function (result) {
+            this.abort();
+            deferred.resolve();
+        });
+
+    }
 })
+
 .on('complete', function () {
     console.log('###########################################');
     for (var i = 0; i < this.length; i++) {
