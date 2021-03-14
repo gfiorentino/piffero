@@ -1,8 +1,8 @@
 import { ParsedPath } from "./jsonpath";
 
-export enum PifferoOpt { 
+export enum PifferoOpt {
   string,
-  stream 
+  stream,
 }
 export class PifferoStatus {
   //abbiamo verificato la condizione
@@ -40,7 +40,7 @@ export class PifferoStatus {
     | "]" // closearray
     | "v" // value
     | "k" // key
-    | "f" // cirst;
+    | "f"; // cirst;
 
   lastkey: string;
 
@@ -66,9 +66,6 @@ export class PifferoStatus {
       this.last = "f";
     }
   }
-
- 
-
 
   get needComma(): boolean {
     return (

@@ -19,17 +19,16 @@ export class SingleStepHandler {
     this.useString = opt === PifferoOpt.string;
     this.status = new PifferoStatus(path, isBulk);
     this._output = output;
-    this.isLast = path.next == undefined || path.next == null || path.hascondtion;
+    this.isLast =
+      path.next == undefined || path.next == null || path.hascondtion;
     if (this.isLast) {
       if (this.useString) {
-        this.push = (value) => this.outputString += value;
+        this.push = (value) => (this.outputString += value);
       } else {
         this.push = (value) => this._output.push(value);
       }
     }
   }
-
-
 
   stopHandler() {
     this.status.verified = false;
@@ -257,7 +256,7 @@ export class SingleStepHandler {
     ) {
       this.status.currentIndex++;
       if (this.status.checkIndex() && !this.status.close) {
-      //  console.log(this.status.path.range, this.status.currentIndex);
+        //  console.log(this.status.path.range, this.status.currentIndex);
         if (this.status.currentIndex > this.status.path.range.start) {
           this.push(",");
         }

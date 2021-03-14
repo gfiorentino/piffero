@@ -17,6 +17,6 @@ export class Piffero {
   ) {
     const handler = new MasterHandler();
     let parsedPath = JSONPath.parse(jsonPath);
-    handler.parse(stream, parsedPath,PifferoOpt.string, callback);
+    handler.parse(stream, parsedPath, PifferoOpt.string, callback);
   }
 }
