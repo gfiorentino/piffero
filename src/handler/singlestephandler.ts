@@ -257,7 +257,7 @@ export class SingleStepHandler {
     ) {
       this.status.currentIndex++;
       if (this.status.checkIndex() && !this.status.close) {
-        console.log(this.status.path.range, this.status.currentIndex);
+      //  console.log(this.status.path.range, this.status.currentIndex);
         if (this.status.currentIndex > this.status.path.range.start) {
           this.push(",");
         }

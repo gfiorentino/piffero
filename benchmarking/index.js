@@ -14,7 +14,7 @@ var Piffero = require('../dist/index.js').Piffero;
 
 // config
 var JSON_FILE = '../spec/jsonFiles/large.json';
-var JSON_PATH = '[2].tags[2]';
+var JSON_PATH = '[5].tags[2]';
 
 // run test ...
 
