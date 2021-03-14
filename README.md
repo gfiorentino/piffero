@@ -5,63 +5,57 @@ Piffero is an open source SAX parser who work directely on the streams to get pa
 
 Piffero can load big files larger than memory used and return the required content in a stream.
 
- ``` 
-    ______________________________ . 
-  =(____|_o_o_o_o_|_o_o_o_o_|*____| |
-                                   '
- ```
-# Get Started
+``` 
+  ______________________________ . 
+=(____|_o_o_o_o_|_o_o_o_o_|*____| |
+                                 '
+```
+# Description
 
 The version 1.0.0 only support the full qualified JSONpath
 
-example : $.father.son.array[:index].attribute
+example: `$.father.son.array[:index].attribute`
 
 The sintax that will be implemented in the next future and the examples from [Stefan Goessner's post](http://goessner.net/articles/JsonPath/) 
 
-JSONPath         | Description                              |Implemented
------------------|------------------------------------------|-----------------|
-`$`               | The root object/element                 |<ul><li>- [x] </li></ul>
-`@`                | The current object/element             |<ul><li>- [ ] </li></ul>
-`.`                | Child member operator                  |<ul><li>- [x] </li></ul>
-`..`	         | Recursive descendant operator; JSONPath borrows this syntax from E4X |<ul><li>- [ ] </li></ul>
-`*`	         | Wildcard matching all objects/elements regardless their names |<ul><li>- [ ] </li></ul>
-`[]`	         | Subscript operator |<ul><li>- [X] </li></ul>
-`[,]`	         | Union operator for alternate names or array indices as a set| <ul><li>- [ ] </li></ul>
-`[start:end:step]` | Array slice operator borrowed from ES4 / Python| <ul><li>- [ ] </li></ul>
-`?()`              | Applies a filter (script) expression via static evaluation| <ul><li>- [ ] </li></ul>
-`()`	         | Script expression via static evaluation | <ul><li>- [ ] </li></ul>
+JSONPath           | Description                                                          |Implemented
+-------------------|----------------------------------------------------------------------|------------
+`$`                | The root object/element                                              | [x]
+`@`                | The current object/element                                           | [ ] 
+`.`                | Child member operator                                                | [x]
+`..`	             | Recursive descendant operator; JSONPath borrows this syntax from E4X | [ ] 
+`*`	             | Wildcard matching all objects/elements regardless their names        | [ ] 
+`[]`	             | Subscript operator                                                   | [X] 
+`[,]`	             | Union operator for alternate names or array indices as a set         | [ ]
+`[start:end:step]` | Array slice operator borrowed from ES4 / Python                      | [ ] 
+`?()`              | Applies a filter (script) expression via static evaluation           | [ ] 
+`()`	             | Script expression via static evaluation                              | [ ] 
 
-## JavaScript
 
-Piffero is easy to use you only need to call the method findByPath(:inputStream, :jsonpath);
-```js
-const piffero = require('piffero');
-const fs = require('fs');
+# Get Started
 
-const stream = fs.createReadStream('employees.json');
-const result = piffero.Piffero.findByPath(stream, "$.employees[1]");
+*Step 1*: install `piffero`
 
-// ------ this code is only to console the content of the stream -------
-  streamToString = async (stream) =>{
-    const chunks = []
-    return new Promise((resolve, reject) => {
-      stream.on('data', chunk => chunks.push(chunk))
-      stream.on('error', reject)
-      stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')))
-    })
-  }
-
-printResult = async (result) => {
-    const string  = await streamToString(result); 
-    console.log(string);
-}
-
-printResult(result);
-//---------------------------------------------------------------------
+```bash
+npm i piffero
 ```
+
+*Step 2*: use `piffero`
+
+Piffero is easy to use, you only need to call one of the methods:
+
+`findByPath(inputStream: Stream, jsonpath: string): Stream`
+
+or
+
+`findAsString(callback: (result: any, err?: any) => void, inputStream: Stream, jsonpath: string)`
+
+## Examples
+
+For example, if you have this json:
+
 #### empoyees.json
 ```js
-
 {
    "employees":[
       {
@@ -89,18 +83,47 @@ printResult(result);
    ]
 }
 ```
+
+and you want extract the second employees "Joe Black", you need to call `findByPath` with the json path `$.employees[1]`, eg:
+
+```js
+const piffero = require('piffero');
+const fs = require('fs');
+
+// create read stream of json
+const inputStream = fs.createReadStream('employees.json');
+// pass the stream to Piffero with the json path
+const resultStream = piffero.Piffero.findByPath(inputStream, "$.employees[1]");
+
+// trasform the stream to string and print into console
+const chunks = [];
+resultStream.on('data', chunk => chunks.push(chunk));
+resultStream.on('end', () => console.log(Buffer.concat(chunks).toString('utf8'));
+```
 #### console result 
 ```js
 [{"name":"Joe","surname":"Black","phoneNumbers":[]}]
 ```
+
+Otherwise, if you want the second phone number of tje first employees, you need to call `findByPath` with the json path `$.employees[0].phoneNumbers[1]`, eg:
+
 ```js
-// object inside an array 
-const stream = fs.createReadStream('employees.json');
-const result = piffero.Piffero.findPath(stream, "$.employees[0].phoneNumbers[1]");
-.....
-// the content of the stream
+const piffero = require('piffero');
+const fs = require('fs');
+
+// create read stream of json
+const inputStream = fs.createReadStream('employees.json');
+// pass the stream to Piffero with the json path
+const resultStream = piffero.Piffero.findPath(inputStream, '$.employees[0].phoneNumbers[1]');
+
+// trasform the stream to string and print into console
+const chunks = [];
+resultStream.on('data', chunk => chunks.push(chunk));
+resultStream.on('end', () => console.log(Buffer.concat(chunks).toString('utf8'));
+```
+#### console result 
+```js
 [{"type":"home","number":"0123-4567-8910","test":true}]
-...
 ```
 ## Other tools
 * Piffero is built on [Clarinet](https://github.com/dscape/clarinet) 
