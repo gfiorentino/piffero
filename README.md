@@ -20,16 +20,16 @@ The sintax that will be implemented in the next future and the examples from [St
 
 JSONPath           | Description                                                          |Implemented
 -------------------|----------------------------------------------------------------------|------------
-`$`                | The root object/element                                              | [x]
-`@`                | The current object/element                                           | [ ] 
-`.`                | Child member operator                                                | [x]
-`..`	             | Recursive descendant operator; JSONPath borrows this syntax from E4X | [ ] 
-`*`	             | Wildcard matching all objects/elements regardless their names        | [ ] 
-`[]`	             | Subscript operator                                                   | [X] 
-`[,]`	             | Union operator for alternate names or array indices as a set         | [ ]
-`[start:end:step]` | Array slice operator borrowed from ES4 / Python                      | [ ] 
-`?()`              | Applies a filter (script) expression via static evaluation           | [ ] 
-`()`	             | Script expression via static evaluation                              | [ ] 
+`$`                | The root object/element                                              | ✅
+`@`                | The current object/element                                           | 
+`.`                | Child member operator                                                | ✅
+`..`	             | Recursive descendant operator; JSONPath borrows this syntax from E4X | 
+`*`	             | Wildcard matching all objects/elements regardless their names        | 
+`[]`	             | Subscript operator                                                   | ✅ 
+`[,]`	             | Union operator for alternate names or array indices as a set         | 
+`[start:end:step]` | Array slice operator borrowed from ES4 / Python                      | 
+`?()`              | Applies a filter (script) expression via static evaluation           |  
+`()`	             | Script expression via static evaluation                              |  
 
 
 # Get Started
