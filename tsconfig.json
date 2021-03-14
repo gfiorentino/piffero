@@ -1,11 +1,17 @@
 {
     "compilerOptions": {
       "module": "commonjs",
-      "target": "es2015",
+      "target": "ES6",
       "declaration": true,
-      "outDir": "./dist"
+      "outDir": "./dist",
+      "allowJs": true,
+      "moduleResolution": "node",
+      "sourceMap": true
     },
     "include": [
       "src/**/*", "index.ts"
+    ],
+    "exclude": [
+      "node_modules"
     ]
   }

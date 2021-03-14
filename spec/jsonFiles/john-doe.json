@@ -1,0 +1,29 @@
+{   "普派":"普派",
+    "firstName": "John",
+    "lastName" : "doe",
+    "age"      : 26,
+    "object"   : {"key": "object"},
+    "array": [[1,2],[3,4]],
+    "address"  : [{
+      "streetAddress": "naist street",
+      "city"         : "Nara",
+      "postalCode"   : "630-0192"
+    }],
+    "diacriticals": "áÇÂôÜ",
+    "chinese": "普派是",
+    "character": "£$%&/()",
+    "phoneNumbers": [
+      {
+        "id":1,
+        "type"  : "\"iPhone\"",
+        "number": "0123-4567-8888",
+        "test": false
+      },
+      {
+        "id":3,
+        "type"  : "home",
+        "number": "0123-4567-8910",
+        "test": true
+      } 
+    ]
+  }
