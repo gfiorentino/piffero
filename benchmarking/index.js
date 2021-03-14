@@ -14,9 +14,14 @@ var Piffero = require('../dist/index.js').Piffero;
 
 // config
 var JSON_FILE = '../spec/jsonFiles/large-file.json';
-var JSON_PATH = '[50].actor.avatar_url';
+var JSON_PATH = '[10].actor.avatar_url';
+
+
+
+
 
 // run test ...
+
 suite.add('Piffero', {
     defer: true,
     fn: function (deferred) {
@@ -26,11 +31,12 @@ suite.add('Piffero', {
         fs.createReadStream(JSON_FILE), 
         '$' + JSON_PATH
     );
+
     }
 }).add('oboe', {
     defer: true,
     fn: function (deferred) {
-        oboe(fs.createReadStream(JSON_FILE)).node(JSON_PATH, function (result) {
+        oboe(fs.createReadStream(JSON_FILE)).node('!'+ JSON_PATH, function (result) {
             this.abort();
             deferred.resolve();
         });
