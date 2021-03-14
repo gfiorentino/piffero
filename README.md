@@ -91,7 +91,7 @@ const piffero = require('piffero');
 const fs = require('fs');
 
 // create read stream of json
-const inputStream = fs.createReadStream('employees.json');
+const inputStream = fs.createReadStream('./empoyees.json');
 // pass the stream to Piffero with the json path
 const resultStream = piffero.Piffero.findByPath(inputStream, "$.employees[1]");
 
@@ -112,7 +112,7 @@ const piffero = require('piffero');
 const fs = require('fs');
 
 // create read stream of json
-const inputStream = fs.createReadStream('employees.json');
+const inputStream = fs.createReadStream('./empoyees.json');
 // pass the stream to Piffero with the json path
 const resultStream = piffero.Piffero.findPath(inputStream, '$.employees[0].phoneNumbers[1]');
 
