@@ -34,13 +34,13 @@ JSONPath           | Description                                                
 
 # Get Started
 
-*Step 1*: install `piffero`
+*Step 1*: install Piffero
 
 ```bash
 npm i piffero
 ```
 
-*Step 2*: use `piffero`
+*Step 2*: use Piffero
 
 Piffero is easy to use, you only need to call one of the methods:
 
@@ -48,7 +48,7 @@ Piffero is easy to use, you only need to call one of the methods:
 
 or
 
-`findAsString(callback: (result: any, err?: any) => void, inputStream: Stream, jsonpath: string)`
+`findAsString(callback: (result: any, err?: any) => void, inputStream: Stream, jsonpath: string): void`
 
 ## Examples
 
