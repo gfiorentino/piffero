@@ -62,8 +62,8 @@ export class MasterHandler {
         hascondtion: false,
         recursiveDescendant: false,
       };
-      const opt2 = { ...this._opt };
-      this._opt.mode = "stream";
+      const opt2 = this._opt;
+      this._opt = PifferoOpt.stream;
       output2 = nexthandler.parse(
         this.output as Stream,
         nextParsedPath,
@@ -82,7 +82,7 @@ export class MasterHandler {
     this.cStream = new CStream(this);
     this.stream.pipe(this.cStream);
 
-    if (opt.mode === "stream") {
+    if (opt === PifferoOpt.stream) {
       if (output2) {
         return output2;
       }
@@ -156,7 +156,7 @@ export class MasterHandler {
   //---END VALUE -----------------------------------------------------------
   endOutput() {
     this.currentHandler.status.close = true;
-    if (this._opt.mode === "stream") {
+    if (this._opt === PifferoOpt.stream) {
       this.output.push("]");
       this.output.push(null);
     } else {

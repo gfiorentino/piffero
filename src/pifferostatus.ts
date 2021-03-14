@@ -1,9 +1,9 @@
 import { ParsedPath } from "./jsonpath";
 
-export interface PifferoOpt {
-  mode: "stream" | "string";
+export enum PifferoOpt { 
+  string,
+  stream 
 }
-
 export class PifferoStatus {
   //abbiamo verificato la condizione
   verified: boolean = false;

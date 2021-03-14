@@ -8,6 +8,7 @@ export class SingleStepHandler {
   _output: Duplex;
   useString = false;
   outputString = "[";
+  push: (value) => {};
 
   constructor(
     path: ParsedPath,
@@ -15,24 +16,23 @@ export class SingleStepHandler {
     opt: PifferoOpt,
     isBulk: boolean = false
   ) {
-    this.useString = opt.mode === "string";
+    this.useString = opt === PifferoOpt.string;
     this.status = new PifferoStatus(path, isBulk);
     this._output = output;
-    this.isLast =
-      path.next == undefined || path.next == null || path.hascondtion;
-  }
-
-  push(value) {
-    if (this.useString) {
-      this.outputString += value;
-    } else {
-      this._output.push(value);
+    this.isLast = path.next == undefined || path.next == null || path.hascondtion;
+    if (this.isLast) {
+      if (this.useString) {
+        this.push = (value) => this.outputString += value;
+      } else {
+        this.push = (value) => this._output.push(value);
+      }
     }
   }
 
+
+
   stopHandler() {
     this.status.verified = false;
-
     if (!this.status.isBulkResponse) {
       this.status.recording = false;
       this.status.end = true; // temporaneo
