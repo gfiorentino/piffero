@@ -5,9 +5,9 @@ Piffero is an open source SAX parser who work directely on the streams to get pa
 
 Piffero can load big files larger than memory used and return the required content in a stream.
 
-``` 
-  ______________________________ . 
-=(____|_o_o_o_o_|_o_o_o_o_|*____| |
+```
+  ______________________________ .  ♪
+=(____|_o_o_o_o_|_o_o_o_o_|*____| |   ♫
                                  '
 ```
 # Description
@@ -30,7 +30,6 @@ JSONPath           | Description                                                
 `[start:end:step]` | Array slice operator borrowed from ES4 / Python                      | 
 `?()`              | Applies a filter (script) expression via static evaluation           |  
 `()`	             | Script expression via static evaluation                              |  
-
 
 # Get Started
 
