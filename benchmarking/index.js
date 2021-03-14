@@ -13,32 +13,27 @@ var oboe = require('./oboe-node.js');
 var Piffero = require('../dist/index.js').Piffero;
 
 // config
-var JSON_FILE = '../spec/jsonFiles/large.json';
-var JSON_PATH = '[5].tags[2]';
+var JSON_FILE = '../spec/jsonFiles/large-file.json';
+var JSON_PATH = '[50].actor.avatar_url';
 
 // run test ...
-
-suite.add('oboe', {
+suite.add('Piffero', {
     defer: true,
     fn: function (deferred) {
-      
+        Piffero.findAsString(function (result) {
+            deferred.resolve();
+        },  
+        fs.createReadStream(JSON_FILE), 
+        '$' + JSON_PATH
+    );
+    }
+}).add('oboe', {
+    defer: true,
+    fn: function (deferred) {
         oboe(fs.createReadStream(JSON_FILE)).node(JSON_PATH, function (result) {
             this.abort();
             deferred.resolve();
         });
-
-    }
-})
-.add('Piffero', {
-    defer: true,
-    fn: function (deferred) {
-      
-        Piffero.findAsString(function (result) {
-                deferred.resolve();
-            },  
-            fs.createReadStream(JSON_FILE), 
-            '$' + JSON_PATH
-        );
 
     }
 })
@@ -50,4 +45,4 @@ suite.add('oboe', {
     console.log('Fastest is ' + this.filter('fastest').map('name'));
     console.log('Slowest is ' + this.filter('slowest').map('name'));
 })
-.run()
+.run() 
