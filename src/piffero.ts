@@ -1,13 +1,12 @@
 import { Readable, Stream } from "stream";
 import { MasterHandler } from "./handler/mastehandler";
 import { JSONPath } from "./jsonpath";
-import { PifferoOpt } from "./pifferostatus";
 
 export class Piffero {
   static findByPath(stream: Readable, jsonPath: string = "$"): Stream {
     const handler = new MasterHandler();
     let parsedPath = JSONPath.parse(jsonPath);
-    return handler.parse(stream, parsedPath, PifferoOpt.stream);
+    return handler.parse(stream, parsedPath, 'stream');
   }
 
   static findAsString(
@@ -17,6 +16,6 @@ export class Piffero {
   ) {
     const handler = new MasterHandler();
     let parsedPath = JSONPath.parse(jsonPath);
-    handler.parse(stream, parsedPath, PifferoOpt.string, callback);
+    handler.parse(stream, parsedPath, 'string', callback);
   }
 }

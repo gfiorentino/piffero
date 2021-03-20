@@ -16,7 +16,7 @@ export class SingleStepHandler {
     opt: PifferoOpt,
     isBulk: boolean = false
   ) {
-    this.useString = opt === PifferoOpt.string;
+    this.useString = opt === 'string';
     this.status = new PifferoStatus(path, isBulk);
     this._output = output;
     this.isLast =

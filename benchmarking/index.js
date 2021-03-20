@@ -13,8 +13,8 @@ var oboe = require('./oboe-node.js');
 var Piffero = require('../dist/index.js').Piffero;
 
 // config
-var JSON_FILE = '../spec/jsonFiles/large.json';
-var JSON_PATH = '[2].tags[2]';
+var JSON_FILE = '../spec/jsonFiles/large-file.json';
+var JSON_PATH = '[11350].payload.issue.user.received_events_url';
 
 // run test ...
 suite.add('Piffero', {
@@ -24,7 +24,7 @@ suite.add('Piffero', {
             deferred.resolve();
         },  
         fs.createReadStream(JSON_FILE), 
-        '$' + JSON_PATH
+        '$.' + JSON_PATH
     );
     }
 }).add('oboe', {

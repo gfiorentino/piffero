@@ -1,8 +1,8 @@
+import { PifferoOpt } from './../pifferostatus';
 import { CStream } from "./../libs/clarinet/cstream";
 import { SingleStepHandler } from "./singlestephandler";
 import { ParsedPath } from "../jsonpath";
 import { Duplex, Readable, Stream } from "stream";
-import { PifferoOpt, PifferoStatus } from "../pifferostatus";
 
 export class MasterHandler {
   handlerIndex = 0;
@@ -63,7 +63,7 @@ export class MasterHandler {
         recursiveDescendant: false,
       };
       const opt2 = this._opt;
-      this._opt = PifferoOpt.stream;
+      this._opt = 'stream';
       output2 = nexthandler.parse(
         this.output as Stream,
         nextParsedPath,
@@ -82,7 +82,7 @@ export class MasterHandler {
     this.cStream = new CStream(this);
     this.stream.pipe(this.cStream);
 
-    if (opt === PifferoOpt.stream) {
+    if (opt === 'stream') {
       if (output2) {
         return output2;
       }
@@ -156,7 +156,7 @@ export class MasterHandler {
   //---END VALUE -----------------------------------------------------------
   endOutput() {
     this.currentHandler.status.close = true;
-    if (this._opt === PifferoOpt.stream) {
+    if (this._opt === 'stream') {
       this.output.push("]");
       this.output.push(null);
     } else {
