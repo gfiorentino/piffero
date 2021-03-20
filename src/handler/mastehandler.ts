@@ -103,9 +103,9 @@ export class MasterHandler {
       let last = this.currentHandler.status.last;
       const lastkey = this.currentHandler.status.lastkey;
       let depthCounter = 0;
-      if (this.currentHandler.status.last === '{') {
+      if (this.currentHandler.status.last === OPEN_OBJECT) {
         depthCounter = 1;
-        last = "f";
+        last = FIRST;
       }
       this.handlerIndex++;
       this.currentHandler = this.stepHandlers[this.handlerIndex];

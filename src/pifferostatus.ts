@@ -2,13 +2,15 @@ import { ParsedPath } from "./jsonpath";
 
 export type PifferoOpt = 'string' | 'stream';
 
-export const OPEN_OBJECT = 0;
-export const CLOSE_OBJECT = 1;
-export const OPEN_ARRAY = 2;
-export const CLOSE_ARRAU = 3;
-export const VALUE = 4;
-export const KEY = 5;
-export const FIRST = 6;
+export const OPEN_OBJECT = 'object-open';
+export const CLOSE_OBJECT = 'object-close';
+export const OPEN_ARRAY = 'array-open';
+export const CLOSE_ARRAY = 'array-close';
+export const VALUE = 'value';
+export const KEY = 'key';
+export const FIRST = 'first';
+
+type PifferoEvent = typeof OPEN_OBJECT | typeof CLOSE_OBJECT | typeof OPEN_ARRAY | typeof  CLOSE_ARRAY | typeof VALUE | typeof KEY | typeof FIRST;
 
 export class PifferoStatus {
   //abbiamo verificato la condizione
@@ -39,14 +41,8 @@ export class PifferoStatus {
   public needBracketes: boolean = false;
   currentIndex: number = -1;
 
-  public last:
-   "{"// openobject
-  | "}" // closeobject
-  | "[" // openarray
-  | "]" // closearray
-  | "v" // value
-  | "k" // key
-  | "f"; // cirst;
+  public last:PifferoEvent;
+
 
   lastkey: string;
 
@@ -69,15 +65,15 @@ export class PifferoStatus {
     }
 
     if (this.path.value !== '"$"') {
-      this.last = "f";
+      this.last = FIRST;
     }
   }
 
   get needComma(): boolean {
     return (
-      this.last === "]" ||
-      this.last === "}" ||
-      this.last === "v" ||
+      this.last === CLOSE_ARRAY ||
+      this.last === CLOSE_OBJECT ||
+      this.last === VALUE ||
       this._needComma
     );
   }

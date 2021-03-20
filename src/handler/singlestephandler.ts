@@ -1,6 +1,6 @@
 import { ParsedPath } from "../jsonpath";
 import { Duplex } from "stream";
-import { PifferoStatus } from "../pifferostatus";
+import { CLOSE_ARRAY, CLOSE_OBJECT, FIRST, KEY, OPEN_ARRAY, OPEN_OBJECT, PifferoStatus, VALUE } from "../pifferostatus";
 
 export class SingleStepHandler {
   status: PifferoStatus;
@@ -93,12 +93,12 @@ export class SingleStepHandler {
     }
     // ----------
 
-    if (this.status.last !== "f") {
+    if (this.status.last !== FIRST) {
       this.status.depthCounter++;
     }
 
     this.status.lastkey = node;
-    this.status.last = "{";
+    this.status.last = OPEN_OBJECT;
   }
 
   closeObject() {
@@ -123,7 +123,7 @@ export class SingleStepHandler {
     }
     // -------------
     this.status.depthCounter--;
-    this.status.last = "}";
+    this.status.last = CLOSE_OBJECT;
   }
 
   openArray() {
@@ -171,7 +171,7 @@ export class SingleStepHandler {
     }
     // ---------------
     this.status.depthCounter++;
-    this.status.last = "[";
+    this.status.last = OPEN_ARRAY;
   }
 
   closeArray() {
@@ -201,7 +201,7 @@ export class SingleStepHandler {
     //  if (this.status.depthCounter < 3) {
     // this.status.currentIndex=0;
     // }
-    this.status.last = "]";
+    this.status.last = CLOSE_ARRAY;
   }
 
   key(node: any) {
@@ -241,11 +241,11 @@ export class SingleStepHandler {
       }
     }
     this.status.lastkey = node;
-    this.status.last = "k";
+    this.status.last = KEY;
   }
 
   value(node: any) {
-    if (this.status.last === "[" && this.status.depthCounter === 2) {
+    if (this.status.last === OPEN_ARRAY && this.status.depthCounter === 2) {
       this.status.isPrimitiveTypeArray = true;
     }
     if (
@@ -295,7 +295,7 @@ export class SingleStepHandler {
         this.status.temp = this.status.temp + node;
       }
     }
-    this.status.last = "v";
+    this.status.last = VALUE;
   }
 
   verifyCondition(value): boolean {
@@ -304,7 +304,7 @@ export class SingleStepHandler {
       this.status.isMatching &&
       this.status.depthCounter === 3 &&
       condition.key === this.status.lastkey &&
-      (this.status.last === "k" || this.status.last === "{") &&
+      (this.status.last === KEY || this.status.last === OPEN_OBJECT) &&
       condition.value === value
     );
   }
