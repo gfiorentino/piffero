@@ -14,7 +14,7 @@ var Piffero = require('../dist/index.js').Piffero;
 
 // config
 var JSON_FILE = '../spec/jsonFiles/large-file.json';
-var JSON_PATH = '[11350].payload.issue.user.received_events_url';
+var JSON_PATH = '[5].payload';
 
 // run test ...
 suite.add('Piffero (stream)',{
@@ -24,7 +24,7 @@ suite.add('Piffero (stream)',{
       result.on('data' ,()=>{});
       result.on('end', () =>{deferred.resolve();});
     }
-})/*.add('Piffero (string)', {
+}).add('Piffero (string)', {
     defer: true,
     fn: function (deferred) {
         Piffero.findAsString(function (result) {
@@ -34,7 +34,7 @@ suite.add('Piffero (stream)',{
         '$.' + JSON_PATH
     );
     }
-})*/.add('Oboe', {
+}).add('Oboe', {
     defer: true,
     fn: function (deferred) {
         oboe(fs.createReadStream(JSON_FILE)).node('!'+ JSON_PATH, function (result) {

@@ -31,9 +31,8 @@ export class JSONPath {
     if (!jsonPath.startsWith("$")) {
       throw new PifferoJsonPathError(`${PATH_ERROR_MESSAGE}: ${jsonPath}`);
     }
-    if (jsonPath[1] === ".") {
-      jsonPath.replace("$.", ".");
-    }
+    jsonPath.replace("$.", "$");
+    
     // accrocco;
     jsonPath = jsonPath.split("@.").join("!");
     const paths = jsonPath.split(".");
