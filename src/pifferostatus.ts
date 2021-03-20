@@ -2,6 +2,14 @@ import { ParsedPath } from "./jsonpath";
 
 export type PifferoOpt = 'string' | 'stream';
 
+export const OPEN_OBJECT = 0;
+export const CLOSE_OBJECT = 1;
+export const OPEN_ARRAY = 2;
+export const CLOSE_ARRAU = 3;
+export const VALUE = 4;
+export const KEY = 5;
+export const FIRST = 6;
+
 export class PifferoStatus {
   //abbiamo verificato la condizione
   verified: boolean = false;
@@ -32,13 +40,13 @@ export class PifferoStatus {
   currentIndex: number = -1;
 
   public last:
-    | "{" // openobject
-    | "}" // closeobject
-    | "[" // openarray
-    | "]" // closearray
-    | "v" // value
-    | "k" // key
-    | "f"; // cirst;
+   "{"// openobject
+  | "}" // closeobject
+  | "[" // openarray
+  | "]" // closearray
+  | "v" // value
+  | "k" // key
+  | "f"; // cirst;
 
   lastkey: string;
 

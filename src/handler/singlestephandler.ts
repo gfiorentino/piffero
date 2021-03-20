@@ -1,6 +1,6 @@
 import { ParsedPath } from "../jsonpath";
 import { Duplex } from "stream";
-import { PifferoOpt, PifferoStatus } from "../pifferostatus";
+import { PifferoStatus } from "../pifferostatus";
 
 export class SingleStepHandler {
   status: PifferoStatus;
@@ -13,10 +13,10 @@ export class SingleStepHandler {
   constructor(
     path: ParsedPath,
     output: Duplex,
-    opt: PifferoOpt,
+    useString,
     isBulk: boolean = false
   ) {
-    this.useString = opt === 'string';
+    this.useString = useString;
     this.status = new PifferoStatus(path, isBulk);
     this._output = output;
     this.isLast =

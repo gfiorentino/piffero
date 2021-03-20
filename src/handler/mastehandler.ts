@@ -1,4 +1,4 @@
-import { PifferoOpt } from './../pifferostatus';
+import { OPEN_OBJECT, FIRST } from './../pifferostatus';
 import { CStream } from "./../libs/clarinet/cstream";
 import { SingleStepHandler } from "./singlestephandler";
 import { ParsedPath } from "../jsonpath";
@@ -8,7 +8,7 @@ export class MasterHandler {
   handlerIndex = 0;
   stepHandlers: SingleStepHandler[] = [];
   currentHandler: SingleStepHandler;
-  _opt: PifferoOpt;
+  useString: boolean;
   cStream: CStream;
   callback: (result) => void;
   stream: Readable;
@@ -17,14 +17,13 @@ export class MasterHandler {
   parse(
     stream: Stream,
     parsedPath: ParsedPath,
-    opt: PifferoOpt,
+    useString = false,
     callback?: (result) => void,
     isBulk: boolean = false
   ): Stream {
     this.callback = callback;
     this.stream = stream as Readable;
-    this._opt = opt;
-    // let parsedPath = JSONPath.parse(jsonPath);
+    this.useString = useString;
     this.output = new Stream.Transform();
 
     // ------ da ottimizzare ----
@@ -32,7 +31,8 @@ export class MasterHandler {
     const singleStepHandler = new SingleStepHandler(
       parsedPath,
       this.output,
-      opt
+      useString
+      // opt
     );
 
     this.stepHandlers.push(singleStepHandler);
@@ -43,7 +43,7 @@ export class MasterHandler {
       const singleStepHandler = new SingleStepHandler(
         parsedPath,
         this.output,
-        opt,
+        useString,
         isBulk
       );
       this.stepHandlers.push(singleStepHandler);
@@ -62,12 +62,12 @@ export class MasterHandler {
         hascondtion: false,
         recursiveDescendant: false,
       };
-      const opt2 = this._opt;
-      this._opt = 'stream';
+     // const opt2 = this._opt;
+      this.useString = false;
       output2 = nexthandler.parse(
         this.output as Stream,
         nextParsedPath,
-        opt2,
+        useString,
         callback,
         true
       );
@@ -82,7 +82,7 @@ export class MasterHandler {
     this.cStream = new CStream(this);
     this.stream.pipe(this.cStream);
 
-    if (opt === 'stream') {
+    if (!useString) {
       if (output2) {
         return output2;
       }
@@ -103,7 +103,7 @@ export class MasterHandler {
       let last = this.currentHandler.status.last;
       const lastkey = this.currentHandler.status.lastkey;
       let depthCounter = 0;
-      if (this.currentHandler.status.last === "{") {
+      if (this.currentHandler.status.last === '{') {
         depthCounter = 1;
         last = "f";
       }
@@ -156,7 +156,7 @@ export class MasterHandler {
   //---END VALUE -----------------------------------------------------------
   endOutput() {
     this.currentHandler.status.close = true;
-    if (this._opt === 'stream') {
+    if (!this.useString) {
       this.output.push("]");
       this.output.push(null);
     } else {
