@@ -3,9 +3,7 @@
   "version": "1.0.15",
   "description": "",
   "main": "./dist/index.js",
-  "browser": {
-    "./dist/index.js": "./dist/browser.js"
-  },
+  "browser": "./dist/browser.js",
   "types": "./dist/index.d.ts",
   "files": [
     "/dist"
@@ -16,11 +14,11 @@
     "coverage": "nyc npm run test",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "build": "tsc",
-    "browserify": "browserify dist/index.js -o dist/browser.js",
+    "browserify": "cp dist/index.js dist/browser.js &&  browserify dist/browser.js -o dist/browser.js",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
-    "prepare": "npm run build && npm run browserify",
-    "prepublishOnly": "npm test && npm run lint",
+    "prepare": "npm run build ",
+    "prepublishOnly": "npm test && npm run lint&& npm run browserify",
     "preversion": "npm run lint",
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags",
