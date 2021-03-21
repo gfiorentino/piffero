@@ -1,4 +1,4 @@
-import { OPEN_OBJECT, FIRST } from './../pifferostatus';
+import { OPEN_OBJECT, FIRST } from "./../pifferostatus";
 import { CStream } from "./../libs/clarinet/cstream";
 import { SingleStepHandler } from "./singlestephandler";
 import { ParsedPath } from "../jsonpath";
@@ -63,7 +63,7 @@ export class MasterHandler {
         hascondtion: false,
         recursiveDescendant: false,
       };
-     // const opt2 = this._opt;
+      // const opt2 = this._opt;
       this.useString = false;
       output2 = nexthandler.parse(
         this.output as Stream,

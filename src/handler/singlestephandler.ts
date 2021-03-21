@@ -1,6 +1,15 @@
 import { ParsedPath } from "../jsonpath";
 import { Duplex } from "stream";
-import { CLOSE_ARRAY, CLOSE_OBJECT, FIRST, KEY, OPEN_ARRAY, OPEN_OBJECT, PifferoStatus, VALUE } from "../pifferostatus";
+import {
+  CLOSE_ARRAY,
+  CLOSE_OBJECT,
+  FIRST,
+  KEY,
+  OPEN_ARRAY,
+  OPEN_OBJECT,
+  PifferoStatus,
+  VALUE,
+} from "../pifferostatus";
 
 export class SingleStepHandler {
   status: PifferoStatus;
@@ -23,9 +32,9 @@ export class SingleStepHandler {
       path.next == undefined || path.next == null || path.hascondtion;
     if (this.isLast) {
       if (this.useString) {
-        this.push = value => this.outputString += value;
+        this.push = (value) => (this.outputString += value);
       } else {
-        this.push = value => this._output.push(value);
+        this.push = (value) => this._output.push(value);
       }
     }
   }
@@ -59,10 +68,7 @@ export class SingleStepHandler {
           this.push(`{${node}:`);
         }
       }
-    } else if (
-      status.path.value === node &&
-      status.depthCounter === 0
-    ) {
+    } else if (status.path.value === node && status.depthCounter === 0) {
       if (!status.isInArray) {
         status.recording = true;
         status.verified = true;
@@ -214,11 +220,7 @@ export class SingleStepHandler {
     if (status.end) {
       return;
     }
-    if (
-      status.depthCounter === 1 &&
-      status.recording &&
-      this.isLast
-    ) {
+    if (status.depthCounter === 1 && status.recording && this.isLast) {
       this.stopHandler();
     }
     if (status.recording && status.verified && this.isLast) {
@@ -227,10 +229,7 @@ export class SingleStepHandler {
       } else {
         this.push(`${node}:`);
       }
-    } else if (
-      status.depthCounter === 1 &&
-      status.path.value === node
-    ) {
+    } else if (status.depthCounter === 1 && status.path.value === node) {
       if (!status.isInArray) {
         status.recording = true;
         status.verified = true;

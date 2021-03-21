@@ -1,16 +1,23 @@
 import { ParsedPath } from "./jsonpath";
 
-export type PifferoOpt = 'string' | 'stream';
+export type PifferoOpt = "string" | "stream";
 
-export const OPEN_OBJECT = 'object-open';
-export const CLOSE_OBJECT = 'object-close';
-export const OPEN_ARRAY = 'array-open';
-export const CLOSE_ARRAY = 'array-close';
-export const VALUE = 'value';
-export const KEY = 'key';
-export const FIRST = 'first';
+export const OPEN_OBJECT = "object-open";
+export const CLOSE_OBJECT = "object-close";
+export const OPEN_ARRAY = "array-open";
+export const CLOSE_ARRAY = "array-close";
+export const VALUE = "value";
+export const KEY = "key";
+export const FIRST = "first";
 
-type PifferoEvent = typeof OPEN_OBJECT | typeof CLOSE_OBJECT | typeof OPEN_ARRAY | typeof  CLOSE_ARRAY | typeof VALUE | typeof KEY | typeof FIRST;
+type PifferoEvent =
+  | typeof OPEN_OBJECT
+  | typeof CLOSE_OBJECT
+  | typeof OPEN_ARRAY
+  | typeof CLOSE_ARRAY
+  | typeof VALUE
+  | typeof KEY
+  | typeof FIRST;
 
 export class PifferoStatus {
   //abbiamo verificato la condizione
@@ -41,8 +48,7 @@ export class PifferoStatus {
   public needBracketes: boolean = false;
   currentIndex: number = -1;
 
-  public last:PifferoEvent;
-
+  public last: PifferoEvent;
 
   lastkey: string;
 
@@ -86,11 +92,10 @@ export class PifferoStatus {
   }
 
   checkIndex() {
-    
     if (this.path.indexes && this.path.indexes.length > 0) {
       return this.path.indexes.indexOf(this.currentIndex) >= 0;
     }
-    
+
     const range = this.path.range;
     let start = 0;
     let end = this.currentIndex + 1;

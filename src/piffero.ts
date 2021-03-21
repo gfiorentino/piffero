@@ -19,15 +19,22 @@ export class Piffero {
     handler.parse(stream, parsedPath, true, callback);
   }
 
-  static findAsPromise(stream: Readable, jsonPath: string = "$"): Promise<string> {
+  static findAsPromise(
+    stream: Readable,
+    jsonPath: string = "$"
+  ): Promise<string> {
     return new Promise((resolve, reject) => {
-      Piffero.findAsString((result, err) => {
-        if( err ){
-          reject(err);
-        } else {
-          resolve(result);
-        }
-      }, stream, jsonPath);
-    })
+      Piffero.findAsString(
+        (result, err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        },
+        stream,
+        jsonPath
+      );
+    });
   }
 }
