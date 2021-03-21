@@ -2,11 +2,11 @@
     "compilerOptions": {
       "module": "commonjs",
       "target": "ES6",
-      "declaration": true,
+      "declaration": false,
       "outDir": "./dist",
       "allowJs": true,
       "moduleResolution": "node",
-      "sourceMap": true
+      "sourceMap": false,
     },
     "include": [
       "src/**/*", "index.ts"
