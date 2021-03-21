@@ -108,7 +108,6 @@ export class CStream extends Writable {
       this.string = data.slice(i, p).toString();
       this._parser.write(this.string);
       i = p - 1;
-      continue;
     }
   }
 
