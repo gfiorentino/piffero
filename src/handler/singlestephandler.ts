@@ -85,9 +85,9 @@ export class SingleStepHandler {
     } else if (this.status.isMatching && this.status.depthCounter > 2) {
       if (this.status.temp.length > 0) {
         if (this.status.needComma) {
-          this.status.temp = this.status.temp + `,{${node}:`;
+          this.status.temp += `,{${node}:`;
         } else {
-          this.status.temp = this.status.temp + `{${node}:`;
+          this.status.temp += `{${node}:`;
         }
       }
     }
@@ -116,9 +116,9 @@ export class SingleStepHandler {
     else if (this.status.isMatching && this.status.depthCounter > 2) {
       if (this.status.temp.length > 0) {
         if (this.status.needComma) {
-          this.status.temp = this.status.temp + ",";
+          this.status.temp += ",";
         }
-        this.status.temp = this.status.temp + "}";
+        this.status.temp += "}";
       }
     }
     // -------------
@@ -149,9 +149,9 @@ export class SingleStepHandler {
     else if (this.status.isMatching && this.status.depthCounter > 2) {
       if (this.status.temp.length > 0) {
         if (this.status.needComma) {
-          this.status.temp = this.status.temp + ",";
+          this.status.temp += ",";
         }
-        this.status.temp = this.status.temp + "[";
+        this.status.temp += "[";
       }
     } else if (this.status.depthCounter === 3) {
       this.status.temp = "";
@@ -192,9 +192,9 @@ export class SingleStepHandler {
     else if (this.status.isMatching && this.status.depthCounter > 3) {
       if (this.status.temp.length > 0) {
         if (this.status.needComma) {
-          this.status.temp = this.status.temp + ",";
+          this.status.temp += ",";
         }
-        this.status.temp = this.status.temp + "]";
+        this.status.temp += "]";
       }
     }
     this.status.depthCounter--;
@@ -205,43 +205,44 @@ export class SingleStepHandler {
   }
 
   key(node: any) {
-    if (this.status.end) {
+    const status = this.status;
+    if (status.end) {
       return;
     }
     if (
-      this.status.depthCounter === 1 &&
-      this.status.recording &&
+      status.depthCounter === 1 &&
+      status.recording &&
       this.isLast
     ) {
       this.stopHandler();
     }
-    if (this.status.recording && this.status.verified && this.isLast) {
-      if (this.status.needComma) {
+    if (status.recording && status.verified && this.isLast) {
+      if (status.needComma) {
         this.push(`,${node}:`);
       } else {
         this.push(`${node}:`);
       }
     } else if (
-      this.status.depthCounter === 1 &&
-      this.status.path.value === node
+      status.depthCounter === 1 &&
+      status.path.value === node
     ) {
-      if (!this.status.isInArray) {
-        this.status.recording = true;
-        this.status.verified = true;
+      if (!status.isInArray) {
+        status.recording = true;
+        status.verified = true;
       } else {
-        this.status.isMatching = true;
+        status.isMatching = true;
       }
     } //------ condition case key----------
-    else if (this.status.isMatching && this.status.depthCounter > 2) {
-      if (this.status.temp.length > 0) {
-        if (this.status.needComma) {
-          this.status.temp = this.status.temp + ",";
+    else if (status.isMatching && status.depthCounter > 2) {
+      if (status.temp.length > 0) {
+        if (status.needComma) {
+          status.temp += ",";
         }
-        this.status.temp = this.status.temp + `${node}:`;
+        status.temp += `${node}:`;
       }
     }
-    this.status.lastkey = node;
-    this.status.last = KEY;
+    status.lastkey = node;
+    status.last = KEY;
   }
 
   value(node: any) {
@@ -291,9 +292,9 @@ export class SingleStepHandler {
     } else if (status.isMatching && status.depthCounter > 2) {
       if (status.temp.length > 0) {
         if (status.needComma) {
-          status.temp = status.temp + ",";
+          status.temp += ",";
         }
-        status.temp = status.temp + node;
+        status.temp += node;
       }
     }
     status.last = VALUE;
