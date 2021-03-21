@@ -134,4 +134,4 @@ resultStream.on('end', () => console.log(Buffer.concat(chunks).toString('utf8'))
 * You can try [Oboe](https://github.com/jimhigson/oboe.js)  
 * You can also try [JSONPath Online Evaluator](https://jsonpath.com/)
 
-enjoy piffero!!
+enjoy Piffero!!
