@@ -6,7 +6,8 @@
   "browser": {
     "./dist/index.js": "./dist/browser.js",
     "./dist/src/handler/mastehandler.js": "./dist/browser/handler/mastehandler.js",
-    "./dist/src/*": "./dist/browser/*"
+    "./dist/src/libs/clarinet/cstream.js": "./dist/browser/libs/clarinet/cstream.js",
+    "./dist/src/libs/clarinet/cparser.js": "./dist/browser/libs/clarinet/cparser.js"
   },
   "types": "./dist/index.d.ts",
   "files": [

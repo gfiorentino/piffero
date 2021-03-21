@@ -80,9 +80,8 @@ export class MasterHandler {
     this.currentHandler = this.stepHandlers[this.handlerIndex];
 
     this.shiftParser();
-    if (this.stream.pipe) this.stream.pipe(this.cStream);
     this.cStream = new CStream(this);
-
+    this.stream.pipe(this.cStream);
     if (!useString) {
       if (output2) {
         return output2;
