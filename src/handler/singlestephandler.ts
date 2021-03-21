@@ -31,114 +31,118 @@ export class SingleStepHandler {
   }
 
   stopHandler() {
-    this.status.verified = false;
-    if (!this.status.isBulkResponse) {
-      this.status.recording = false;
-      this.status.end = true; // temporaneo
+    const status = this.status;
+    status.verified = false;
+    if (!status.isBulkResponse) {
+      status.recording = false;
+      status.end = true; // temporaneo
     }
   }
 
   openObject(node: any) {
-    if (this.status.end) {
+    const status = this.status;
+    if (status.end) {
       return;
     }
-    if (this.status.recording && this.status.verified && this.isLast) {
+    if (status.recording && status.verified && this.isLast) {
       if (
-        this.status.depthCounter === 0 ||
-        (this.status.isMatching && this.status.depthCounter === 1)
+        status.depthCounter === 0 ||
+        (status.isMatching && status.depthCounter === 1)
       ) {
         this.stopHandler();
-        this.status.temp = `,{${node}:`;
-        this.status.depthCounter++;
+        status.temp = `,{${node}:`;
+        status.depthCounter++;
       } else {
-        if (this.status.needComma) {
+        if (status.needComma) {
           this.push(`,{${node}:`);
         } else {
           this.push(`{${node}:`);
         }
       }
     } else if (
-      this.status.path.value === node &&
-      this.status.depthCounter === 0
+      status.path.value === node &&
+      status.depthCounter === 0
     ) {
-      if (!this.status.isInArray) {
-        this.status.recording = true;
-        this.status.verified = true;
+      if (!status.isInArray) {
+        status.recording = true;
+        status.verified = true;
       } else {
-        this.status.isMatching = true;
+        status.isMatching = true;
       }
-    } else if (this.status.isMatching && this.status.depthCounter === 2) {
-      this.status.currentIndex++;
+    } else if (status.isMatching && status.depthCounter === 2) {
+      status.currentIndex++;
       // se lavoriamo con un indice
-      if (this.status.path.range && this.status.checkIndex()) {
+      if (status.path.range && status.checkIndex()) {
         if (this.isLast) {
           this.push(`{${node}:`);
         }
-        this.status.recording = true;
-        this.status.verified = true;
-        this.status.depthCounter--;
+        status.recording = true;
+        status.verified = true;
+        status.depthCounter--;
         // --------------- condition per json path query -------
       }
-      if (this.status.path.condition) {
-        this.status.temp = `{${node}:`;
+      if (status.path.condition) {
+        status.temp = `{${node}:`;
       }
-    } else if (this.status.isMatching && this.status.depthCounter > 2) {
-      if (this.status.temp.length > 0) {
-        if (this.status.needComma) {
-          this.status.temp += `,{${node}:`;
+    } else if (status.isMatching && status.depthCounter > 2) {
+      if (status.temp.length > 0) {
+        if (status.needComma) {
+          status.temp += `,{${node}:`;
         } else {
-          this.status.temp += `{${node}:`;
+          status.temp += `{${node}:`;
         }
       }
     }
     // ----------
 
-    if (this.status.last !== FIRST) {
-      this.status.depthCounter++;
+    if (status.last !== FIRST) {
+      status.depthCounter++;
     }
 
-    this.status.lastkey = node;
-    this.status.last = OPEN_OBJECT;
+    status.lastkey = node;
+    status.last = OPEN_OBJECT;
   }
 
   closeObject() {
-    if (this.status.end) {
+    const status = this.status;
+    if (status.end) {
       return;
     }
-    if (this.status.recording && this.status.verified && this.isLast) {
-      if (this.status.depthCounter === 1) {
+    if (status.recording && status.verified && this.isLast) {
+      if (status.depthCounter === 1) {
         this.stopHandler();
       } else {
         this.push(`}`);
       }
     }
     //------ condition case ----------
-    else if (this.status.isMatching && this.status.depthCounter > 2) {
-      if (this.status.temp.length > 0) {
-        if (this.status.needComma) {
-          this.status.temp += ",";
+    else if (status.isMatching && status.depthCounter > 2) {
+      if (status.temp.length > 0) {
+        if (status.needComma) {
+          status.temp += ",";
         }
-        this.status.temp += "}";
+        status.temp += "}";
       }
     }
     // -------------
-    this.status.depthCounter--;
-    this.status.last = CLOSE_OBJECT;
+    status.depthCounter--;
+    status.last = CLOSE_OBJECT;
   }
 
   openArray() {
-    if (this.status.end) {
+    const status = this.status;
+    if (status.end) {
       return;
     }
-    if (this.status.recording && this.status.verified && this.isLast) {
+    if (status.recording && status.verified && this.isLast) {
       if (
-        (this.status.depthCounter === 0 ||
-          (this.status.isMatching && this.status.depthCounter === 1)) &&
-        this.status.path.value !== '"$"' // accrocco;
+        (status.depthCounter === 0 ||
+          (status.isMatching && status.depthCounter === 1)) &&
+        status.path.value !== '"$"' // accrocco;
       ) {
         this.stopHandler();
       } else {
-        if (this.status.needComma) {
+        if (status.needComma) {
           this.push(",[");
         } else {
           this.push("[");
@@ -146,62 +150,63 @@ export class SingleStepHandler {
       }
     }
     // ------ condition case -------
-    else if (this.status.isMatching && this.status.depthCounter > 2) {
-      if (this.status.temp.length > 0) {
-        if (this.status.needComma) {
-          this.status.temp += ",";
+    else if (status.isMatching && status.depthCounter > 2) {
+      if (status.temp.length > 0) {
+        if (status.needComma) {
+          status.temp += ",";
         }
-        this.status.temp += "[";
+        status.temp += "[";
       }
-    } else if (this.status.depthCounter === 3) {
-      this.status.temp = "";
-    } else if (this.status.isMatching && this.status.depthCounter === 2) {
-      this.status.currentIndex++;
-      if (this.status.path.range && this.status.checkIndex()) {
+    } else if (status.depthCounter === 3) {
+      status.temp = "";
+    } else if (status.isMatching && status.depthCounter === 2) {
+      status.currentIndex++;
+      if (status.path.range && status.checkIndex()) {
         if (this.isLast) {
           this.push(`[`);
         }
-        this.status.recording = true;
-        this.status.verified = true;
-        this.status.depthCounter--; // da verificare
+        status.recording = true;
+        status.verified = true;
+        status.depthCounter--; // da verificare
         // --------------- condition per json path query -------
-      } else if (this.status.path.condition) {
-        this.status.temp = `[`;
+      } else if (status.path.condition) {
+        status.temp = `[`;
       }
     }
     // ---------------
-    this.status.depthCounter++;
-    this.status.last = OPEN_ARRAY;
+    status.depthCounter++;
+    status.last = OPEN_ARRAY;
   }
 
   closeArray() {
-    if (this.status.end) {
+    const status = this.status;
+    if (status.end) {
       return;
     }
-    if (this.status.recording && this.status.verified && this.isLast) {
-      if (this.status.depthCounter === 1) {
+    if (status.recording && status.verified && this.isLast) {
+      if (status.depthCounter === 1) {
         this.stopHandler();
-        this.status._needComma = true;
-        if (!this.status.path.range && !this.status.path.hascondtion) {
+        status._needComma = true;
+        if (!status.path.range && !status.path.hascondtion) {
           this.push(`]`);
         }
       } else {
         this.push(`]`);
       }
     } //------ condition case close array----------
-    else if (this.status.isMatching && this.status.depthCounter > 3) {
-      if (this.status.temp.length > 0) {
-        if (this.status.needComma) {
-          this.status.temp += ",";
+    else if (status.isMatching && status.depthCounter > 3) {
+      if (status.temp.length > 0) {
+        if (status.needComma) {
+          status.temp += ",";
         }
-        this.status.temp += "]";
+        status.temp += "]";
       }
     }
-    this.status.depthCounter--;
-    //  if (this.status.depthCounter < 3) {
-    // this.status.currentIndex=0;
+    status.depthCounter--;
+    //  if (status.depthCounter < 3) {
+    // status.currentIndex=0;
     // }
-    this.status.last = CLOSE_ARRAY;
+    status.last = CLOSE_ARRAY;
   }
 
   key(node: any) {
@@ -301,12 +306,13 @@ export class SingleStepHandler {
   }
 
   verifyCondition(value): boolean {
-    const condition = this.status.path.condition;
+    const status = this.status;
+    const condition = status.path.condition;
     return (
-      this.status.isMatching &&
-      this.status.depthCounter === 3 &&
-      condition.key === this.status.lastkey &&
-      (this.status.last === KEY || this.status.last === OPEN_OBJECT) &&
+      status.isMatching &&
+      status.depthCounter === 3 &&
+      condition.key === status.lastkey &&
+      (status.last === KEY || status.last === OPEN_OBJECT) &&
       condition.value === value
     );
   }
