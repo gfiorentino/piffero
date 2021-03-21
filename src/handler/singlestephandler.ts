@@ -8,7 +8,7 @@ export class SingleStepHandler {
   _output: Duplex;
   useString = false;
   outputString = "[";
-  push: (value) => {};
+  push: (value) => void;
 
   constructor(
     path: ParsedPath,
@@ -23,9 +23,9 @@ export class SingleStepHandler {
       path.next == undefined || path.next == null || path.hascondtion;
     if (this.isLast) {
       if (this.useString) {
-        this.push = (value) => (this.outputString += value);
+        this.push = value => this.outputString += value;
       } else {
-        this.push = (value) => this._output.push(value);
+        this.push = value => this._output.push(value);
       }
     }
   }
