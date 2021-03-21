@@ -1,51 +1,54 @@
 #!/bin/sh
-cp dist/index.js dist/b.js 
-mkdir dist/src2
-cp -a dist/src/* dist/src2/
 
-browserify dist/b.js -o dist/browser.js
+mkdir dist/browser
+cp -a dist/src dist/browser
+
+cp dist/index.js dist/browser/b.js 
+
+browserify dist/browser/b.js -o dist/browser/browser.js
 
 src=browser 
 
-for entry in dist/src2/handler/*
+for entry in dist/browser/src/handler/*
+do
+  if [[ $entry == *js ]]; 
+  then
+  echo $entry  
+  # entry2="${entry/src2/$src}" 
+  browserify $entry -o $entry 
+  fi
+done
+
+for entry in dist/browser/src/libs/clarinet/*
+do
+  if [[ $entry == *js ]]; 
+  then
+  echo $entry  
+  # entry2="${entry/src2/$src}" 
+  browserify $entry -o $entry
+  fi
+done
+
+for entry in dist/browser/src/conditioneval/*
+do
+  if [[ $entry == *js ]]; 
+  then
+  echo $entry   
+  browserify $entry -o $entry 
+  fi
+done
+
+for entry in dist/browser/src/
 do
   if [[ $entry == *js ]]; 
   then
   echo $entry  
   entry2="${entry/src2/$src}" 
-  browserify $entry -o $entry2 
+  browserify $entry -o $entry 
   fi
 done
 
-for entry in dist/src2/libs/clarinet/*
-do
-  if [[ $entry == *js ]]; 
-  then
-  echo $entry  
-  entry2="${entry/src2/$src}" 
-  browserify $entry -o $entry2 
-  fi
-done
+mkdir dist/b2
+cp -a dist/browser/* dist/b2 
 
-for entry in dist/src2/conditioneval/*
-do
-  if [[ $entry == *js ]]; 
-  then
-  echo $entry  
-  entry2="${entry/src2/$src}" 
-  browserify $entry -o $entry2 
-  fi
-done
-
-for entry in dist/src2/*
-do
-  if [[ $entry == *js ]]; 
-  then
-  echo $entry  
-  entry2="${entry/src2/$src}" 
-  browserify $entry -o $entry2 
-  fi
-done
-
-
-rm -rf dist/src2;
+rm -rf dist/browser;

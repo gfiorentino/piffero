@@ -4,10 +4,11 @@
   "description": "",
   "main": "./dist/index.js",
   "browser": {
-    "./dist/src/piffero.js": "./dist/browser/piffero.js",
-    "./dist/src/libs/clarinet/cstream.js": "./dist/browser/libs/clarinet/cstream.js",
-    "./dist/src/libs/clarinet/cparser.js": "./dist/browser/libs/clarinet/cparser.js",
-    "./dist/src/handler/mastehandler.js": "./dist/browser/handler/mastehandler.js"
+    "./dist/index.js": "",
+    "./dist/src/piffero.js": "./dist/b2/browser.js",
+    "./dist/src/libs/clarinet/cstream.js": "./dist/b2/src/libs/clarinet/cstream.js",
+    "./dist/src/libs/clarinet/cparser.js": "./dist/b2/src/libs/clarinet/cparser.js",
+    "./dist/src/handler/mastehandler.js": "./dist/b2/src/handler/mastehandler.js"
   },
   "types": "./dist/index.d.ts",
   "files": [
