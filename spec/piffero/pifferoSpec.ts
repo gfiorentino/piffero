@@ -13,7 +13,6 @@ describe("piffero john-doe", function() {
       const string: string = await streamToString(result);
       expect(string).toBe('["John"]');
       JSON.parse(string)
-    
     }); 
 
     it("simple jsonpath lastname", async function() {

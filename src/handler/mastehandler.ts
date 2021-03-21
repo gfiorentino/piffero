@@ -46,6 +46,7 @@ export class MasterHandler {
         useString,
         isBulk
       );
+      // console.log(this.output.writableHighWaterMark, this.output.readableHighWaterMark);
       this.stepHandlers.push(singleStepHandler);
     }
 
