@@ -49,6 +49,10 @@ or
 
 `findAsString(callback: (result: any, err?: any) => void, inputStream: Stream, jsonpath: string): void`
 
+or
+
+`findAsPromise(stream: Readable, jsonPath: string): Promise<string>`
+
 ## Examples
 
 For example, if you have this json:
