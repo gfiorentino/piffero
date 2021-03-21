@@ -58,7 +58,7 @@ export class CStream extends Writable {
       // & fill temp buffer it with start of this data chunk up to the boundary limit set in the last iteration
       if (this.bytes_remaining > 0) {
         const diffBytes = this.bytes_in_sequence - this.bytes_remaining;
-        for (var j = 0; j < this.bytes_remaining; j++) {
+        for (var j = 0, e = this.bytes_remaining; j < e; j++) {
           tbbis[diffBytes + j] = data[j];
         }
         this.string = '' + tbbis;
@@ -83,9 +83,7 @@ export class CStream extends Writable {
         }
         if (this.bytes_in_sequence + i > data.length) {
           // if bytes needed to complete char fall outside data length, we have a boundary split
-
-          const length = l - 1 - i;
-          for (var k = 0; k <= length; k++) {
+          for (var k = 0, length = l - 1 - i; k <= length; k++) {
             tbbis[k] = data[i + k]; // fill temp data of correct size with bytes available in this chunk
           }
 
