@@ -56,7 +56,7 @@ or
 
 ## Examples
 
-For example, if you have this json:
+Below there are some examples of use case based on this json file:
 
 #### employees.json
 ```js
@@ -88,7 +88,9 @@ For example, if you have this json:
 }
 ```
 
-and you want extract the second employees "Joe Black", you need to call `findByPath` with the json path `$.employees[1]`, eg:
+### Example: Extract with findByPath()
+
+For example, if you want extract the second employees "Joe Black", you need to call `findByPath` with the json path `$.employees[1]`, eg:
 
 ```js
 const piffero = require('piffero');
@@ -100,14 +102,16 @@ const inputStream = fs.createReadStream('./employees.json');
 const resultStream = piffero.Piffero.findByPath(inputStream, "$.employees[1]");
 
 // trasform the stream to string and print into console
-const chunks = [];
-resultStream.on('data', chunk => chunks.push(chunk));
-resultStream.on('end', () => console.log(Buffer.concat(chunks).toString('utf8')));
+const resultString = '';
+resultStream.on('data', chunk => resultString += chunk.toString());
+resultStream.on('end', () => console.log(resultString));
 ```
 #### console result 
 ```js
 [{"name":"Joe","surname":"Black","phoneNumbers":[]}]
 ```
+
+### Example: Extract with findByString()
 
 Otherwise, if you want the second phone number of the first employees, you need to call `findByPath` with the json path `$.employees[0].phoneNumbers[1]`, eg:
 
@@ -118,17 +122,37 @@ const fs = require('fs');
 // create read stream of json
 const inputStream = fs.createReadStream('./employees.json');
 // pass the stream to Piffero with the json path
-const resultStream = piffero.Piffero.findPath(inputStream, '$.employees[0].phoneNumbers[1]');
-
-// trasform the stream to string and print into console
-const chunks = [];
-resultStream.on('data', chunk => chunks.push(chunk));
-resultStream.on('end', () => console.log(Buffer.concat(chunks).toString('utf8')));
+piffero.Piffero.findAsString((result, err) => console.log(result), inputStream, '$.employees[0].phoneNumbers[1]');
 ```
 #### console result 
 ```js
 [{"type":"home","number":"0123-4567-8910","test":true}]
 ```
+
+### Example: Extract with findByPath() in Express.js with Typescript
+
+```ts
+import * as fs from "fs";
+import * as express from "express";
+import { Piffero } from "piffero";
+
+const app: express.Application = express();
+
+app.get("/api/:jsonPath", (req, res) => {
+  
+  const jsonPath: string = req.params.jsonPath;
+  const inputStream: fs.ReadStream = fs.createReadStream('./employees.json');
+  const resultStream = Piffero.findByPath(inputStream, jsonPath);
+  
+  res.setHeader("Content-Type", "application/json");
+  resultStream.pipe(res);
+});
+
+app.listen(3000, () => {
+  console.log("Open your browser at: http://localhost:3000/api/$.employees[0].phoneNumbers[1]");
+});
+```
+
 ## Other tools
 * Piffero is built on [Clarinet](https://github.com/dscape/clarinet) 
 * You can try [Oboe](https://github.com/jimhigson/oboe.js)  
