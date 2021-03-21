@@ -245,57 +245,58 @@ export class SingleStepHandler {
   }
 
   value(node: any) {
-    if (this.status.last === OPEN_ARRAY && this.status.depthCounter === 2) {
-      this.status.isPrimitiveTypeArray = true;
+    const status = this.status;
+    if (status.last === OPEN_ARRAY && status.depthCounter === 2) {
+      status.isPrimitiveTypeArray = true;
     }
     if (
-      this.status.isInArray &&
-      this.status.isMatching &&
-      this.status.isPrimitiveTypeArray &&
-      this.status.depthCounter === 2
+      status.isInArray &&
+      status.isMatching &&
+      status.isPrimitiveTypeArray &&
+      status.depthCounter === 2
     ) {
-      this.status.currentIndex++;
-      if (this.status.checkIndex() && !this.status.close) {
-        //  console.log(this.status.path.range, this.status.currentIndex);
-        if (this.status.currentIndex > this.status.path.range.start) {
+      status.currentIndex++;
+      if (status.checkIndex() && !status.close) {
+        //  console.log(status.path.range, status.currentIndex);
+        if (status.currentIndex > status.path.range.start) {
           this.push(",");
         }
         this.push(`${node}`);
         this.stopHandler();
-        this.status._needComma = true;
+        status._needComma = true;
       }
     }
-    if (this.status.recording && this.status.verified && this.isLast) {
-      if (this.status.needComma) {
+    if (status.recording && status.verified && this.isLast) {
+      if (status.needComma) {
         this.push(`,${node}`);
       } else {
         this.push(`${node}`);
       }
-      if (this.status.depthCounter === 1) {
+      if (status.depthCounter === 1) {
         this.stopHandler();
-        this.status._needComma = true;
+        status._needComma = true;
       }
       ///-----condition value -----
-    } else if (this.status.path.hascondtion && this.verifyCondition(node)) {
-      this.status.recording = true;
-      this.status.verified = true;
-      this.status.depthCounter--;
-      this.push(this.status.temp);
-      if (this.status.needComma) {
+    } else if (status.path.hascondtion && this.verifyCondition(node)) {
+      status.recording = true;
+      status.verified = true;
+      status.depthCounter--;
+      this.push(status.temp);
+      if (status.needComma) {
         this.push(`,${node}`);
       } else {
         this.push(node);
       }
-      this.status.temp = "";
-    } else if (this.status.isMatching && this.status.depthCounter > 2) {
-      if (this.status.temp.length > 0) {
-        if (this.status.needComma) {
-          this.status.temp = this.status.temp + ",";
+      status.temp = "";
+    } else if (status.isMatching && status.depthCounter > 2) {
+      if (status.temp.length > 0) {
+        if (status.needComma) {
+          status.temp = status.temp + ",";
         }
-        this.status.temp = this.status.temp + node;
+        status.temp = status.temp + node;
       }
     }
-    this.status.last = VALUE;
+    status.last = VALUE;
   }
 
   verifyCondition(value): boolean {
