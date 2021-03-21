@@ -53,16 +53,14 @@ export class CStream extends Writable {
     const l = data.length;
     for (var i = 0; i < l; i++) {
       var n = data[i];
-
+      const tbbis = this.temp_buffs[this.bytes_in_sequence];
       // check for carry over of a multi byte char split between data chunks
       // & fill temp buffer it with start of this data chunk up to the boundary limit set in the last iteration
       if (this.bytes_remaining > 0) {
         for (var j = 0; j < this.bytes_remaining; j++) {
-          this.temp_buffs[this.bytes_in_sequence][
-            this.bytes_in_sequence - this.bytes_remaining + j
-          ] = data[j];
+          tbbis[this.bytes_in_sequence - this.bytes_remaining + j] = data[j];
         }
-        this.string = this.temp_buffs[this.bytes_in_sequence].toString();
+        this.string = tbbis.toString();
         this.bytes_in_sequence = this.bytes_remaining = 0;
 
         // move iterator forward by number of byte read during sequencing
@@ -87,7 +85,7 @@ export class CStream extends Writable {
 
           const length = l - 1 - i;
           for (var k = 0; k <= length; k++) {
-            this.temp_buffs[this.bytes_in_sequence][k] = data[i + k]; // fill temp data of correct size with bytes available in this chunk
+            tbbis[k] = data[i + k]; // fill temp data of correct size with bytes available in this chunk
           }
 
           this.bytes_remaining = i + this.bytes_in_sequence - data.length;
