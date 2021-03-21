@@ -13,6 +13,7 @@
     "coverage": "nyc npm run test",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "build": "tsc",
+    "browserify": "browserify dist/index.js -o dist/browser.js",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
     "prepare": "npm run build",
