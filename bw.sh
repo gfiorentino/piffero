@@ -1,46 +1,47 @@
 #!/bin/sh
 cp dist/index.js dist/browser.js 
-cp -a dist/src/ dist/src2 
-name='' 
-space=' '
+
 src=browser 
 
-for entry in dist/src2/handler/*
-do
-  if [[ $entry == *js ]]; 
-  then
-  echo $entry
-  name=$name$space$entry  
-  fi
-done
-
-for entry in dist/src2/libs/clarinet/*
+for entry in dist/src/handler/*
 do
   if [[ $entry == *js ]]; 
   then
   echo $entry  
-  name=$name$space$entry  
+  entry2="${entry/src/$src}" 
+  browserify $entry -o $entry2 
   fi
 done
 
-for entry in dist/src2/conditioneval/*
+for entry in dist/src/libs/clarinet/*
 do
   if [[ $entry == *js ]]; 
   then
   echo $entry  
-  name=$name$space$entry 
+  entry2="${entry/src/$src}" 
+  browserify $entry -o $entry2 
   fi
 done
 
-for entry in dist/src2/*
+for entry in dist/src/conditioneval/*
 do
   if [[ $entry == *js ]]; 
   then
   echo $entry  
-  name=$name$space$entry 
+  entry2="${entry/src/$src}" 
+  browserify $entry -o $entry2 
   fi
 done
 
-browserify dist/browser.js  $name -s piffero -o dist/browser.js
+for entry in dist/src/*
+do
+  if [[ $entry == *js ]]; 
+  then
+  echo $entry  
+  entry2="${entry/src/$src}" 
+  browserify $entry -o $entry2 
+  fi
+done
 
-rm -rf dist/src2
+browserify dist/browser.js -o dist/browser.js,
+
