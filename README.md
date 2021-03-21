@@ -31,6 +31,7 @@ JSONPath           | Description                                                
 `?()`              | Applies a filter (script) expression via static evaluation           |  
 `()`	             | Script expression via static evaluation                              |  
 
+See the [replit.com demo](https://replit.com/@nigrosimone/Piffero#index.js).
 # Get Started
 
 *Step 1*: install Piffero
