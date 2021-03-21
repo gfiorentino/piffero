@@ -6,6 +6,7 @@ cache:
     - ./node_modules
 
 install:
+  - npm install -g browserify
   - npm install
 
 script:
