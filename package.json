@@ -15,12 +15,8 @@
     "nyc:report": "nyc report",
     "coverage": "nyc npm run test",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-<<<<<<< HEAD
-    "build": "tsc && browserify dist/index.js -o dist/piffero-browser.js ",
-=======
     "build": "tsc",
     "browserify": "browserify dist/index.js -o dist/browser.js",
->>>>>>> f5cdf8513497ba9c99c87053442f2776a333fdfe
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
     "prepare": "npm run build && npm run browserify",
