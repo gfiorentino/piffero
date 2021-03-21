@@ -51,14 +51,15 @@ export class CStream extends Writable {
 
   write(data) {
     const l = data.length;
-    for (var i = 0; i < l; i++) {
-      var n = data[i];
+    for (let i = 0; i < l; i++) {
+      let n = data[i];
       const tbbis = this.temp_buffs[this.bytes_in_sequence];
       // check for carry over of a multi byte char split between data chunks
       // & fill temp buffer it with start of this data chunk up to the boundary limit set in the last iteration
       if (this.bytes_remaining > 0) {
+        const diffBytes = this.bytes_in_sequence - this.bytes_remaining;
         for (var j = 0; j < this.bytes_remaining; j++) {
-          tbbis[this.bytes_in_sequence - this.bytes_remaining + j] = data[j];
+          tbbis[diffBytes + j] = data[j];
         }
         this.string = tbbis.toString();
         this.bytes_in_sequence = this.bytes_remaining = 0;
