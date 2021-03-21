@@ -14,11 +14,10 @@
     "coverage": "nyc npm run test",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "build": "tsc",
-    "browserify": "cp dist/index.js dist/browser.js &&  browserify dist/browser.js -o dist/browser.js",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
     "prepare": "npm run build ",
-    "prepublishOnly": "npm test && npm run lint&& npm run browserify",
+    "prepublishOnly": "npm test && npm run lint",
     "preversion": "npm run lint",
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags",
@@ -70,6 +69,7 @@
   "dependencies": {
     "esprima": "^4.0.1",
     "static-eval": "^2.1.0",
-    "underscore": "^1.12.0"
+    "underscore": "^1.12.0",
+    "webpack": "^5.27.1"
   }
 }
