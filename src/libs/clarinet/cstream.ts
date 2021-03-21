@@ -61,7 +61,7 @@ export class CStream extends Writable {
         for (var j = 0; j < this.bytes_remaining; j++) {
           tbbis[diffBytes + j] = data[j];
         }
-        this.string = tbbis.toString();
+        this.string = '' + tbbis;
         this.bytes_in_sequence = this.bytes_remaining = 0;
 
         // move iterator forward by number of byte read during sequencing
@@ -94,7 +94,7 @@ export class CStream extends Writable {
           // immediately return as we need another chunk to sequence the character
           return true;
         } else {
-          this.string = data.slice(i, i + this.bytes_in_sequence).toString();
+          this.string = '' + data.slice(i, i + this.bytes_in_sequence);
           i = i + this.bytes_in_sequence - 1;
 
           this._parser.write(this.string);
@@ -106,14 +106,14 @@ export class CStream extends Writable {
       for (var p = i; p < l; p++) {
         if (data[p] >= 128) break;
       }
-      this.string = data.slice(i, p).toString();
+      this.string = '' + data.slice(i, p);
       this._parser.write(this.string);
       i = p - 1;
     }
   }
 
   end(chunk) {
-    if (chunk && chunk.length) this._parser.write(chunk.toString());
+    if (chunk) this._parser.write('' + chunk);
     this._parser.end();
     this.endParser();
   }
