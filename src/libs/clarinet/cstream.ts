@@ -81,19 +81,20 @@ export class CStream extends Writable {
         } else if (n <= 244 && n >= 240) {
           this.bytes_in_sequence = 4;
         }
-        if (this.bytes_in_sequence + i > data.length) {
+        const bytes_in_sequence_i = this.bytes_in_sequence + i;
+        if (bytes_in_sequence_i > data.length) {
           // if bytes needed to complete char fall outside data length, we have a boundary split
           for (var k = 0, length = l - 1 - i; k <= length; k++) {
             tbbis[k] = data[i + k]; // fill temp data of correct size with bytes available in this chunk
           }
 
-          this.bytes_remaining = i + this.bytes_in_sequence - data.length;
+          this.bytes_remaining = bytes_in_sequence_i - data.length;
 
           // immediately return as we need another chunk to sequence the character
           return true;
         } else {
-          this.string = '' + data.slice(i, i + this.bytes_in_sequence);
-          i = i + this.bytes_in_sequence - 1;
+          this.string = '' + data.slice(i, bytes_in_sequence_i);
+          i = bytes_in_sequence_i - 1;
 
           this._parser.write(this.string);
           continue;
