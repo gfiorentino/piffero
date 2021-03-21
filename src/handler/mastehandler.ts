@@ -22,7 +22,7 @@ export class MasterHandler {
     isBulk: boolean = false
   ): Stream {
     this.callback = callback;
-    this.stream = stream as Readable;
+    this.stream = stream as Readable ;
     this.useString = useString;
     this.output = new Stream.Transform();
 
@@ -80,8 +80,9 @@ export class MasterHandler {
     this.currentHandler = this.stepHandlers[this.handlerIndex];
 
     this.shiftParser();
-    this.cStream = new CStream(this);
+    if(this.stream.pipe)
     this.stream.pipe(this.cStream);
+    this.cStream = new CStream(this);
 
     if (!useString) {
       if (output2) {

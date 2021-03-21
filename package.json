@@ -5,6 +5,7 @@
   "main": "./dist/index.js",
   "browser": {
     "./dist/index.js": "./dist/browser.js",
+    "./dist/src/handler/mastehandler.js": "./dist/browser/handler/mastehandler.js",
     "./dist/src/*": "./dist/browser/*"
   },
   "types": "./dist/index.d.ts",
