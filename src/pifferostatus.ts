@@ -105,11 +105,11 @@ export class PifferoStatus {
     if (range.end > 0) {
       end = range.end;
     }
-    if (range.step > 0) {
-      step = range.step;
-    }
     if (this.currentIndex > end) {
       return false;
+    }
+    if (range.step > 0) {
+      step = range.step;
     }
     return Number.isInteger((this.currentIndex - start) / step);
   }
