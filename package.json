@@ -1,13 +1,13 @@
-{
+{ 
   "name": "piffero",
   "version": "1.1.4-beta1",
   "description": "",
   "main": "./dist/index.js",
   "browser": {
-    "./dist/index.js": "./dist/browser.js",
-    "./dist/src/handler/mastehandler.js": "./dist/browser/handler/mastehandler.js",
     "./dist/src/libs/clarinet/cstream.js": "./dist/browser/libs/clarinet/cstream.js",
-    "./dist/src/libs/clarinet/cparser.js": "./dist/browser/libs/clarinet/cparser.js"
+    "./dist/src/libs/clarinet/cparser.js": "./dist/browser/libs/clarinet/cparser.js",
+    "./dist/src/handler/mastehandler.js": "./dist/browser/handler/mastehandler.js",
+    "./dist/index.js": "./dist/browser.js"
   },
   "types": "./dist/index.d.ts",
   "files": [
