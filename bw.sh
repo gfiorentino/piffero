@@ -38,12 +38,11 @@ do
   fi
 done
 
-for entry in dist/browser/src/
+for entry in dist/browser/src/*
 do
   if [[ $entry == *js ]]; 
   then
   echo $entry  
-  entry2="${entry/src2/$src}" 
   browserify $entry -o $entry 
   fi
 done
