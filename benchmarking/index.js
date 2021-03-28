@@ -15,7 +15,8 @@ var Piffero = require('../dist/index.js').Piffero;
 // config
 var JSON_FILE = '../spec/jsonFiles/large-file.json';
 var JSON_PATH = '[11350].payload.issue.user.received_events_url';
-//  var JSON_PATH = '[5000].payload';
+// var JSON_PATH = '[5000].payload';
+// var JSON_PATH = '[1].payload';
 
 // run test ...
 suite.add('Piffero (stream)',{
