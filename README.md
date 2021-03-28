@@ -154,7 +154,7 @@ app.listen(3000, () => {
 ```
 
 ## PERFORMANCE
-benchmarck tests was done to compare piffero with [Oboe](https://github.com/jimhigson/oboe.js)  
+benchmarck tests was done to compare Piffero with [Oboe](https://github.com/jimhigson/oboe.js)  
 using [benchmark](https://www.npmjs.com/package/benchmark)
 Hardware: i7-4510U 12GB RAM
 
