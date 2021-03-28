@@ -182,7 +182,7 @@ Piffero (stream)   |  206.17873294205398 ops/sec                                
 Piffero (string)   |  652.333851058612 ops/sec                                     | 42 
 Oboe               |  7.3452430736806225 ops/sec                                   | 7 
 
-Piffero is almost 3 time faster than Oboe if both have to stream the whole file, the difference between oboe and piffero becomes bigger if they don't have to steam the whole file. 
+Piffero is almost 3 time faster than Oboe if both have to stream the whole file, the difference becomes bigger if they don't have to steam the whole file. 
 
 ## Other tools
 * Piffero is built on [Clarinet](https://github.com/dscape/clarinet) 
