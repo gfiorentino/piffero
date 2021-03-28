@@ -158,7 +158,7 @@ benchmarck tests was done to compare piffero with [Oboe](https://github.com/jimh
 using [benchmark](https://www.npmjs.com/package/benchmark)
 Hardware: i7-4510U 12GB RAM
 
-### jsonpath in the end of a 38 MB file 
+#### jsonpath in the end of a 38 MB file 
 
 parser             | ops/secc                                                      |runs sampled
 -------------------|---------------------------------------------------------------|------------
@@ -166,7 +166,7 @@ Piffero (stream)   |  1.0186262222075857 ops/sec                                
 Piffero (string)   |  1.1235041104521386 ops/sec                                   | 10 
 Oboe               |  0.4287069078285109 ops/sec                                   | 7 
 
-### jsonpath in the midle of the 38 MB file
+#### jsonpath in the midle of the 38 MB file
 
 parser             | ops/secc                                                      |runs sampled
 -------------------|---------------------------------------------------------------|------------
@@ -174,7 +174,7 @@ Piffero (stream)   |  2.192788691917704 ops/sec                                 
 Piffero (string)   |  2.4804025718178084 ops/sec                                   | 16 
 Oboe               |  0.5590235602555842 ops/sec                                   | 7 
 
-### jsonpath in the first part of the 38 MB file
+#### jsonpath in the first part of the 38 MB file
                  
 parser             | ops/secc                                                      |runs sampled
 -------------------|---------------------------------------------------------------|------------
@@ -182,6 +182,7 @@ Piffero (stream)   |  206.17873294205398 ops/sec                                
 Piffero (string)   |  652.333851058612 ops/sec                                     | 42 
 Oboe               |  7.3452430736806225 ops/sec                                   | 7 
 
+Piffero is almost 3 time faster than Oboe if both have to stream the whole file, the difference between oboe and piffero becomes bigger if they don't have to steam the whole file. 
 
 ## Other tools
 * Piffero is built on [Clarinet](https://github.com/dscape/clarinet) 
