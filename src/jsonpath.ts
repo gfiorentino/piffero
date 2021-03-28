@@ -78,10 +78,15 @@ export class JSONPath {
           let _start = range.start;
           let _end = range.end;
           let _step = range.step;
-  
-          if( rangeArray.length === 1 || // onlly start 
-              // not end with start and step
-            (end !== undefined && end !== null && end.trim() !== '0') && rangeArray.length >= 2) {
+
+          if (
+            rangeArray.length === 1 || // onlly start
+            // not end with start and step
+            (end !== undefined &&
+              end !== null &&
+              end.trim() !== "0" &&
+              rangeArray.length >= 2)
+          ) {
             indexes.push(_start);
             for (let i = _start + _step; i < _end; i += _step) {
               isBulk = true;

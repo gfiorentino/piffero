@@ -188,7 +188,7 @@ export class SingleStepHandler {
 
   closeArray() {
     const status = this.status;
-    if (status.end ) {
+    if (status.end) {
       return;
     }
     if (status.recording && status.verified && this.isLast) {
@@ -201,9 +201,9 @@ export class SingleStepHandler {
       } else {
         this.push(`]`);
       }
-    } else if( status.waitingForArrayClosing  && status.depthCounter === 2){
+    } else if (status.waitingForArrayClosing && status.depthCounter === 2) {
       this.stopHandler(true);
-    } 
+    }
     //------ condition case close array----------
     else if (status.isMatching && status.depthCounter > 3) {
       if (status.temp.length > 0) {
@@ -271,13 +271,13 @@ export class SingleStepHandler {
         if (status.currentIndex > status.path.range.start) {
           this.push(`,${node}`);
         } else {
-          this.push(`${node}`); 
+          this.push(`${node}`);
         }
         this.stopHandler();
         status._needComma = true;
       }
     }
-    if (status.recording && status.verified&& this.isLast) {
+    if (status.recording && status.verified && this.isLast) {
       if (status.needComma) {
         this.push(`,${node}`);
       } else {

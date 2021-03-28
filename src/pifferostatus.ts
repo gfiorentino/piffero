@@ -86,12 +86,7 @@ export class PifferoStatus {
     );
   }
   get isBulkResponse(): boolean {
-    return (
-      this._isBulkResponse ||
-      this.path.isbulk || 
-      this.path.hascondtion
-  
-    );
+    return this._isBulkResponse || this.path.isbulk || this.path.hascondtion;
   }
 
   checkIndex() {
