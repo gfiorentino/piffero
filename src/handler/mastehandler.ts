@@ -60,6 +60,7 @@ export class MasterHandler {
         value: '"$"',
         next: parsedPath.next,
         indexes: [],
+        isbulk: true,
         hascondtion: false,
         recursiveDescendant: false,
       };

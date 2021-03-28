@@ -17,6 +17,7 @@ export interface ParsedPath {
   value: string;
   range?: { start?: number; end?: number; step?: number };
   indexes?: number[];
+  isbulk: boolean;
   condition?: {
     key: string;
     value: string;
@@ -48,6 +49,7 @@ export class JSONPath {
     if (paths.length === 0) {
       return null;
     }
+    let isBulk = false;
     let value = paths[0];
     let range = null;
     const indexes = [];
@@ -65,7 +67,8 @@ export class JSONPath {
         if (splittedIndexes.length > 1) {
           splittedIndexes.forEach((element) => indexes.push(Number(element)));
         } else {
-          const [start, end, step] = splitted[1].split(":");
+          const rangeArray = splitted[1].split(":");
+          const [start, end, step] = rangeArray;
           range = {
             start: Number(start),
             end: end ? Number(end) : 0,
@@ -75,9 +78,17 @@ export class JSONPath {
           let _start = range.start;
           let _end = range.end;
           let _step = range.step;
-          indexes.push(_start);
-          for (let i = _start + _step; i < _end; i += _step) {
-            indexes.push(i);
+  
+          if( rangeArray.length === 1 || // onlly start 
+              // not end with start and step
+            (end !== undefined && end !== null && end.trim() !== '0') && rangeArray.length >= 2) {
+            indexes.push(_start);
+            for (let i = _start + _step; i < _end; i += _step) {
+              isBulk = true;
+              indexes.push(i);
+            }
+          } else if (rangeArray.length >= 2) {
+            isBulk = true;
           }
         }
       }
@@ -89,6 +100,7 @@ export class JSONPath {
       next: JSONPath.buildParsedPath(jsonPath, paths.slice(1)),
       condition: condition,
       range: range,
+      isbulk: isBulk,
       indexes: indexes,
       recursiveDescendant: false,
       hascondtion: condition !== null && condition !== undefined,

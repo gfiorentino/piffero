@@ -39,12 +39,14 @@ export class SingleStepHandler {
     }
   }
 
-  stopHandler() {
+  stopHandler(force = false) {
     const status = this.status;
     status.verified = false;
-    if (!status.isBulkResponse) {
+    if (!status.isBulkResponse || force) {
       status.recording = false;
       status.end = true; // temporaneo
+    } else {
+      status.waitingForArrayClosing = true;
     }
   }
 
@@ -186,7 +188,7 @@ export class SingleStepHandler {
 
   closeArray() {
     const status = this.status;
-    if (status.end) {
+    if (status.end ) {
       return;
     }
     if (status.recording && status.verified && this.isLast) {
@@ -199,7 +201,10 @@ export class SingleStepHandler {
       } else {
         this.push(`]`);
       }
-    } //------ condition case close array----------
+    } else if( status.waitingForArrayClosing  && status.depthCounter === 2){
+      this.stopHandler(true);
+    } 
+    //------ condition case close array----------
     else if (status.isMatching && status.depthCounter > 3) {
       if (status.temp.length > 0) {
         if (status.needComma) {
@@ -264,14 +269,15 @@ export class SingleStepHandler {
       if (status.checkIndex() && !status.close) {
         //  console.log(status.path.range, status.currentIndex);
         if (status.currentIndex > status.path.range.start) {
-          this.push(",");
+          this.push(`,${node}`);
+        } else {
+          this.push(`${node}`); 
         }
-        this.push(`${node}`);
         this.stopHandler();
         status._needComma = true;
       }
     }
-    if (status.recording && status.verified && this.isLast) {
+    if (status.recording && status.verified&& this.isLast) {
       if (status.needComma) {
         this.push(`,${node}`);
       } else {

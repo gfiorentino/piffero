@@ -34,6 +34,8 @@ export class PifferoStatus {
 
   isMatching = false;
 
+  waitingForArrayClosing = false;
+
   _needComma = false;
 
   _isBulkResponse = false;
@@ -85,9 +87,10 @@ export class PifferoStatus {
   }
   get isBulkResponse(): boolean {
     return (
-      this.path.hascondtion ||
       this._isBulkResponse ||
-      this.path.indexes.length > 0
+      this.path.isbulk || 
+      this.path.hascondtion
+  
     );
   }
 
@@ -95,7 +98,6 @@ export class PifferoStatus {
     if (this.path.indexes && this.path.indexes.length > 0) {
       return this.path.indexes.indexOf(this.currentIndex) >= 0;
     }
-
     const range = this.path.range;
     let start = 0;
     let end = this.currentIndex + 1;
