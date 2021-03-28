@@ -160,7 +160,7 @@ Hardware: i7-4510U 12GB RAM
 
 #### jsonpath in the end of a 38 MB file 
 
-parser             | ops/secc                                                      |runs sampled
+Parser             | ops/secc                                                      |runs sampled
 -------------------|---------------------------------------------------------------|------------
 Piffero (stream)   |  1.0186262222075857 ops/sec                                   | 10 
 Piffero (string)   |  1.1235041104521386 ops/sec                                   | 10 
@@ -168,7 +168,7 @@ Oboe               |  0.4287069078285109 ops/sec                                
 
 #### jsonpath in the midle of the 38 MB file
 
-parser             | ops/secc                                                      |runs sampled
+Parser             | ops/secc                                                      |runs sampled
 -------------------|---------------------------------------------------------------|------------
 Piffero (stream)   |  2.192788691917704 ops/sec                                    | 17 
 Piffero (string)   |  2.4804025718178084 ops/sec                                   | 16 
@@ -176,7 +176,7 @@ Oboe               |  0.5590235602555842 ops/sec                                
 
 #### jsonpath in the first part of the 38 MB file
                  
-parser             | ops/secc                                                      |runs sampled
+Parser             | ops/secc                                                      |runs sampled
 -------------------|---------------------------------------------------------------|------------
 Piffero (stream)   |  206.17873294205398 ops/sec                                   | 68 
 Piffero (string)   |  652.333851058612 ops/sec                                     | 42 
