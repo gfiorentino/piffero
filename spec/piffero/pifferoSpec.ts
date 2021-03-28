@@ -15,6 +15,12 @@ describe("piffero john-doe", function() {
       JSON.parse(string)
     }); 
 
+    it("simple jsonpath promise", async function() {
+      const result = await Piffero.findAsPromise(stream, '$.firstName')
+      expect(result).toBe('["John"]');
+      JSON.parse(result);
+    }); 
+
     it("simple jsonpath lastname", async function() {
       const result = Piffero.findByPath(stream, '$.lastName')
       const string = await streamToString(result);
