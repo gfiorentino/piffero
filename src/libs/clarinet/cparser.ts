@@ -366,10 +366,8 @@ export class CParser {
 
   error(er) {
     this.closeValue("onvalue");
-    er +=
-      "\nLine: " + this.line + "\nColumn: " + this.column + "\nChar: " + this.c;
+    er += "\nLine: " + this.line + "\nColumn: " + this.column + "\nChar: " + this.c;
     this.handler.onerror(er);
-    er = new Error(er);
-    throw er;
+    throw new Error(er);
   }
 }
