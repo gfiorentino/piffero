@@ -1,4 +1,4 @@
-import { PifferoError } from './../pifferoerror';
+import { PifferoError } from "./../pifferoerror";
 import { OPEN_OBJECT, FIRST } from "./../pifferostatus";
 import { CStream } from "./../libs/clarinet/cstream";
 import { SingleStepHandler } from "./singlestephandler";
@@ -181,9 +181,9 @@ export class MasterHandler {
   }
 
   onerror(er) {
-    this.error = new PifferoError(er)
-    if(!this.useString) {
-      throw new PifferoError(this.error)
+    this.error = new PifferoError(er);
+    if (!this.useString) {
+      throw new PifferoError(this.error);
     }
   }
 }
