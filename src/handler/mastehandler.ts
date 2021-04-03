@@ -1,3 +1,4 @@
+import { PifferoError } from './../pifferoerror';
 import { OPEN_OBJECT, FIRST } from "./../pifferostatus";
 import { CStream } from "./../libs/clarinet/cstream";
 import { SingleStepHandler } from "./singlestephandler";
@@ -10,7 +11,8 @@ export class MasterHandler {
   currentHandler: SingleStepHandler;
   useString: boolean;
   cStream: CStream;
-  callback: (result) => void;
+  callback: (result, error?) => void;
+  error = null;
   stream: Readable;
   output: Duplex;
 
@@ -18,7 +20,7 @@ export class MasterHandler {
     stream: Stream,
     parsedPath: ParsedPath,
     useString = false,
-    callback?: (result) => void,
+    callback?: (result, error?) => void,
     isBulk: boolean = false
   ): Stream {
     this.callback = callback;
@@ -73,7 +75,7 @@ export class MasterHandler {
         callback,
         true
       );
-      this.callback = (result) => {};
+      this.callback = (result, error) => {};
     } else {
       this.output.push("[");
     }
@@ -162,7 +164,7 @@ export class MasterHandler {
       this.output.push(null);
     } else {
       this.currentHandler.outputString += "]";
-      this.callback(this.currentHandler.outputString);
+      this.callback(this.currentHandler.outputString, this.error);
     }
   }
 
@@ -179,6 +181,9 @@ export class MasterHandler {
   }
 
   onerror(er) {
-    console.error("error", er);
+    this.error = new PifferoError(er)
+    if(!this.useString) {
+      throw new PifferoError(this.error)
+    }
   }
 }

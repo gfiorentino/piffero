@@ -369,6 +369,5 @@ export class CParser {
     er +=
       "\nLine: " + this.line + "\nColumn: " + this.column + "\nChar: " + this.c;
     this.handler.onerror(er);
-    throw new Error(er);
   }
 }
