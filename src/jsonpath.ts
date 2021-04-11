@@ -65,7 +65,6 @@ export class JSONPath {
       if (!condition) {
         isBulk = true;
         const splittedIndexes = splitted[1].split(",");
-      
         if (splittedIndexes.length > 1) {
           range = {
             start: Number(splittedIndexes[0])
@@ -118,15 +117,16 @@ export class JSONPath {
       condition = condition.replace("?(!", "");
       condition = condition.replace("===", "==");
       let conditions = condition.split("==");
-      let value = conditions[1].substr(0, conditions[1].length - 1);
+      let valuestring = conditions[1].substr(0, conditions[1].length - 1);
+      let value;
       if (
-        value.startsWith("`") ||
-        value.startsWith('"') ||
-        value.startsWith("'")
+        valuestring.startsWith("`") ||
+        valuestring.startsWith('"') ||
+        valuestring.startsWith("'")
       ) {
-        value = '"' + value.substr(1, value.length - 2) + '"';
+        value = '"' + valuestring.substr(1, valuestring.length - 2) + '"';
       } else {
-        value = ConditionEval.staticEval(value);
+        value = ConditionEval.staticEval(valuestring);
       }
       return { key: `"${conditions[0]}"`, value: value };
     }

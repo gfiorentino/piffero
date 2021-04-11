@@ -289,6 +289,7 @@ export class SingleStepHandler {
       }
       ///-----condition value -----
     } else if (status.path.hascondtion && this.verifyCondition(node)) {
+      console.log(this.verifyCondition(node), node);
       status.recording = true;
       status.verified = true;
       status.depthCounter--;
