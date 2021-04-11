@@ -63,8 +63,13 @@ export class JSONPath {
       }
       condition = JSONPath.checkCondition(splitted[1]);
       if (!condition) {
+        isBulk = true;
         const splittedIndexes = splitted[1].split(",");
+      
         if (splittedIndexes.length > 1) {
+          range = {
+            start: Number(splittedIndexes[0])
+          };
           splittedIndexes.forEach((element) => indexes.push(Number(element)));
         } else {
           const rangeArray = splitted[1].split(":");
@@ -74,7 +79,6 @@ export class JSONPath {
             end: end ? Number(end) : 0,
             step: step ? Number(step) : 1,
           };
-
           let _start = range.start;
           let _end = range.end;
           let _step = range.step;
@@ -89,11 +93,8 @@ export class JSONPath {
           ) {
             indexes.push(_start);
             for (let i = _start + _step; i < _end; i += _step) {
-              isBulk = true;
               indexes.push(i);
             }
-          } else if (rangeArray.length >= 2) {
-            isBulk = true;
           }
         }
       }

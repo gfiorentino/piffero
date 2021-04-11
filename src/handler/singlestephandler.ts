@@ -80,7 +80,7 @@ export class SingleStepHandler {
     } else if (status.isMatching && status.depthCounter === 2) {
       status.currentIndex++;
       // se lavoriamo con un indice
-      if (status.path.range && status.checkIndex()) {
+      if (status.path.isbulk && status.checkIndex()) {
         if (this.isLast) {
           this.push(`{${node}:`);
         }
@@ -169,7 +169,7 @@ export class SingleStepHandler {
       status.temp = "";
     } else if (status.isMatching && status.depthCounter === 2) {
       status.currentIndex++;
-      if (status.path.range && status.checkIndex()) {
+      if (status.path.isbulk && status.checkIndex()) {
         if (this.isLast) {
           this.push(`[`);
         }
@@ -195,7 +195,7 @@ export class SingleStepHandler {
       if (status.depthCounter === 1) {
         this.stopHandler();
         status._needComma = true;
-        if (!status.path.range && !status.path.hascondtion) {
+        if (!status.path.isbulk && !status.path.hascondtion) {
           this.push(`]`);
         }
       } else {

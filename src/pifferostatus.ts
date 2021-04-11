@@ -59,7 +59,7 @@ export class PifferoStatus {
   constructor(path: ParsedPath, isBulk: boolean = false) {
     this.path = path;
     this._isBulkResponse = isBulk;
-    if (this.path.range || path.condition) {
+    if (this.path.isbulk|| path.condition) {
       this.isInArray = true;
       if (this.path.value === '"$"') {
         this.depthCounter = 1;
