@@ -67,7 +67,7 @@ export class JSONPath {
         const splittedIndexes = splitted[1].split(",");
         if (splittedIndexes.length > 1) {
           range = {
-            start: Number(splittedIndexes[0])
+            start: Number(splittedIndexes[0]),
           };
           splittedIndexes.forEach((element) => indexes.push(Number(element)));
         } else {
