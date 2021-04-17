@@ -18,8 +18,4 @@ export class ConditionEval {
     }
     return "" + evaluated;
   }
-
-  static checkIndex(): boolean {
-    return false;
-  }
 }
