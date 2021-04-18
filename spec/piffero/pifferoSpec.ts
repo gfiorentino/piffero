@@ -74,6 +74,13 @@ describe("piffero john-doe", function() {
     });
 
     it("simple jsonpath chinese chinese", async function() {
+      const result = Piffero.findByPath(stream, '$.object')
+      const string = await streamToString(result);
+      expect(string).toBe('[{"key":"object","empty":{}}]');
+      JSON.parse(string)
+    }); 
+
+    it("simple jsonpath with empty object", async function() {
       const result = Piffero.findByPath(stream, '$.普派')
       const string = await streamToString(result);
       expect(string).toBe('["普派"]');

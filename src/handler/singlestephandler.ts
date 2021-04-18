@@ -56,18 +56,19 @@ export class SingleStepHandler {
       return;
     }
     if (status.recording && status.verified && this.isLast) {
+      const string = node === undefined ? '{' : `{${node}:`; 
       if (
         status.depthCounter === 0 ||
         (status.isMatching && status.depthCounter === 1)
       ) {
         this.stopHandler();
-        status.temp = `,{${node}:`;
+        status.temp = `,${string}`;
         status.depthCounter++;
       } else {
         if (status.needComma) {
-          this.push(`,{${node}:`);
+          this.push(`,${string}`);
         } else {
-          this.push(`{${node}:`);
+          this.push(`${string}`);
         }
       }
     } else if (status.path.value === node && status.depthCounter === 0) {
