@@ -17,7 +17,8 @@
         "id":1,
         "type"  : "\"iPhone\"",
         "number": "0123-4567-8888",
-        "test": false
+        "test": false,
+        "digit": 2.2
       },
       {
         "id":3,

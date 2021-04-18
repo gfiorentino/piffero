@@ -47,7 +47,7 @@ describe("piffero john-doe", function() {
     it("array jsonpath", async function() {
       const result = Piffero.findByPath(stream, '$.phoneNumbers')
       const string = await streamToString(result);
-      expect(string).toBe(JSON.stringify([[{"id":1,"type":"\"iPhone\"","number":"0123-4567-8888","test":false},{"id":3,"type":"home","number":"0123-4567-8910","test":true}]]));
+      expect(string).toBe(JSON.stringify([[{"id":1,"type":"\"iPhone\"","number":"0123-4567-8888","test":false,"digit":2.2},{"id":3,"type":"home","number":"0123-4567-8910","test":true}]]));
       JSON.parse(string);
     }); 
 
@@ -90,7 +90,7 @@ describe("piffero john-doe", function() {
     it("element in an array jsonpath 2", async function() {
       const result = Piffero.findByPath(stream, '$.phoneNumbers[0]')
       const string = await streamToString(result);
-      expect(string).toBe(JSON.stringify([{"id":1,"type":"\"iPhone\"","number":"0123-4567-8888","test":false}]));
+      expect(string).toBe(JSON.stringify([{"id":1,"type":"\"iPhone\"","number":"0123-4567-8888","test":false,"digit":2.2}]));
       JSON.parse(string);
     });
  
@@ -155,7 +155,7 @@ describe("piffero john-doe", function() {
     it("element in an array jsonpath with eval2", async function() {
       const result = Piffero.findByPath(stream, '$.phoneNumbers[?(@.id===1*3-2)]')
       const string = await streamToString(result);
-      expect(string).toBe(JSON.stringify([{"id":1,"type":"\"iPhone\"","number":"0123-4567-8888","test":false}]));
+      expect(string).toBe(JSON.stringify([{"id":1,"type":"\"iPhone\"","number":"0123-4567-8888","test":false,"digit":2.2}]));
       JSON.parse(string);
     });
 
