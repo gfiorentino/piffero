@@ -56,7 +56,7 @@ export class SingleStepHandler {
       return;
     }
     if (status.recording && status.verified && this.isLast) {
-      const string = node === undefined ? '{' : `{${node}:`; 
+      const string = node === undefined ? "{" : `{${node}:`;
       if (
         status.depthCounter === 0 ||
         (status.isMatching && status.depthCounter === 1)
