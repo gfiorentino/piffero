@@ -24,7 +24,8 @@
         "id":3,
         "type"  : "home",
         "number": "0123-4567-8910",
-        "test": true
+        "test": true,
+        "null": null
       } 
     ]
   }
