@@ -1,7 +1,20 @@
 import { MasterHandler } from "./../../handler/mastehandler";
 import { Writable } from "stream";
-import { EVENTS } from "./const";
 import { CParser, S } from "./cparser";
+
+// export const MAX_BUFFER_LENGTH = 10 * 1024 * 1024;
+const EVENTS = [
+  "value",
+  "string",
+  "key",
+  "openobject",
+  "closeobject",
+  "openarray",
+  "closearray",
+  "error",
+  "end",
+  "ready",
+];
 
 export const streamWraps = EVENTS.filter(function (ev) {
   return ev !== "error" && ev !== "end";
