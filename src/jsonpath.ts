@@ -1,5 +1,8 @@
 import { ConditionEval } from "./conditioneval/conditioneval";
-import { PATH_ERROR_MESSAGE, PifferoJsonPathError } from "./handler/mastehandler";
+import {
+  PATH_ERROR_MESSAGE,
+  PifferoJsonPathError,
+} from "./handler/mastehandler";
 
 export interface ParsedPath {
   value: string;

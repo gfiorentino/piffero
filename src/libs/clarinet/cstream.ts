@@ -39,7 +39,7 @@ const Char = {
   closeBrace: 0x7d, // }
 };
 
- let _S: any = 0;
+let _S: any = 0;
 
 const STATE = {
   BEGIN: _S++,
@@ -69,7 +69,6 @@ const STATE = {
 };
 
 for (var s_ in STATE) STATE[STATE[s_]] = s_;
-
 
 const stringTokenPattern = /[\\"\n]/g;
 
@@ -443,7 +442,6 @@ class CParser {
     this.handler.onerror(er);
   }
 }
-
 
 // export const MAX_BUFFER_LENGTH = 10 * 1024 * 1024;
 const EVENTS = [

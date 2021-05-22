@@ -124,7 +124,6 @@ export class PifferoStatus {
   }
 }
 
-
 export class MasterHandler {
   handlerIndex = 0;
   stepHandlers: SingleStepHandler[] = [];
@@ -306,7 +305,6 @@ export class MasterHandler {
     }
   }
 }
-
 
 class SingleStepHandler {
   status: PifferoStatus;
@@ -620,4 +618,3 @@ class SingleStepHandler {
     );
   }
 }
-
