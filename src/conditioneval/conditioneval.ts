@@ -3,10 +3,7 @@ import * as evaluate from "static-eval";
 
 export class ConditionEval {
   static createCondition(condition: string) {
-    const conditionTokenized: {
-      type: string;
-      value: string;
-    }[] = esprima.tokenize(condition);
+    const conditionTokenized: { type: string; value: string;}[] = esprima.tokenize(condition);
     return conditionTokenized;
   }
 

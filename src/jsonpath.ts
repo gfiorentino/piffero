@@ -1,17 +1,5 @@
-import { PifferoJsonPathError, PATH_ERROR_MESSAGE } from "./pifferoerror";
 import { ConditionEval } from "./conditioneval/conditioneval";
-/* 
-$	The root object/element
-@	The current object/element
-.	Child member operator
-..	Recursive descendant operator; JSONPath borrows this syntax from E4X
-*	Wildcard matching all objects/elements regardless their names
-[]	Subscript operator
-[,]	Union operator for alternate names or array indices as a set
-[start:end:step]	Array slice operator borrowed from ES4 / Python
-?()	Applies a filter (script) expression via static evaluation
-()	Script expression via static evaluation
-*/
+import { PATH_ERROR_MESSAGE, PifferoJsonPathError } from "./handler/mastehandler";
 
 export interface ParsedPath {
   value: string;

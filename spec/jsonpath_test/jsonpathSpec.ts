@@ -1,4 +1,5 @@
-import { PATH_ERROR_MESSAGE, PifferoJsonPathError } from "../../src/pifferoerror";
+import { PATH_ERROR_MESSAGE, PifferoJsonPathError } from "../../src/pifferostatus";
+
 
 describe("JsonPath", function() {
     const JSONPath = require('../../src/jsonpath').JSONPath;
