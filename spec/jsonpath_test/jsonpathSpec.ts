@@ -1,4 +1,5 @@
-import { PATH_ERROR_MESSAGE, PifferoJsonPathError } from "../../src/pifferostatus";
+import { PATH_ERROR_MESSAGE, PifferoJsonPathError } from './../../src/handler/mastehandler';
+
 
 
 describe("JsonPath", function() {

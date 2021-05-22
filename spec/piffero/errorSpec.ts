@@ -1,5 +1,5 @@
+import { PifferoError } from "../../src/handler/mastehandler";
 import { Piffero } from "../../src/piffero";
-import { PifferoError } from "../../src/pifferostatus";
 
 describe("piffero Error", function() {
     const fs  =  require('fs');
