@@ -1,6 +1,10 @@
 import { Readable, Stream } from "stream";
 import { ConditionEval } from "./conditioneval/conditioneval";
-import { MasterHandler, PATH_ERROR_MESSAGE, PifferoJsonPathError } from "./handler/mastehandler";
+import {
+  MasterHandler,
+  PATH_ERROR_MESSAGE,
+  PifferoJsonPathError,
+} from "./handler/mastehandler";
 
 export class Piffero {
   static findByPath(stream: Readable, jsonPath: string = "$"): Stream {
@@ -159,5 +163,3 @@ export class JSONPath {
     return null;
   }
 }
-
-
