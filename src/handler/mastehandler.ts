@@ -1,6 +1,6 @@
 import { CStream } from "./../libs/clarinet/cstream";
 import { Duplex, Readable, Stream } from "stream";
-import { ParsedPath } from "../jsonpath";
+import { ParsedPath } from "../piffero";
 
 export type PifferoOpt = "string" | "stream";
 
