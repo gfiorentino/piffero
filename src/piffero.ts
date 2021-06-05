@@ -1,8 +1,5 @@
 import { Readable, Stream } from "stream";
-import {
-  parse,
-  MasterHandler
-} from "./handler/mastehandler";
+import { parse, MasterHandler } from "./handler/mastehandler";
 
 export class Piffero {
   static findByPath(stream: Readable, jsonPath: string = "$"): Stream {
@@ -40,7 +37,3 @@ export class Piffero {
     });
   }
 }
-
-
-
-

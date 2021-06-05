@@ -634,14 +634,14 @@ export interface ParsedPath {
 }
 
 export function parse(jsonPath: string): ParsedPath {
-    if (!jsonPath.startsWith("$")) {
-      throw new PifferoJsonPathError(`${PATH_ERROR_MESSAGE}: ${jsonPath}`);
-    }
-    jsonPath = jsonPath.replace("$.[", "$[");
-    // accrocco;
-    jsonPath = jsonPath.split("@.").join("!");
-    const paths = jsonPath.split(".");
-    return buildParsedPath(jsonPath, paths);
+  if (!jsonPath.startsWith("$")) {
+    throw new PifferoJsonPathError(`${PATH_ERROR_MESSAGE}: ${jsonPath}`);
+  }
+  jsonPath = jsonPath.replace("$.[", "$[");
+  // accrocco;
+  jsonPath = jsonPath.split("@.").join("!");
+  const paths = jsonPath.split(".");
+  return buildParsedPath(jsonPath, paths);
 }
 
 function checkCondition(condition: string) {
@@ -665,11 +665,8 @@ function checkCondition(condition: string) {
   return null;
 }
 
- // need refactoring for perfomance
- function buildParsedPath(
-  jsonPath: string,
-  paths: string[]
-): ParsedPath {
+// need refactoring for perfomance
+function buildParsedPath(jsonPath: string, paths: string[]): ParsedPath {
   if (paths.length === 0) {
     return null;
   }
@@ -735,4 +732,3 @@ function checkCondition(condition: string) {
     hascondtion: condition !== null && condition !== undefined,
   };
 }
-
