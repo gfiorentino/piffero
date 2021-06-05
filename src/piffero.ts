@@ -1,13 +1,13 @@
 import { Readable, Stream } from "stream";
 import {
-  JSONPath,
+  parse,
   MasterHandler
 } from "./handler/mastehandler";
 
 export class Piffero {
   static findByPath(stream: Readable, jsonPath: string = "$"): Stream {
     const handler = new MasterHandler();
-    let parsedPath = JSONPath.parse(jsonPath);
+    let parsedPath = parse(jsonPath);
     return handler.parse(stream, parsedPath);
   }
 
@@ -17,7 +17,7 @@ export class Piffero {
     jsonPath: string = "$"
   ) {
     const handler = new MasterHandler();
-    let parsedPath = JSONPath.parse(jsonPath);
+    let parsedPath = parse(jsonPath);
     handler.parse(stream, parsedPath, true, callback);
   }
 
@@ -41,18 +41,6 @@ export class Piffero {
   }
 }
 
-export interface ParsedPath {
-  value: string;
-  range?: { start?: number; end?: number; step?: number };
-  indexes?: number[];
-  isbulk: boolean;
-  condition?: {
-    key: string;
-    value: string;
-  }; // ?? not supported yet
-  next: ParsedPath;
-  hascondtion: boolean;
-  recursiveDescendant: boolean; // ?? not supported yet
-}
+
 
 

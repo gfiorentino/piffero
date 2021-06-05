@@ -3,10 +3,10 @@ import { PATH_ERROR_MESSAGE, PifferoJsonPathError } from './../../src/handler/ma
 
 
 describe("JsonPath", function() {
-    const JSONPath = require('../../src/handler/mastehandler').JSONPath;
+    const parse = require('../../src/handler/mastehandler').parse;
 
     it("simple jsonpath", function() {
-      const result = JSONPath.parse('$.first.second')
+      const result = parse('$.first.second')
       //demonstrates use of custom matcher
       expect(result.value).toBe('"$"');
       let next = result.next;
@@ -17,18 +17,18 @@ describe("JsonPath", function() {
 
     it("simple jsonpath exception", function() {
       const jsonPath = '$.second]';
-      expect(function() {JSONPath.parse(jsonPath)})
+      expect(function() {parse(jsonPath)})
         .toThrow(new PifferoJsonPathError(`${PATH_ERROR_MESSAGE}: ${jsonPath}`));
     });
 
     it("simple jsonpath exception", function() {
       const jsonPath = 'second';
-      expect(function() {JSONPath.parse(jsonPath)})
+      expect(function() {parse(jsonPath)})
         .toThrow(new PifferoJsonPathError(`${PATH_ERROR_MESSAGE}: ${jsonPath}`));
     });
 
    it("simple jsonpath with index", function() {
-      const result = JSONPath.parse('$.first[1].second[2]')
+      const result = parse('$.first[1].second[2]')
         //demonstrates use of custom matcher
         expect(result.value).toBe('"$"');
         let next = result.next;
@@ -42,7 +42,7 @@ describe("JsonPath", function() {
 
 
     it("simple jsonpath wiith index", function() {
-      const result = JSONPath.parse('$.first[1].second[?(@.attribute==="asd")]')
+      const result = parse('$.first[1].second[?(@.attribute==="asd")]')
         //demonstrates use of custom matcher
         expect(result.value).toBe('"$"');
         let next = result.next;
@@ -57,7 +57,7 @@ describe("JsonPath", function() {
 
     it("simple jsonpath wiith index", function() {
       
-      const result = JSONPath.parse('$.first[?(@.att===21)].second[?(@.attribute==="asd")]')
+      const result = parse('$.first[?(@.att===21)].second[?(@.attribute==="asd")]')
         //demonstrates use of custom matcher
         expect(result.value).toBe('"$"');
         let next = result.next;
@@ -72,7 +72,7 @@ describe("JsonPath", function() {
 
     it("simple jsonpath wiith expression eval ", function() {
       
-      const result = JSONPath.parse('$.first[?(@.att===21+3*2)].second[?(@.attribute==="asd")]')
+      const result = parse('$.first[?(@.att===21+3*2)].second[?(@.attribute==="asd")]')
         //demonstrates use of custom matcher
         expect(result.value).toBe('"$"');
         let next = result.next;
