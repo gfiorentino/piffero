@@ -3,7 +3,7 @@ import { PATH_ERROR_MESSAGE, PifferoJsonPathError } from './../../src/handler/ma
 
 
 describe("JsonPath", function() {
-    const JSONPath = require('../../src/piffero').JSONPath;
+    const JSONPath = require('../../src/handler/mastehandler').JSONPath;
 
     it("simple jsonpath", function() {
       const result = JSONPath.parse('$.first.second')
