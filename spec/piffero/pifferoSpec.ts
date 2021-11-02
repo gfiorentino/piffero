@@ -4,8 +4,9 @@ import { Piffero } from "../../src/piffero";
 describe("piffero john-doe", function() {
     const fs  =  require('fs');
     let stream
-    beforeEach( function() {   
+    beforeEach( function(done) {   
       stream = fs.createReadStream('spec/jsonFiles/john-doe.json');
+      done();
     });
 
     it("simple jsonpath", async function() {
@@ -151,7 +152,7 @@ describe("piffero john-doe", function() {
       JSON.parse(string);
     });
 
-    it("element in an array as string jsonpath with eval ", async function(done) {
+    it("element in an array as string jsonpath with eval ", function(done) {
       const callback = (json) => {
         expect(JSON.stringify(JSON.parse(json))).toBe('[{"id":3,"type":"home","number":"0123-4567-8910","test":true,"null":null}]');
         done();
